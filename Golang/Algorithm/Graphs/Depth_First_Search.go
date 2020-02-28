@@ -8,7 +8,12 @@ type Node struct {
 }
 
 func (n *Node) DepthFirstSearch(array []string) []string {
-
+	array = append(array, n.Name)
+	fmt.Println(array)
+	for _, element := range n.Children {
+		array = element.DepthFirstSearch(array)
+	}
+	return array
 }
 
 func main() {

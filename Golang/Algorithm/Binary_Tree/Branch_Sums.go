@@ -9,7 +9,24 @@ type BinaryTree struct {
 }
 
 func BranchSums(root *BinaryTree) []int {
+	sum_array := make([]int, 0)
+	sum := 0
+	fmt.Println(Depth_First_Search(root, sum_array, sum))
+	return sum_array
+}
 
+func Depth_First_Search(root *BinaryTree, sum_array []int, sum int) []int {
+	sum = sum + root.Value
+	if root.Left != nil {
+		sum_array = Depth_First_Search(root.Left, sum_array, sum)
+	}
+	if root.Right != nil {
+		sum_array = Depth_First_Search(root.Right, sum_array, sum)
+	}
+	if root.Left == nil && root.Right == nil {
+		sum_array = append(sum_array, sum)
+	}
+	return sum_array
 }
 
 func main() {
@@ -23,5 +40,5 @@ func main() {
 	node3 := &BinaryTree{Value: 3, Left: node6, Right: node7}
 	node2 := &BinaryTree{Value: 2, Left: node4, Right: node5}
 	node1 := &BinaryTree{Value: 1, Left: node2, Right: node3}
-	fmt.Println(BranchSums(node1))
+	BranchSums(node1)
 }
