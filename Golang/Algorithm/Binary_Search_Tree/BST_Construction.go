@@ -25,6 +25,10 @@ func (tree *BST) Insert(value int) *BST {
 	return tree
 }
 
+func (tree *BST) Remove(value int) *BST{
+	
+}
+
 func (tree *BST) Contains(value int) bool {
 	if tree.value != value {
 		switch {
