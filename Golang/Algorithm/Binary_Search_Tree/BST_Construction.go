@@ -25,8 +25,45 @@ func (tree *BST) Insert(value int) *BST {
 	return tree
 }
 
-func (tree *BST) Remove(value int) *BST{
-	
+func (tree *BST) Remove(value int) *BST {
+	if tree.Contains(value) {
+		tree.remove(value, nil)
+		return tree
+	} else {
+		return tree
+	}
+}
+
+func (tree *BST) remove(value int, parent *BST) {
+	current_node := tree
+	parent_node := parent
+	isDone := false
+	for !isDone {
+		isDone = true
+		if value > current_node.value {
+			parent_node = current_node
+			current_node = current_node.right
+			isDone = false
+		} else if value < current_node.value {
+			parent_node = current_node
+			current_node = current_node.left
+			isDone = false
+		} else { // value == current_node.value
+			
+		}
+	}
+}
+
+func (tree *BST) getSuccessor() *BST {
+	isDone := false
+	for !isDone {
+		isDone = true
+		if tree.left != nil {
+			tree = tree.left
+			isDone = false
+		}
+	}
+	return tree
 }
 
 func (tree *BST) Contains(value int) bool {
