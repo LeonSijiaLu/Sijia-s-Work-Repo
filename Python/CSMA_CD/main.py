@@ -1,12 +1,16 @@
 import non_persistent
 import persistent
 
-def run_non_persistent_csma_cd_simu():
-    non_persistent_csma_cd = non_persistent.non_persistent_csma_cd(60, 7, 1000, False)
-    non_persistent_csma_cd.start_non_persistent_csma_cd_simulation()
-    #non_persistent_csma_cd.print_lan_config()
+non_persistent_result = []
+persistent_result = []
 
-#def run_persistent_csma_cd_simu():
- #   persistent_csma_cd = persistent.persistent_csma_cd(60,7,1000,False)
+def run_non_persistent_csma_cd_simu(N, A, T):
+    non_persistent_csma_cd = non_persistent.non_persistent_csma_cd(N, A, T, False)
+    return non_persistent_csma_cd.start_non_persistent_csma_cd_simulation()
 
-run_non_persistent_csma_cd_simu()
+def show_non_persistent_performance():
+    for A in [7, 10, 20]:
+        for N in [20, 40, 60, 80, 100]:
+            non_persistent_result.append(run_non_persistent_csma_cd_simu(N, A, 1000))
+    print(non_persistent_result)
+

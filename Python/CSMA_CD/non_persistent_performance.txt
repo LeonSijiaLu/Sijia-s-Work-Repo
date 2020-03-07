@@ -1,0 +1,163 @@
+# 
+#
+# N = 20 and A = 7, 10, 20
+#
+#
+N = 20
+A = 7
+Successfully transmitted: 136761
+Total packets: 139691
+Efficiency: 0.9790251340458583
+Throughput: 205141.5
+Total collisions: 55
+Dropped packets: 2855
+
+N = 20
+A = 10
+Successfully transmitted: 194347
+Total packets: 200174
+Efficiency: 0.9708903254168874
+Throughput: 291520.5
+Total collisions: 152
+Dropped packets: 5654
+
+N = 20
+A = 20
+Successfully transmitted: 383200
+Total packets: 401848
+Efficiency: 0.9535943939001812
+Throughput: 574800.0
+Total collisions: 659
+Dropped packets: 17956
+
+
+# 
+#
+# N = 40 and A = 7, 10, 20
+#
+#
+N = 40
+A = 7
+Successfully transmitted: 267693
+Total packets: 280356
+Efficiency: 0.9548324273423789
+Throughput: 401539.5
+Total collisions: 496
+Dropped packets: 12128
+
+N = 40
+A = 10
+Successfully transmitted: 376536
+Total packets: 401019
+Efficiency: 0.9389480298938454
+Throughput: 564804.0
+Total collisions: 1081
+Dropped packets: 23357
+
+N = 40
+A = 20
+Successfully transmitted: 737690
+Total packets: 802101
+Efficiency: 0.9196971453719669
+Throughput: 1106535.0
+Total collisions: 3693
+Dropped packets: 60627
+
+
+# 
+#
+# N = 60 and A = 7, 10, 20
+#
+#
+N = 60
+A = 7
+Successfully transmitted: 391416
+Total packets: 421552
+Efficiency: 0.9285117850229627
+Throughput: 587124.0
+Total collisions: 1674
+Dropped packets: 28395
+
+N = 60
+A = 10
+Successfully transmitted: 546243
+Total packets: 602002
+Efficiency: 0.9073773841282919
+Throughput: 819364.5
+Total collisions: 3255
+Dropped packets: 52417
+
+N = 60
+A = 20
+Successfully transmitted: 1085915
+Total packets: 1211959
+Efficiency: 0.895999782170849
+Throughput: 1628872.5
+Total collisions: 8281
+Dropped packets: 117617
+
+
+# 
+#
+# N = 80 and A = 7, 10, 20
+#
+#
+N = 80
+A = 7
+Successfully transmitted: 507880
+Total packets: 563924
+Efficiency: 0.9006178137479518
+Throughput: 761820.0
+Total collisions: 3797
+Dropped packets: 52150
+
+N = 80
+A = 10
+Successfully transmitted: 706353
+Total packets: 806115
+Efficiency: 0.8762434640218827
+Throughput: 1059529.5
+Total collisions: 7415
+Dropped packets: 92216
+
+N = 80
+A = 20
+Successfully transmitted: 1419642
+Total packets: 1614730
+Efficiency: 0.8791822781517653
+Throughput: 2129463.0
+Total collisions: 13339
+Dropped packets: 181517
+
+
+# 
+#
+# N = 100 and A = 7, 10, 20
+#
+#
+N = 100
+A = 7
+Successfully transmitted: 616904
+Total packets: 707732
+Efficiency: 0.8716632849722776
+Throughput: 925356.0
+Total collisions: 7220
+Dropped packets: 83469
+
+N = 100
+A = 10
+Successfully transmitted: 859586
+Total packets: 1013325
+Efficiency: 0.8482826339032393
+Throughput: 1289379.0
+Total collisions: 12496
+Dropped packets: 141075
+
+N = 100
+A = 20
+Successfully transmitted: 1750462
+Total packets: 2018394
+Efficiency: 0.8672548570794404
+Throughput: 2625693.0
+Total collisions: 18322
+Dropped packets: 249263

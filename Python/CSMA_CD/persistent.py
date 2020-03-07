@@ -1,6 +1,7 @@
 import lan_node
-import utils
 import arrival
+import math
+from random import random, randrange
 
 class persistent_csma_cd:
     def __init__(self, N, A, T, persistent):
@@ -17,11 +18,17 @@ class persistent_csma_cd:
         self.L = 1500       # packet length is 1500 bits
         self.C = 3e8        # Speed of light
         self.S = (2/3) * self.C  # Propagation speed
-        self.t_prop = self.D / self.S
-        self.t_trans = self.L / self.R
+        self.t_prop = self.D / self.S # Propagation Time
+        self.t_trans = self.L / self.R # Transmission Time
         self.jamming_time = 48/self.R
         self.lan = []
         self.timer = 0
+
+    def get_random_variable(self, mean):
+        return (-mean) * math.log(1 - random())
+
+    def exponential_backoff(self, collisions):
+        return randrange(0, 2**collisions - 1) * 512 / self.R
 
     def print_lan_config(self):
         print("N is ", self.N)
@@ -42,7 +49,7 @@ class persistent_csma_cd:
             node_time = 0
             node_events = []
             while node_time < self.T:
-                random_interval_time = utils.get_random_variable(1.0 / self.A)
+                random_interval_time = self.get_random_variable(1.0 / self.A)
                 node_time = node_time + random_interval_time
                 node_events.append(arrival.ArrivalEvent(node_time)) # node_events is an array, elements are ArrivalEvent
             self.lan.append(lan_node.Node(node_events, i))
@@ -55,5 +62,3 @@ class persistent_csma_cd:
                 next_packet_time = i.next_event_time
                 sender_index = i.index
         return sender_index
-
-    
