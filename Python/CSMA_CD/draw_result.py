@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 
 #
 # All these data are collected through real experiments
+# You can find these data from .txt files in this directory
 #
 
 def draw_efficiency_vs_nodes_non_persistent():
@@ -18,8 +19,10 @@ def draw_efficiency_vs_nodes_non_persistent():
     plt.plot(nodes_for_arrival_10, efficiency_for_arrival_10, color="green", marker="x", linewidth=1, label="Arrival Rate 10")
     plt.plot(nodes_for_arrival_20, efficiency_for_arrival_20, color="orange", marker="s", linewidth=1, label="Arrival Rate 20")
 
-    plt.legend(loc='upper left', bbox_to_anchor=(0.0, 1.0))
-    plt.title("Efficiency vs The number of nodes, Non-Persistent")
+    plt.xlabel("Number of Nodes")
+    plt.ylabel("Efficiency")
+    plt.legend(loc='best')
+    plt.title("Efficiency (Y) vs The number of nodes (X), Non-Persistent")
     plt.show()
 
 def draw_throughput_vs_nodes_non_persistent():
@@ -36,10 +39,54 @@ def draw_throughput_vs_nodes_non_persistent():
     plt.plot(nodes_for_arrival_10, throughput_for_arrival_10, color="green", marker="x", linewidth=1, label="Arrival Rate 10")
     plt.plot(nodes_for_arrival_20, throughput_for_arrival_20, color="orange", marker="s", linewidth=1, label="Arrival Rate 20")
 
-    plt.legend(loc='upper left', bbox_to_anchor=(0.0, 1.0))
-    plt.title("Throughput vs The number of nodes, Non-Persistent")
+    plt.xlabel("Number of Nodes")
+    plt.ylabel("Throughput")
+    plt.legend(loc='best')
+    plt.title("Throughput (Y) vs The number of nodes (X), Non-Persistent")
+    plt.show()
+
+def draw_efficiency_vs_nodes_persistent():
+    nodes_for_arrival_7 = [20, 40, 60, 80, 100]
+    efficiency_for_arrival_7 = [0.9744480365593984, 0.9289746709132414, 0.8467308923661534, 0.7038136542900171, 0.5119170952575429]
+
+    nodes_for_arrival_10 = [20, 40, 60, 80, 100]
+    efficiency_for_arrival_10 = [0.9590459067951462, 0.8665987963125272, 0.6661224831026359, 0.445407287272243, 0.3669437273921348]
+
+    nodes_for_arrival_20 = [20, 40, 60, 80, 100]
+    efficiency_for_arrival_20 = [0.8782121938110897, 0.5157340229389651, 0.4072542241624277, 0.3767778564694048, 0.3596140693744758]
+
+    plt.plot(nodes_for_arrival_7, efficiency_for_arrival_7, color="red", marker="^", linewidth=1, label="Arrival Rate 7")
+    plt.plot(nodes_for_arrival_10, efficiency_for_arrival_10, color="green", marker="x", linewidth=1, label="Arrival Rate 10")
+    plt.plot(nodes_for_arrival_20, efficiency_for_arrival_20, color="orange", marker="s", linewidth=1, label="Arrival Rate 20")
+
+    plt.xlabel("Number of Nodes")
+    plt.ylabel("Efficiency")
+    plt.legend(loc='best')
+    plt.title("Efficiency (Y) vs The number of nodes (X), Persistent")
+    plt.show()
+
+def draw_throughput_vs_nodes_persistent():
+    nodes_for_arrival_7 = [20, 40, 60, 80, 100]
+    throughput_for_arrival_7 = [206620.5, 407766.0, 606976.5, 805482.0, 998385.0]
+
+    nodes_for_arrival_10 = [20, 40, 60, 80, 100]
+    throughput_for_arrival_10 = [293656.5, 578410.5, 860526.0, 1123800.0, 1328389.5]
+
+    nodes_for_arrival_20 = [20, 40, 60, 80, 100]
+    throughput_for_arrival_20 = [578445.0, 1130776.5, 1565034.0, 1927182.0, 2258875.5]
+
+    plt.plot(nodes_for_arrival_7, throughput_for_arrival_7, color="red", marker="^", linewidth=1, label="Arrival Rate 7")
+    plt.plot(nodes_for_arrival_10, throughput_for_arrival_10, color="green", marker="x", linewidth=1, label="Arrival Rate 10")
+    plt.plot(nodes_for_arrival_20, throughput_for_arrival_20, color="orange", marker="s", linewidth=1, label="Arrival Rate 20")
+
+    plt.xlabel("Number of Nodes")
+    plt.ylabel("Throughput")
+    plt.legend(loc='best')
+    plt.title("Throughput (Y) vs The number of nodes (X), Persistent")
     plt.show()
 
 
 draw_efficiency_vs_nodes_non_persistent()
 draw_throughput_vs_nodes_non_persistent()
+draw_efficiency_vs_nodes_persistent()
+draw_throughput_vs_nodes_persistent()

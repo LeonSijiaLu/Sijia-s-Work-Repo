@@ -14,3 +14,16 @@ def show_non_persistent_performance():
             non_persistent_result.append(run_non_persistent_csma_cd_simu(N, A, 1000))
     print(non_persistent_result)
 
+def run_persistent_csma_cd_simu(N, A, T):
+    persistent_csma_cd = persistent.persistent_csma_cd(N, A, T, False)
+    return persistent_csma_cd.start_persistent_csma_cd_simulation()
+
+def show_persistent_performance():
+    for A in [7, 10, 20]:
+        for N in [100]:
+            persistent_result.append(run_persistent_csma_cd_simu(N, A, 1000))
+    print(persistent_result)
+
+#show_non_persistent_performance()
+show_persistent_performance()
+    
