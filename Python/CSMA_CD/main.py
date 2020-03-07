@@ -20,10 +20,10 @@ def run_persistent_csma_cd_simu(N, A, T):
 
 def show_persistent_performance():
     for A in [7, 10, 20]:
-        for N in [100]:
+        for N in [20, 40, 60, 80, 100]:
             persistent_result.append(run_persistent_csma_cd_simu(N, A, 1000))
     print(persistent_result)
 
-#show_non_persistent_performance()
+show_non_persistent_performance()
 show_persistent_performance()
     
