@@ -44,17 +44,17 @@ class non_persistent_csma_cd:
         print("t_trans is ", self.t_trans)
         print("jamming_time is ", self.jamming_time)
 
-    def populate_node_stack(self):
+    def populate_node_stack(self):  # populate packet stack of each node
         for i in range(self.N):
             node_time = 0
             node_events = []
             while node_time < self.T:
-                random_interval_time = self.get_random_variable(1.0 / self.A)
+                random_interval_time = self.get_random_variable(1.0 / self.A)  
                 node_time = node_time + random_interval_time
                 node_events.append(arrival.ArrivalEvent(node_time)) # node_events is an array, elements are ArrivalEvent
             self.lan.append(lan_node.Node(node_events, i))
 
-    def determine_next_sender(self):
+    def determine_next_sender(self): # find the next sender in LAN by simply comparing each node's earliest time
         sender_index = -1
         next_packet_time = self.T
         for i in self.lan:
@@ -63,20 +63,20 @@ class non_persistent_csma_cd:
                 sender_index = i.index
         return sender_index
 
-    def have_collision(self, node, new_time):
+    def have_collision(self, node, new_time):   # call this function when having collisions
         node.collision_count += 1
         node.total_packets += 1
         node.busy_count = 0
         self.total_collisions += 1
         self.total_packets += 1
-        if node.collision_count > self.K_max:
+        if node.collision_count > self.K_max:   # If collision count exceeds K_max, drop the packet
             node.eventQueue.popleft()
             node.collision_count = 0
             node.dropped_packets += 1
             self.dropped_packets += 1
             if len(node.eventQueue)>0 and node.eventQueue[0].event_time > node.next_event_time:
                 node.next_event_time = node.eventQueue[0].event_time
-        else:
+        else:                                   # exponential backoff
             backoff_time = self.exponential_backoff(node.collision_count)
             node.next_event_time = max(new_time + backoff_time, node.eventQueue[0].event_time)
 
@@ -95,30 +95,20 @@ class non_persistent_csma_cd:
 
     def start_non_persistent_csma_cd_simulation(self):
         self.populate_node_stack()
-        #collision_occured = False
         while self.timer < self.T:
             sender_index = self.determine_next_sender()
             sender_node = self.lan[sender_index]
             self.timer = sender_node.next_event_time
-            collided = []
 
-            for i in range(self.N):
+            for i in range(self.N):                                 # Check if possible collisions
                 if i == sender_index or len(self.lan[i].eventQueue) == 0:
                     continue
                 first_bit_arrival = abs(i-sender_index)*self.t_prop + self.timer
                 last_bit_arrival = first_bit_arrival + self.t_trans
-                if self.lan[i].next_event_time < first_bit_arrival: # collision
-                    #collision_occured = True
-                    collided.append(self.lan[i])
+                if self.lan[i].next_event_time < first_bit_arrival: # detect collision
                     self.have_collision(self.lan[i], last_bit_arrival) # delay self.lan[i] packets
 
-            # After solving collisions and busy waits
-            #if collision_occured:
-            #    collision_occured = False
-            #    self.total_collisions += 1
-            #    self.have_collision(sender_node, self.timer + self.t_trans)
-            #else:
-            for i in range(self.N):
+            for i in range(self.N):                                 # Check if possible busy waits
                 if i == sender_index or len(self.lan[i].eventQueue) == 0:
                     continue
                 first_bit_arrival = abs(i-sender_index)*self.t_prop + self.timer
@@ -127,12 +117,7 @@ class non_persistent_csma_cd:
                     self.have_busy_wait(self.lan[i], last_bit_arrival)
 
             sender_node.collision_count = 0
-            #if len(sender_node.eventQueue) <= 0:
-            #    print(sender_index)
-            #    print(len(self.lan[sender_index].eventQueue))
             sender_node.eventQueue.popleft()
-            #if len(sender_node.eventQueue) > 0:
-            #    sender_node.eventQueue.popleft()
             if len(sender_node.eventQueue) > 0 and sender_node.eventQueue[0].event_time > sender_node.next_event_time:
                 sender_node.next_event_time = sender_node.eventQueue[0].event_time
             self.successful_packets += 1
