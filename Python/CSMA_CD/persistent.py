@@ -127,6 +127,20 @@ class persistent_csma_cd:
         for n in self.lan:                                          # As we might exceed the total amount of simulation time. If there are remianing packets, we put that into total packets array
             self.total_packets += len(n.eventQueue)
 
+        f = open("persistent_data.txt", "a")
+        f.write('N ='+ str(self.N) + '\n')
+        f.write('A ='+ str(self.A) + '\n')
+        f.write('Successfully transmitted:'+ str(self.successful_packets) + '\n')
+        f.write('Total packets:'+ str(self.total_packets) + '\n')
+        f.write('Efficiency:'+ str(self.successful_packets / self.total_packets) + '\n')
+        f.write('Throughput:'+ str(self.successful_packets * self.L / self.T) + '\n')
+        f.write('Total collisions:'+ str(self.total_collisions) + '\n')
+        f.write('Dropped packets:'+ str(self.dropped_packets) + '\n')
+        f.write('\n')
+        f.write('\n')
+        f.close()
+
+        print("")
         print('N =', self.N)
         print('A =', self.A)
         print('Successfully transmitted:', self.successful_packets)
@@ -135,5 +149,6 @@ class persistent_csma_cd:
         print('Throughput:', self.successful_packets * self.L / self.T)
         print('Total collisions:', self.total_collisions)
         print('Dropped packets:', self.dropped_packets)
+        print("")
 
         return [self.N, self.successful_packets / self.total_packets, self.A]
