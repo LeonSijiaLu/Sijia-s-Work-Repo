@@ -18,7 +18,7 @@ func main(){
 
 	api := router.Group("/api")
 	{
-		api.POST("/explore", route.Explore)
+		api.GET("/explore", route.Explore)
 		api.POST("/explore_hashtag_posts", route.ExploreHashtagPosts)
 
 		api.POST("/create_post", route.CreatePost)

@@ -9,7 +9,7 @@ This is a social network API programed in Go.
 
 Below is the database design: 
 
-![Database Desgin for Social Network](SocialNet_DB.png)
+![Database Desgin for Social Network](readmeImgs/SocialNet_DB.png)
 
 ## How to run ?
 
@@ -23,13 +23,17 @@ go get github.com/gorilla/sessions
 go get github.com/urfave/negroni
 ```
 
+## Something to say before
+
+I used only `GET` and `POST` because `gin` in go cannot pass body in a delete request. 
+
 ## What it allows you to do
 
 In order to navigate what is available for you, you need to first: 
 
 1. `http://localhost:8882/user/signup`: `POST Request`, enter `username`, `password`, `password_repeated`, `email` to signup
 
-![Signup request using postman](signup_request.png)
+![Signup request using postman](readmeImgs/signup_request.png)
 
 2. `http://localhost:8882/user/login`: `POST Request`, enter `username`, `password` to let you login
 
@@ -56,13 +60,13 @@ If your content is `#Welcome# this is my first post. @user1 Thanks for inviting 
 
 7. `http://localhost:8882/api/like_post`: `POST Request`, enter `post_id` in the post request. Then your `user_id` and the `post_id` will be stored in `Likes`, and the likes number of this post will also increment
 
-![Like post request using postman](like_post.png)
+![Like post request using postman](readmeImgs/like_post.png)
 
 8. `http://localhost:8882/api/unlike_post`: `POST Request`, enter `post_id` to dislike. 
 
 9. `http://localhost:8882/api/create_comments`: `POST Request`, enter `post_id` and `content`. 
 
-![Create comments request using postman](create_comments.png)
+![Create comments request using postman](readmeImgs/create_comments.png)
 
 10. `http://localhost:8882/api/follow_user`: `POST Request`, enter `username`
 
@@ -88,4 +92,4 @@ The above part mainly focuses a specific attempt, for example, creating, deletin
 
 17. `http://localhost:8882/api/explore`: `GET Request`, it displays the latest posts of people who you are following. You cannot see people's posts who blocked you
 
-18. `http://localhost:8882/api/explore_hashtag_posts`: `POST Request`, enter `hashtag_name` to view the hottest posts of the hashtags. You cannot see people's posts who blocked you. And if a post is set as private, you must be a follower you visit.  
+18. `http://localhost:8882/api/explore_hashtag_posts`: `POST Request`, enter `hashtag_name` to view the hottest posts of the hashtags you followed. You cannot see people's posts who blocked you. And if a post is set as private, you must be a follower you visit.  
