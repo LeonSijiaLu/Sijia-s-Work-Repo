@@ -11,6 +11,30 @@ Below is the database design:
 
 ![Database Desgin for Social Network](readmeImgs/SocialNet_DB.png)
 
+## Tables
+
+`Users`: It stores user login information
+
+`Profile`: Additional user information, you can decide if you want strangers or followers-only to view your posts
+
+`Likes`: It stores who liked which post
+
+`Posts`: Posts information, you can decide if this posts allow comments
+
+`Comments`: Comments information, which posts it belongs to and who wrote it
+
+`Blacklist`: Who blocked whom
+
+`Follows`: Who follows whom
+
+`Mentions`: Who mentions whom, it is done using `@` like `@Leon`
+
+`Hashtags`: Hashtags information, like its total posts number, followers number, hashtag name. Hashtag is created using `#...#` like `#FirstPost#` in posts
+
+`Users_Hashtags`: Who followed this hashtag
+
+`Posts_Hashtags`: Which posts has this hashtag
+
 ## How to run ?
 
 ```
@@ -22,7 +46,11 @@ go get github.com/go-sql-driver/mysql
 go get github.com/gorilla/sessions
 go get github.com/urfave/negroni
 
-Then put all files under src folder of GOPATH
+Then put all files under: src folder of GOPATH
+
+Before importing db.sql into your database, you can make changes to the db user in db.sql, the current user is: netadmin_s96lu, its password is netadmin_s96lu.
+
+Then in utils/db.go, you can manage database name, database IP, username and password. 
 ```
 
 ## Something to say before
@@ -60,7 +88,7 @@ b. `@user1` use one `@` to indicate mentioning people. <br />
 
 5. `http://localhost:8882/api/post/12`: `DELETE Request`, it will delete post 12 and created by YOU
 
-6. `http://localhost:8882/api/post/12`: `PUT Request`, enter `title`, `content` to update post 12
+6. `http://localhost:8882/api/post/12`: `PUT Request`, enter `title`, `content`, `allow_comments` to update post 12. Set `allow_comments == 1` allows comments, set `allow_comments == 0` disallows comments
 
 7. `http://localhost:8882/api/like_post`: `POST Request`, enter `post_id` in the post request. Then your `user_id` and the `post_id` will be stored in `Likes`, and the likes number of this post will also increment
 

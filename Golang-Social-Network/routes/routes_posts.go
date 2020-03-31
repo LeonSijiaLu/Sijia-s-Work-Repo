@@ -45,7 +45,7 @@ func CreatePost(c *gin.Context) {
 
 func DeletePost(c *gin.Context){
 	is_loggedin(c, "")
-	post_id := strings.TrimSpace(c.PostForm("post_id"))
+	post_id := c.Param("postID")
 	my_id, _ := UT.Get_Id_and_Username(c)
 	if post_id == "" {
 		panic("Please select a post to delete")
@@ -69,9 +69,10 @@ func UpdatePost(c *gin.Context){
 	post_id := c.Param("postID")
 	title := strings.TrimSpace(c.PostForm("title"))
 	content := strings.TrimSpace(c.PostForm("content"))
+	allow_comments := c.PostForm("allow_comments")
 	hashtags, mentions := extractTags_Mentions(content)
 	id, _ := UT.Get_Id_and_Username(c)
-	if post_id == "" || id == "" || title == ""{
+	if post_id == "" || id == "" || title == "" || allow_comments == ""{
 		panic("Wrong things happened before updating, double check your data")
 	}else{
 		db := UT.Conn_DB()
@@ -89,18 +90,21 @@ func UpdatePost(c *gin.Context){
 				Create_Mention(post_id, eachMentionUser)
 			}
 		}
-		_, err := db.Exec("UPDATE Posts SET title = ?, content = ? WHERE post_id = ? AND created_by = ?", title, content, post_id, id)
+		_, err := db.Exec("UPDATE Posts SET title = ?, content = ?, allow_comments = ? WHERE post_id = ? AND created_by = ?", title, content, allow_comments, post_id, id)
 		UT.Err(err)
 		c.JSON(http.StatusOK, map[string]interface{}{
 			"message": "Updated the post successfully",
 			"success": true,
+			"allow_comments": allow_comments,
+			"title": title,
+			"content": content,
 		})
 	}
 }
 
 func LikePost(c *gin.Context){
 	is_loggedin(c, "")
-	post_id := strings.TrimSpace(c.PostForm("post_id"))
+	post_id := c.Param("postID")
 	id, _ := UT.Get_Id_and_Username(c)
 	if post_id == "" {
 		panic("Please select a post to like")
@@ -121,7 +125,7 @@ func LikePost(c *gin.Context){
 
 func UnlikePost(c *gin.Context){
 	is_loggedin(c, "")
-	post_id := strings.TrimSpace(c.PostForm("post_id"))
+	post_id := c.Param("postID")
 	id, _ := UT.Get_Id_and_Username(c)
 	if post_id == "" {
 		panic("Please select a post to unlike")

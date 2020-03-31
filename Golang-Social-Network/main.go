@@ -24,8 +24,8 @@ func main(){
 		api.POST("/post", route.CreatePost)
 		api.DELETE("/post/:postID", route.DeletePost)
 		api.PUT("/post/:postID", route.UpdatePost)
-		api.POST("/like_post", route.LikePost)
-		api.POST("/unlike_post", route.UnlikePost)
+		api.POST("/like_post/:postID", route.LikePost)
+		api.POST("/unlike_post/:postID", route.UnlikePost)
 
 		api.POST("/comments/:postID", route.CreateComments)
 		api.PUT("/comments/:postID/:commentNum", route.EditComments)
