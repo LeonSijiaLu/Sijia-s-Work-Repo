@@ -367,6 +367,7 @@ INSERT INTO `Topics` (`topic_name`) VALUES
 ('Cars');
 */
 
+/*Passwords are encoded by API, but password is the same as username*/
 INSERT INTO `Users` (`username`, `password`, `email`) VALUES
 ('sijia', '$2a$10$eXcpaPHH6tYg8Ie.bhvuZ.PSIykhBdIVpts0BnL0cXl/b3F9XyOKa', 'sijia@gmail.com'),
 ('takkar', '$2a$10$ttnsVDOPgMlA5vvDE33eneqVO3BHE/zif/axxI5AwNpOuRetkxFk6', 'takkar@gmail.com'),

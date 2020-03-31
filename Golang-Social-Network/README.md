@@ -39,7 +39,9 @@ In order to navigate what is available for you, you need to first:
 
 3. `http://localhost:8882/user/logout`: `POST Request`, It lets you logout instantly
 
-* The rest part requires you to login, since the code stores your session data, please do not log out !! I have populated the database for you, so you can enjoy :)
+* The rest part requires you to login, since the code stores your session data, please do not log out !! I have populated the database for you. `Password` is encrypted, but it is the same as the username. 
+
+Please enjoy :)
 
 ### Posts
 
@@ -96,4 +98,4 @@ The above part mainly focuses a specific attempt, for example, creating, deletin
 
 19. `http://localhost:8882/api/explore`: `GET Request`, it displays the latest posts of people who you are following. You cannot see people's posts who blocked you
 
-20. `http://localhost:8882/api/explore_hashtag_posts`: `POST Request`, enter `hashtag_name` to view the hottest posts of the hashtags you followed. You cannot see people's posts who blocked you. And if a post is set as private, you must be a follower you visit.  
+20. `http://localhost:8882/api/explore_hashtag_posts/HASHTAGNAME`: `GET Request`, enter `HASHTAGNAME` is the hashtag name you want to search. It views the hottest posts of the hashtags you followed. You cannot see people's posts who blocked you. And if a post is set as private, you must be a follower you visit.  
