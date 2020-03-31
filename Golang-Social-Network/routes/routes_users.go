@@ -124,7 +124,7 @@ func UnFollowUser(c *gin.Context){
 			"message": "Unfollowed user successfully",
 			"success": true,
 		})
-	}else{panic("You cannot follow yourself")}
+	}else{panic("You cannot unfollow yourself")}
 }
 
 func BlockUser(c *gin.Context){

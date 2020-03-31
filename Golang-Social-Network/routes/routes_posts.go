@@ -50,6 +50,9 @@ func DeletePost(c *gin.Context){
 	}else{
 		db := UT.Conn_DB()
 		defer db.Close()
+		var verifyPost int
+		db.QueryRow("SELECT COUNT(post_id) FROM Posts WHERE post_id = ? AND created_by = ?", post_id, my_id).Scan(&verifyPost)
+		if verifyPost != 1 {panic("Invalid Post Ownership, cannot delete")}
 		_, err := db.Exec("DELETE FROM Posts WHERE post_id = ? AND created_by = ?", post_id, my_id)
 		UT.Err(err)
 		c.JSON(http.StatusOK, map[string]interface{}{
@@ -70,6 +73,9 @@ func UpdatePost(c *gin.Context){
 	}else{
 		db := UT.Conn_DB()
 		defer db.Close()
+		var verifyPost int
+		db.QueryRow("SELECT COUNT(post_id) FROM Posts WHERE post_id = ? AND created_by = ?", post_id, id).Scan(&verifyPost)
+		if verifyPost != 1 {panic("Invalid Post Ownership, cannot delete")}
 		if len(hashtags) != 0{
 			for _, eachHashTag := range hashtags{
 				Create_Follow_HashTag(post_id, eachHashTag)

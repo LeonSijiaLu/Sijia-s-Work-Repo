@@ -368,9 +368,16 @@ INSERT INTO `Topics` (`topic_name`) VALUES
 */
 
 INSERT INTO `Users` (`username`, `password`, `email`) VALUES
+('sijia', '$2a$10$eXcpaPHH6tYg8Ie.bhvuZ.PSIykhBdIVpts0BnL0cXl/b3F9XyOKa', 'sijia@gmail.com'),
 ('takkar', '$2a$10$ttnsVDOPgMlA5vvDE33eneqVO3BHE/zif/axxI5AwNpOuRetkxFk6', 'takkar@gmail.com'),
 ('faiyaz', '$2a$10$.Wx2jBjYPiMFgWGCW.USze.qFMwrgN1TWOf50CQgqHDBzpcYV2uSa', 'faiyaz@gmail.com'),
 ('ghalib', '$2a$10$ziw6cqTgpSBIvASZOjTheey8sQYf1iW3HW4N.Xjq4GX6faKqzIrE.', 'ghalib@gmail.com'),
+('user1', '$2a$10$PrsYgrp62NJkjOy1FOrL9uaRpzSfuiMv3oL6Xj5Hl90ZQtTlRmfZq', 'user1@gmail.com'),
+('user2', '$2a$10$judwDLrzupULLqb8gxRQveGx.knR3LP2qJ/zaPH8YmYzoEdkr.tue', 'user2@gmail.com'),
+('user3', '$2a$10$fIt2Gsfntg..wRPgY11yTugAt3HEeJPsbajftyFT4mRKIkJyjuBtS', 'user3@gmail.com'),
+('hero1', '$2a$10$vOqEDCYP2ji9MZEp0lg.Jei.uOijw6viV4T5hbmt8/S3.Wi3WpOXS', 'hero1@gmail.com'),
+('hero2', '$2a$10$C3XrawSnJIm74IhaVJ7m6upxl8ZWHKp6p.1GtPy6PTV9gMl0qAdr6', 'hero2@gmail.com'),
+('hero3', '$2a$10$kLG3iRB1ULBTK.Jnhk.R0.LHuV6sXK1Djcs7X4xI7L2Ap8k9YYMXS', 'hero3@gmail.com'),
 ('nature', '$2a$10$nBi64BlbJMlzuSJfOhPlXevwdCgHOXKLZQUbJQ1q2Y7Ltbpaf1Woa', 'nature@gmail.com');
 
 INSERT INTO `Follow` (`follow_by`, `follow_to`) VALUES
@@ -378,17 +385,43 @@ INSERT INTO `Follow` (`follow_by`, `follow_to`) VALUES
 (1, 2),
 (3, 2),
 (4, 2),
+(3, 6),
+(5, 3),
+(7, 6),
+(5, 7),
+(7, 5),
 (2, 3);
 
+INSERT INTO `Blacklist` (`black_by`, `black_to`) VALUES
+(2, 1),
+(3, 1),
+(1, 2),
+(5, 2);
+
 INSERT INTO `Posts` (`title`, `content`, `created_by`) VALUES
+('Welcome', '#Welcome# Welcome to the community, guys', 1),
+('Hello,', 'World!!', 2),
 ('second', 'second_content', 2),
 ('third', 'third content..', 2),
-('Hello,', 'World!!', 2),
+('Awesome platform', '#Welcome# I love this platform', 5),
+('FirstPost', '#FirstPost# This is my first post !', 4),
 ('my title..', 'my content...', 1),
 ('ghalib''s first title..', 'and this is content!!!', 3),
-('jkj', 'kj', 4);
+('Wow', '#Welcome# It has been a month now, still loving it', 1),
+('Number 8', 'Number 8', 8),
+('jkj', 'kj', 4),
+('Hey guys', '#FirstPost# First day here', 7),
+('Number 9', '#Number9# I am number 9', 9);
 
 INSERT INTO `Likes` (`post_id`, `like_by`) VALUES
 (2, 1),
-(2, 2);
+(2, 2),
+(3, 1),
+(4, 2),
+(5, 1),
+(6, 2),
+(2, 7),
+(1, 5),
+(6, 3),
+(7, 1);
 
