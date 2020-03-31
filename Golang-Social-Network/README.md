@@ -49,9 +49,9 @@ Please enjoy :)
 
 If your content is `#Welcome# this is my first post. @user1 Thanks for inviting me`. 
 
-`#Welcome#` please use two hashtags to make a hashtag topic.  
+a. `#Welcome#` please use two hashtags to make a hashtag topic. <br />
 
-`@user1` use one `@` to indicate mentioning people.
+b. `@user1` use one `@` to indicate mentioning people. <br />
 
 * You can set this post to `allow_comments = true` to allow comments which is the default setting
 * If `allow_comments = false` to disallow comments, then this post cannot be commented, and comments already made will not be shown
@@ -78,9 +78,9 @@ If your content is `#Welcome# this is my first post. @user1 Thanks for inviting 
 
 13. `http://localhost:8882/api/blacklist_user`: `POST Request`, enter `username` to blacklist this user. Then 
 
-a. `this user will not be able to see your profile`
-b. `this user will not be able to see any of your new posts through http://localhost:8882/api/explore where latest posts of your followings are shown`
-c. `this user will not be able to see any of your new posts through http://localhost:8882/api/explore_hashtag_posts where latest posts of the hashtag are shown`
+a. `this user will not be able to see your profile`  <br />
+b. `this user will not be able to see any of your new posts through http://localhost:8882/api/explore where latest posts of your followings are shown`  <br />
+c. `this user will not be able to see any of your new posts through http://localhost:8882/api/explore_hashtag_posts where latest posts of the hashtag are shown`  <br />
 
 14. `http://localhost:8882/api/unblacklist_user`: `POST Request`, enter `username` to unblacklist this user
 
