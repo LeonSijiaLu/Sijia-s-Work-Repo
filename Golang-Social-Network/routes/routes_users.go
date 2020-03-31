@@ -88,6 +88,7 @@ func ToLogin(c *gin.Context){
 }
 
 func FollowUser(c *gin.Context){
+	is_loggedin(c, "")
 	var (
 		target_id int
 	)
@@ -108,6 +109,7 @@ func FollowUser(c *gin.Context){
 }
 
 func UnFollowUser(c *gin.Context){
+	is_loggedin(c, "")
 	var (
 		target_id int
 	)
@@ -128,6 +130,7 @@ func UnFollowUser(c *gin.Context){
 }
 
 func BlockUser(c *gin.Context){
+	is_loggedin(c, "")
 	var (
 		target_id int
 	)
@@ -149,6 +152,7 @@ func BlockUser(c *gin.Context){
 }
 
 func UnBlockUser(c *gin.Context){
+	is_loggedin(c, "")
 	var (
 		target_id int
 	)

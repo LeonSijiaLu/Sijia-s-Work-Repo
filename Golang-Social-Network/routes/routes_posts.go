@@ -8,6 +8,7 @@ import (
 )
 
 func CreatePost(c *gin.Context) {
+	is_loggedin(c, "")
 	title := strings.TrimSpace(c.PostForm("title"))
 	content := strings.TrimSpace(c.PostForm("content"))
 	hashtags, mentions := extractTags_Mentions(content)
@@ -43,6 +44,7 @@ func CreatePost(c *gin.Context) {
 }
 
 func DeletePost(c *gin.Context){
+	is_loggedin(c, "")
 	post_id := strings.TrimSpace(c.PostForm("post_id"))
 	my_id, _ := UT.Get_Id_and_Username(c)
 	if post_id == "" {
@@ -63,7 +65,8 @@ func DeletePost(c *gin.Context){
 }
 
 func UpdatePost(c *gin.Context){
-	post_id := strings.TrimSpace(c.PostForm("post_id"))
+	is_loggedin(c, "")
+	post_id := c.Param("postID")
 	title := strings.TrimSpace(c.PostForm("title"))
 	content := strings.TrimSpace(c.PostForm("content"))
 	hashtags, mentions := extractTags_Mentions(content)
@@ -96,6 +99,7 @@ func UpdatePost(c *gin.Context){
 }
 
 func LikePost(c *gin.Context){
+	is_loggedin(c, "")
 	post_id := strings.TrimSpace(c.PostForm("post_id"))
 	id, _ := UT.Get_Id_and_Username(c)
 	if post_id == "" {
@@ -116,6 +120,7 @@ func LikePost(c *gin.Context){
 }
 
 func UnlikePost(c *gin.Context){
+	is_loggedin(c, "")
 	post_id := strings.TrimSpace(c.PostForm("post_id"))
 	id, _ := UT.Get_Id_and_Username(c)
 	if post_id == "" {
@@ -226,6 +231,27 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 	}
 }
 
+func EditProfile(c *gin.Context){
+	is_loggedin(c, "")
+	my_id, _ := UT.Get_Id_and_Username(c)
+	job := strings.TrimSpace(c.PostForm("job"))
+	quote := strings.TrimSpace(c.PostForm("quote"))
+	allow_unfollowed_views := c.PostForm("allow_unfollowed_views")
+	db := UT.Conn_DB()
+	defer db.Close()
+	if allow_unfollowed_views == ""{
+		_, err := db.Exec("UPDATE Profile SET job = ?, quote = ? WHERE user_id = ?", job, quote, my_id)
+		UT.Err(err)
+	}else{
+		_, err := db.Exec("UPDATE Profile SET job = ?, quote = ?, allow_unfollowed_views = ? WHERE user_id = ?", job, quote, allow_unfollowed_views, my_id)
+		UT.Err(err)
+	}
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Edited your profile successfully",
+		"success": true,
+	})
+}
+
 func Profile (c *gin.Context){
 	is_loggedin(c, "")
 	target_id := c.Param("id") // id is part of url
@@ -255,12 +281,13 @@ func Profile (c *gin.Context){
 }
 
 func CreateComments(c *gin.Context){
+	is_loggedin(c, "")
 	var (
 		allow_comments bool
 		comments_num int
 		posts_count int
 	)
-	post_id := strings.TrimSpace(c.PostForm("post_id"))
+	post_id := c.Param("postID")
 	content := strings.TrimSpace(c.PostForm("content"))
 	if content == "" {panic("Comments content cannot be empty")}
 	id, _ := UT.Get_Id_and_Username(c)
@@ -282,6 +309,27 @@ func CreateComments(c *gin.Context){
 			"message": "The post does not allow comments",
 			"success": true,
 		})
+	}
+}
+
+func EditComments(c *gin.Context){
+	is_loggedin(c, "")
+	var commentCount int
+	post_id := c.Param("postID")
+	comment_num := c.Param("commentNum")
+	my_id, _ := UT.Get_Id_and_Username(c)
+	if post_id == "" || comment_num == "" || my_id == "" {panic("Invalid value")}
+	db := UT.Conn_DB()
+	defer db.Close()
+	db.QueryRow("SELECT COUNT(*) FROM Comments WHERE post_id = ? AND comment_num = ? AND user_id = ?", post_id, comment_num, my_id).Scan(&commentCount)
+	if commentCount != 1 {panic("Invalid url")}
+	content := strings.TrimSpace(c.PostForm("content"))
+	if content != ""{
+		stmt, err := db.Prepare("UPDATE Comments SET content = ? WHERE post_id = ? AND comment_num = ? AND user_id = ?")
+		UT.Err(err)
+		stmt.Exec(content, post_id, comment_num, my_id)
+	}else{
+		panic("Comments cannot be empty")
 	}
 }
 
@@ -311,6 +359,7 @@ func ShowComments(c *gin.Context, post_id interface{}) []interface{}{
 }
 
 func Explore(c *gin.Context){  // only show posts of people who you follow
+	is_loggedin(c, "")
 	var (
 		post_id int
 		likes int
@@ -362,6 +411,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 }
 
 func ExploreHashtagPosts(c *gin.Context){
+	is_loggedin(c, "")
 	var (
 		hashtag_id int
 		hashtag_count int
@@ -373,7 +423,7 @@ func ExploreHashtagPosts(c *gin.Context){
 		content string
 		allow_comments bool
 	)
-	hashtag_name := strings.TrimSpace(c.PostForm("hashtag_name"))
+	hashtag_name := c.Param("hashtagname")
 	if hashtag_name == "" {panic("Please enter a hashtag name")}
 	my_id, _ := UT.Get_Id_and_Username(c)
 	db := UT.Conn_DB()

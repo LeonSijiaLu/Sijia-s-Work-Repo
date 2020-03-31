@@ -8,6 +8,7 @@ import(
 )
 
 func FollowTopic(c *gin.Context) {
+	is_loggedin(c, "")
 	var (
 		topic_id int
 		topic_count int
@@ -29,6 +30,7 @@ func FollowTopic(c *gin.Context) {
 }
 
 func UnFollowTopic(c *gin.Context){
+	is_loggedin(c, "")
 	var (
 		topic_id int
 		topic_count int

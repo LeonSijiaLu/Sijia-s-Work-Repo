@@ -47,6 +47,7 @@ func Create_Follow_HashTag(post_id interface{}, hashtag_name string) (int, bool)
 }
 
 func FollowHashTag(c *gin.Context) {
+	is_loggedin(c, "")
 	var (
 		hashtag_id int
 		hashtag_count int
@@ -68,6 +69,7 @@ func FollowHashTag(c *gin.Context) {
 }
 
 func UnFollowHashTag(c *gin.Context){
+	is_loggedin(c, "")
 	var (
 		hashtag_id int
 		hashtag_count int

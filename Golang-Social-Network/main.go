@@ -19,15 +19,16 @@ func main(){
 	api := router.Group("/api")
 	{
 		api.GET("/explore", route.Explore)
-		api.POST("/explore_hashtag_posts", route.ExploreHashtagPosts)
+		api.GET("/explore_hashtag_posts/:hashtagname", route.ExploreHashtagPosts)
 
-		api.POST("/create_post", route.CreatePost)
-		api.POST("/delete_post", route.DeletePost)
-		api.POST("/update_post", route.UpdatePost)
+		api.POST("/post", route.CreatePost)
+		api.DELETE("/post/:postID", route.DeletePost)
+		api.PUT("/post/:postID", route.UpdatePost)
 		api.POST("/like_post", route.LikePost)
 		api.POST("/unlike_post", route.UnlikePost)
 
-		api.POST("/create_comments", route.CreateComments)
+		api.POST("/comments/:postID", route.CreateComments)
+		api.PUT("/comments/:postID/:commentNum", route.EditComments)
 
 		api.POST("/follow_user", route.FollowUser)
 		api.POST("/unfollow_user", route.UnFollowUser)
@@ -35,6 +36,7 @@ func main(){
 		api.POST("/unblacklist_user", route.UnBlockUser)
 
 		api.GET("/profile/:id", route.Profile)
+		api.POST("/profile", route.EditProfile)
 
 //		api.POST("/follow_topic", route.FollowTopic)
 //		api.POST("/unfollow_topic", route.UnFollowTopic)

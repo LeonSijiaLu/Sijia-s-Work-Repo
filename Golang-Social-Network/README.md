@@ -43,7 +43,7 @@ In order to navigate what is available for you, you need to first:
 
 ### Posts
 
-4. `http://localhost:8882/api/create_post`: `POST Request`, enter `title`, `content` to upload posts. In the `content` section, 
+4. `http://localhost:8882/api/post`: `POST Request`, enter `title`, `content` to upload posts. In the `content` section, 
 
 If your content is `#Welcome# this is my first post. @user1 Thanks for inviting me`. 
 
@@ -54,9 +54,9 @@ If your content is `#Welcome# this is my first post. @user1 Thanks for inviting 
 * You can set this post to `allow_comments = true` to allow comments which is the default setting
 * If `allow_comments = false` to disallow comments, then this post cannot be commented, and comments already made will not be shown
 
-5. `http://localhost:8882/api/delete_post`: `POST Request`, enter `post_id`, it will delete the post that has `post_id` and created by YOU
+5. `http://localhost:8882/api/post/12`: `DELETE Request`, it will delete post 12 and created by YOU
 
-6. `http://localhost:8882/api/update_post`: `POST Request`, enter `post_id`, `title`, `content` 
+6. `http://localhost:8882/api/post/12`: `PUT Request`, enter `title`, `content` to update post 12
 
 7. `http://localhost:8882/api/like_post`: `POST Request`, enter `post_id` in the post request. Then your `user_id` and the `post_id` will be stored in `Likes`, and the likes number of this post will also increment
 
@@ -64,32 +64,36 @@ If your content is `#Welcome# this is my first post. @user1 Thanks for inviting 
 
 8. `http://localhost:8882/api/unlike_post`: `POST Request`, enter `post_id` to dislike. 
 
-9. `http://localhost:8882/api/create_comments`: `POST Request`, enter `post_id` and `content`. 
+9. `http://localhost:8882/api/comments/12`: `POST Request`, enter `content`, then it creates a comment for post with id 12. 
 
 ![Create comments request using postman](readmeImgs/create_comments.png)
 
-10. `http://localhost:8882/api/follow_user`: `POST Request`, enter `username`
+10. `http://localhost:8882/api/comments/12/2`: `PUT Request`, enter `content`, then it will edit the content of the 2nd comments of post with id 12. 
 
-11. `http://localhost:8882/api/unfollow_user`: `POST Request`, enter `username`
+11. `http://localhost:8882/api/follow_user`: `POST Request`, enter `username`
 
-12. `http://localhost:8882/api/blacklist_user`: `POST Request`, enter `username` to blacklist this user. Then 
+12. `http://localhost:8882/api/unfollow_user`: `POST Request`, enter `username`
+
+13. `http://localhost:8882/api/blacklist_user`: `POST Request`, enter `username` to blacklist this user. Then 
 
 a. `this user will not be able to see your profile`
 b. `this user will not be able to see any of your new posts through http://localhost:8882/api/explore where latest posts of your followings are shown`
 c. `this user will not be able to see any of your new posts through http://localhost:8882/api/explore_hashtag_posts where latest posts of the hashtag are shown`
 
-13. `http://localhost:8882/api/unblacklist_user`: `POST Request`, enter `username` to unblacklist this user
+14. `http://localhost:8882/api/unblacklist_user`: `POST Request`, enter `username` to unblacklist this user
 
-14. `http://localhost:8882/api/profile/2`: `GET Request`, this url displays the profile of user_id = 2. You can only see the profile if you are not blocked. If the owner set allow_unfollowed_views = false, then you have to be a follower of the owner to view profile
+15. `http://localhost:8882/api/profile/2`: `GET Request`, this url displays the profile of user_id = 2. You can only see the profile if you are not blocked. If the owner set allow_unfollowed_views = false, then you have to be a follower of the owner to view profile
 
-15. `http://localhost:8882/api/follow_hashtag`: `POST Request`, enter `hashtag_name` to follow this hashtag
+16. `http://localhost:8882/api/profile`: `POST Request`, enter `job`, `quote`, `allow_unfollowed_views` to edit your profile
 
-16. `http://localhost:8882/api/unfollow_hashtag`: `POST Request`, enter `hashtag_name` to unfollow this hashtag
+17. `http://localhost:8882/api/follow_hashtag`: `POST Request`, enter `hashtag_name` to follow this hashtag
+
+18. `http://localhost:8882/api/unfollow_hashtag`: `POST Request`, enter `hashtag_name` to unfollow this hashtag
 
 ### Explore
 
 The above part mainly focuses a specific attempt, for example, creating, deleting, updating or following. However, this `Explore` part focuses on viewing
 
-17. `http://localhost:8882/api/explore`: `GET Request`, it displays the latest posts of people who you are following. You cannot see people's posts who blocked you
+19. `http://localhost:8882/api/explore`: `GET Request`, it displays the latest posts of people who you are following. You cannot see people's posts who blocked you
 
-18. `http://localhost:8882/api/explore_hashtag_posts`: `POST Request`, enter `hashtag_name` to view the hottest posts of the hashtags you followed. You cannot see people's posts who blocked you. And if a post is set as private, you must be a follower you visit.  
+20. `http://localhost:8882/api/explore_hashtag_posts`: `POST Request`, enter `hashtag_name` to view the hottest posts of the hashtags you followed. You cannot see people's posts who blocked you. And if a post is set as private, you must be a follower you visit.  
