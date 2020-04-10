@@ -3,7 +3,6 @@ package routes
 import(
 	UT "Golang-Social-Network/utils"
 	"github.com/gin-gonic/gin"
-	"strings"
 	"net/http"
 )
 
@@ -54,7 +53,7 @@ func FollowHashTag(c *gin.Context) {
 	)
 	db := UT.Conn_DB()
 	defer db.Close()
-	hashtag_name := strings.TrimSpace(c.PostForm("hashtag_name"))
+	hashtag_name := c.Param("hashtagName")
 	db.QueryRow("SELECT COUNT(hashtag_id), hashtag_id FROM Hashtags WHERE hashtag_name = ?", hashtag_name).Scan(&hashtag_count, &hashtag_id)
 	if hashtag_count != 1 || hashtag_id == 0 {panic("Invalid hashtag name")}
 	my_id, _ := UT.Get_Id_and_Username(c)
@@ -76,7 +75,7 @@ func UnFollowHashTag(c *gin.Context){
 	)
 	db := UT.Conn_DB()
 	defer db.Close()
-	hashtag_name := strings.TrimSpace(c.PostForm("hashtag_name"))
+	hashtag_name := c.Param("hashtagName")
 	db.QueryRow("SELECT COUNT(hashtag_id), hashtag_id FROM Hashtags WHERE hashtag_name = ?", hashtag_name).Scan(&hashtag_count, &hashtag_id)
 	if hashtag_count != 1 || hashtag_id == 0 {panic("Invalid hashtag name")}
 	my_id, _ := UT.Get_Id_and_Username(c)

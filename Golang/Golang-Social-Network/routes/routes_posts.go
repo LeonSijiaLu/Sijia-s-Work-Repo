@@ -288,7 +288,6 @@ func CreateComments(c *gin.Context){
 	is_loggedin(c, "")
 	var (
 		allow_comments bool
-		comments_num int
 		posts_count int
 	)
 	post_id := c.Param("postID")
@@ -297,13 +296,12 @@ func CreateComments(c *gin.Context){
 	id, _ := UT.Get_Id_and_Username(c)
 	db := UT.Conn_DB()
 	defer db.Close()
-	db.QueryRow("SELECT COUNT(*), comments_num, allow_comments FROM Posts WHERE post_id = ?", post_id).Scan(&posts_count, &comments_num, &allow_comments)
+	db.QueryRow("SELECT COUNT(*), allow_comments FROM Posts WHERE post_id = ?", post_id).Scan(&posts_count, &allow_comments)
 	if posts_count != 1 {panic("Invalid post id")}
 	if allow_comments == true{
-		comments_num = comments_num + 1
-		stmt, err := db.Prepare("INSERT INTO Comments (post_id, user_id, comment_num, content) VALUES(?, ?, ?, ?)")
+		stmt, err := db.Prepare("INSERT INTO Comments (post_id, user_id, content) VALUES(?, ?, ?)")
 		UT.Err(err)
-		stmt.Exec(post_id, id, comments_num, content)
+		stmt.Exec(post_id, id, content)
 		c.JSON(http.StatusOK, map[string]interface{}{
 			"message": "Your comments has been uploaded",
 			"success": true,
@@ -318,44 +316,95 @@ func CreateComments(c *gin.Context){
 
 func EditComments(c *gin.Context){
 	is_loggedin(c, "")
-	var commentCount int
-	post_id := c.Param("postID")
-	comment_num := c.Param("commentNum")
+	comment_id := c.Param("commentID")
 	my_id, _ := UT.Get_Id_and_Username(c)
-	if post_id == "" || comment_num == "" || my_id == "" {panic("Invalid value")}
+	if comment_id == "" || my_id == "" {panic("Invalid value")}
 	db := UT.Conn_DB()
 	defer db.Close()
-	db.QueryRow("SELECT COUNT(*) FROM Comments WHERE post_id = ? AND comment_num = ? AND user_id = ?", post_id, comment_num, my_id).Scan(&commentCount)
-	if commentCount != 1 {panic("Invalid url")}
 	content := strings.TrimSpace(c.PostForm("content"))
 	if content != ""{
-		stmt, err := db.Prepare("UPDATE Comments SET content = ? WHERE post_id = ? AND comment_num = ? AND user_id = ?")
+		stmt, err := db.Prepare("UPDATE Comments SET content = ? WHERE AND comment_id = ? AND user_id = ?")
 		UT.Err(err)
-		stmt.Exec(content, post_id, comment_num, my_id)
+		stmt.Exec(content, comment_id, my_id)
 	}else{
 		panic("Comments cannot be empty")
 	}
 }
 
+func LikeComments(c *gin.Context){
+	is_loggedin(c, "")
+	comment_id := c.Param("commentID")
+	my_id, _ := UT.Get_Id_and_Username(c)
+	if comment_id == "" || my_id == "" {panic("Invalid value")}
+	db := UT.Conn_DB()
+	defer db.Close()
+	stmt, err := db.Prepare("UPDATE Comments SET likes = likes + 1 WHERE comment_id = ? AND user_id = ?")
+	UT.Err(err)
+	stmt.Exec(comment_id, my_id)
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Liked the comment successfully",
+		"success": true,
+	})
+}
+
+func UnlikeComments(c *gin.Context){
+	is_loggedin(c, "")
+	comment_id := c.Param("commentID")
+	my_id, _ := UT.Get_Id_and_Username(c)
+	if comment_id == "" || my_id == "" {panic("Invalid value")}
+	db := UT.Conn_DB()
+	defer db.Close()
+	stmt, err := db.Prepare("UPDATE Comments SET likes = likes - 1 WHERE comment_id = ? AND user_id = ?")
+	UT.Err(err)
+	stmt.Exec(comment_id, my_id)
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Unliked the comment successfully",
+		"success": true,
+	})
+}
+
+func DeleteComments(c *gin.Context){
+	is_loggedin(c, "")
+	comment_id := c.Param("commentID")
+	my_id, _ := UT.Get_Id_and_Username(c)
+	var (
+		post_count int
+		post_id int
+	)
+	if comment_id == "" || my_id == "" {panic("Invalid value")}
+	db := UT.Conn_DB()
+	defer db.Close()
+	db.QueryRow("SELECT COUNT(*), post_id FROM Comments WHERE comment_id = ? AND user_id = ?", comment_id, my_id).Scan(&post_count, &post_id)
+	if post_count != 1 {panic("Incorrect comment ID")}
+	db.Exec("DELETE FROM Comments WHERE post_id = ? AND comment_id = ? AND user_id = ?", post_id, comment_id, my_id)
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Successfully deleted comments",
+		"success": true,
+	})
+}
+
 func ShowComments(c *gin.Context, post_id interface{}) []interface{}{
 	var (
+		comment_id int
 		user_id int
-		comment_num int
 		content string
+		likes int
 	)
 	comments := []interface{}{}
 	db := UT.Conn_DB()
 	defer db.Close()
-	stmt, err := db.Prepare("SELECT user_id, comment_num, content from Comments where post_id = ? ORDER BY comment_num DESC")
+	stmt, err := db.Prepare("SELECT comment_id, user_id, content, likes from Comments where post_id = ? ORDER BY likes, created_date DESC")
 	UT.Err(err)
 	rows, err := stmt.Query(post_id)
 	UT.Err(err)
 	for rows.Next(){
-		rows.Scan(&user_id, &comment_num, &content)
+		rows.Scan(&comment_id, &user_id, &content, &likes)
 		comment := map[string]interface{}{
+			"comment_id": comment_id,
 			"user_id": user_id,
-			"comment_num": comment_num,
+			"post_id": post_id,
 			"content": content,
+			"likes": likes,
 		}
 		comments = append(comments, comment)
 	}
@@ -414,7 +463,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 	})
 }
 
-func ExploreHashtagPosts(c *gin.Context){
+func ExploreFriendsHashtagPosts(c *gin.Context){
 	is_loggedin(c, "")
 	var (
 		hashtag_id int
@@ -437,6 +486,64 @@ func ExploreHashtagPosts(c *gin.Context){
 	stmt, err := db.Prepare("SELECT Posts.post_id, Posts.likes, Posts.created_by, Posts.comments_num, Posts.title, Posts.content, Posts.allow_comments FROM Posts INNER JOIN Posts_Hashtags using (post_id) WHERE hashtag_id = ? AND Posts.created_by IN (SELECT follow_to FROM Follow WHERE follow_by = ? AND follow_to NOT IN (SELECT black_by FROM Blacklist WHERE black_to = ?)) ORDER BY Posts.created_date DESC LIMIT 10")
 	UT.Err(err)
 	rows, err := stmt.Query(hashtag_id, my_id, my_id)
+	UT.Err(err)
+	posts := []interface{}{}
+	for rows.Next(){
+		rows.Scan(&post_id, &likes, &created_by, &comments_num, &title, &content, &allow_comments)
+		if allow_comments == true{
+			post := map[string]interface{}{
+				"post_id": post_id,
+				"likes": likes,
+				"created_by": created_by,
+				"comments_num": comments_num,
+				"title": title,
+				"content": content,
+				"comments": ShowComments(c, post_id),
+			}
+			posts = append(posts, post)
+		}else{
+			post := map[string]interface{}{
+				"post_id": post_id,
+				"likes": likes,
+				"created_by": created_by,
+				"comments_num": comments_num,
+				"title": title,
+				"content": content,
+				"comments": false,
+			}
+			posts = append(posts, post)
+		}
+	}
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "View posts of Hashtags",
+		"success": true,
+		"posts": posts,
+	})
+}
+
+func ExploreAllHashtagPosts (c *gin.Context){
+	is_loggedin(c, "")
+	var (
+		hashtag_id int
+		hashtag_count int
+		post_id int
+		likes int
+		created_by int
+		comments_num int
+		title string
+		content string
+		allow_comments bool
+	)
+	hashtag_name := c.Param("hashtagname")
+	if hashtag_name == "" {panic("Please enter a hashtag name")}
+	my_id, _ := UT.Get_Id_and_Username(c)
+	db := UT.Conn_DB()
+	defer db.Close()
+	db.QueryRow("SELECT COUNT(hashtag_id), hashtag_id FROM Hashtags WHERE hashtag_name = ?", hashtag_name).Scan(&hashtag_count, &hashtag_id)
+	if hashtag_count != 1 {panic("Invalid Hashtag name")}
+	stmt, err := db.Prepare("SELECT Posts.post_id, Posts.likes, Posts.created_by, Posts.comments_num, Posts.title, Posts.content, Posts.allow_comments FROM Posts INNER JOIN Posts_Hashtags using (post_id) WHERE hashtag_id = ? AND Posts.created_by NOT IN (SELECT black_by FROM Blacklist WHERE black_to = ?) ORDER BY Posts.created_date DESC LIMIT 10")
+	UT.Err(err)
+	rows, err := stmt.Query(hashtag_id, my_id)
 	UT.Err(err)
 	posts := []interface{}{}
 	for rows.Next(){

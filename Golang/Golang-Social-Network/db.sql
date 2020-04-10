@@ -66,12 +66,13 @@ CREATE TABLE `Posts` (
 
 DROP TABLE IF EXISTS `Comments`;
 CREATE TABLE `Comments`(
+    `comment_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `post_id` INT UNSIGNED NOT NULL,
     `user_id` INT UNSIGNED NOT NULL,
-    `comment_num` INT UNSIGNED NOT NULL DEFAULT 0,
     `content` TEXT NOT NULL,
+    `likes` INT UNSIGNED NOT NULL DEFAULT 0,
     `created_date` DATETIME NOT NULL,
-    PRIMARY KEY(post_id, comment_num),
+    PRIMARY KEY(comment_id),
     FOREIGN KEY(post_id) REFERENCES Posts(post_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(user_id) REFERENCES Users(user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -91,7 +92,6 @@ CREATE TABLE `Hashtags`(
     `hashtag_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `hashtag_name` VARCHAR(255) NOT NULL,
     `followers_num` INT UNSIGNED NOT NULL DEFAULT 0,
-    `posts_num` INT UNSIGNED NOT NULL DEFAULT 0,
     `created_date` DATETIME NOT NULL,
     PRIMARY KEY(hashtag_id),
     UNIQUE(hashtag_name)
@@ -280,7 +280,7 @@ BEGIN
     SET NEW.created_date = NOW();
 END$$
 
-DROP TRIGGER IF EXISTS `new_posts_hashtags`;
+/*DROP TRIGGER IF EXISTS `new_posts_hashtags`;
 CREATE TRIGGER `new_posts_hashtags` AFTER INSERT ON `Posts_Hashtags` FOR EACH ROW
 BEGIN
     UPDATE Hashtags SET posts_num = posts_num + 1 WHERE hashtag_id = NEW.hashtag_id;
@@ -291,7 +291,7 @@ CREATE TRIGGER `remove_posts_hashtags` AFTER DELETE ON `Posts_Hashtags` FOR EACH
 BEGIN
     UPDATE Hashtags SET posts_num = posts_num - 1 WHERE hashtag_id = OLD.hashtag_id;
 END$$
-DELIMITER ;
+DELIMITER ;*/
 
 /*
 DELIMITER $$

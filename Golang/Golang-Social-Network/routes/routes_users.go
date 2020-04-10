@@ -23,6 +23,13 @@ func ToLogout(c *gin.Context){
 	})
 }
 
+/*func Signup(c *gin.Context) {
+	is_not_loggedin(c)
+	c.HTML(http.StatusOK, "signup.html", gin.H{
+		"title": "Signup For Free",
+	})
+}*/
+
 func ToSignUp(c *gin.Context){
 	username := strings.TrimSpace(c.PostForm("username"))
 	password := strings.TrimSpace(c.PostForm("password"))
@@ -87,14 +94,132 @@ func ToLogin(c *gin.Context){
 	}
 }
 
+func GetFollowers(c *gin.Context){
+	is_loggedin(c, "")
+	var (
+		follower_id int
+		follower_name string
+		my_id interface{}
+		message string
+	)
+	followers := []interface{}{}
+	db := UT.Conn_DB()
+	defer db.Close()
+	username := c.Param("userName")
+	if username == ""{ // it means self
+		my_id, _ = UT.Get_Id_and_Username(c)
+		message = "View your followers"
+	}else{ // it means others
+		db.QueryRow("SELECT user_id FROM Users WHERE username = ?", username).Scan(&my_id)
+		message = "View "+ username +"'s followers"
+	}
+	stmt, err := db.Prepare("SELECT follow_by FROM Follow WHERE follow_to = ? ORDER BY created_date DESC")
+	UT.Err(err)
+	rows, err := stmt.Query(my_id)
+	UT.Err(err)
+	for rows.Next(){
+		rows.Scan(&follower_id)
+		db.QueryRow("SELECT username FROM Users WHERE user_id = ?", follower_id).Scan(&follower_name)
+		follower := map[string]interface{}{
+			"id": follower_id,
+			"name": follower_name,
+		}
+		followers = append(followers, follower)
+	}
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": message,
+		"success": true,
+		"followers": followers,
+	})
+}
+
+func GetFollowings(c *gin.Context){
+	is_loggedin(c, "")
+	var (
+		following_id int
+		following_name string
+		my_id interface{}
+		message string
+	)
+	followings := []interface{}{}
+	db := UT.Conn_DB()
+	defer db.Close()
+	username := c.Param("userName")
+	if username == ""{ // it means self
+		my_id, _ = UT.Get_Id_and_Username(c)
+		message = "View your followings"
+	}else{ // it means others
+		db.QueryRow("SELECT user_id FROM Users WHERE username = ?", username).Scan(&my_id)
+		message = "View "+ username +"'s followings"
+	}
+	stmt, err := db.Prepare("SELECT follow_to FROM Follow WHERE follow_by = ? ORDER BY created_date DESC")
+	UT.Err(err)
+	rows, err := stmt.Query(my_id)
+	UT.Err(err)
+	for rows.Next(){
+		rows.Scan(&following_id)
+		db.QueryRow("SELECT username FROM Users WHERE user_id = ?", following_id).Scan(&following_name)
+		following := map[string]interface{}{
+			"id": following_id,
+			"name": following_name,
+		}
+		followings = append(followings, following)
+	}
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": message,
+		"success": true,
+		"followings": followings,
+	})
+}
+
+func GetHashtags(c *gin.Context){
+	is_loggedin(c, "")
+	var (
+		hashtag_id int
+		hashtag_name string
+		my_id interface{}
+		message string
+	)
+	db := UT.Conn_DB()
+	defer db.Close()
+	hashtags := []interface{}{}
+	username := c.Param("userName")
+	if username == ""{ // it means self
+		my_id, _ = UT.Get_Id_and_Username(c)
+		message = "View your hashtags"
+	}else{ // it means others
+		db.QueryRow("SELECT user_id FROM Users WHERE username = ?", username).Scan(&my_id)
+		message = "View "+ username +"'s hashtags"
+	}
+	stmt, err := db.Prepare("SELECT hashtag_id FROM Users_Hashtags WHERE user_id = ? ORDER BY created_date DESC")
+	UT.Err(err)
+	rows, err := stmt.Query(my_id)
+	UT.Err(err)
+	for rows.Next(){
+		rows.Scan(&hashtag_id)
+		db.QueryRow("SELECT hashtag_name FROM Hashtags WHERE hashtag_id = ?", hashtag_id).Scan(&hashtag_name)
+		hashtag := map[string]interface{}{
+			"id": hashtag_id,
+			"name": hashtag_name,
+		}
+		hashtags = append(hashtags, hashtag)
+	}
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": message,
+		"success": true,
+		"hashtags": hashtags,
+	})
+}
+
 func FollowUser(c *gin.Context){
 	is_loggedin(c, "")
 	var (
 		target_id int
 	)
+	username := c.Param("userName")
 	db := UT.Conn_DB()
 	defer db.Close()
-	db.QueryRow("SELECT user_id FROM Users WHERE username = ?", strings.TrimSpace(c.PostForm("username"))).Scan(&target_id)
+	db.QueryRow("SELECT user_id FROM Users WHERE username = ?", username).Scan(&target_id)
 	if target_id == 0 {panic("Invalid username")}
 	my_id, _ := UT.Get_Id_and_Username(c)
 	if my_id == 0 {panic("Invalid user id")}
@@ -113,9 +238,10 @@ func UnFollowUser(c *gin.Context){
 	var (
 		target_id int
 	)
+	username := c.Param("userName")
 	db := UT.Conn_DB()
 	defer db.Close()
-	db.QueryRow("SELECT user_id FROM Users WHERE username = ?", strings.TrimSpace(c.PostForm("username"))).Scan(&target_id)
+	db.QueryRow("SELECT user_id FROM Users WHERE username = ?", username).Scan(&target_id)
 	if target_id == 0 {panic("Invalid username")}
 	my_id, _ := UT.Get_Id_and_Username(c)
 	if my_id == 0 {panic("Invalid user id")}
@@ -136,7 +262,7 @@ func BlockUser(c *gin.Context){
 	)
 	db := UT.Conn_DB()
 	defer db.Close()
-	username := strings.TrimSpace(c.PostForm("username"))
+	username := c.Param("userName")
 	db.QueryRow("SELECT user_id FROM Users WHERE username = ?", username).Scan(&target_id)
 	if target_id == 0 {panic("Invalid username")}
 	my_id, _ := UT.Get_Id_and_Username(c)
@@ -158,7 +284,7 @@ func UnBlockUser(c *gin.Context){
 	)
 	db := UT.Conn_DB()
 	defer db.Close()
-	username := strings.TrimSpace(c.PostForm("username"))
+	username := c.Param("userName")
 	db.QueryRow("SELECT user_id FROM Users WHERE username = ?", username).Scan(&target_id)
 	if target_id == 0 {panic("Invalid username")}
 	my_id, _ := UT.Get_Id_and_Username(c)
