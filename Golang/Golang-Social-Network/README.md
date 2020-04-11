@@ -45,6 +45,10 @@ go get golang.org/x/crypto/bcrypt
 go get github.com/go-sql-driver/mysql
 go get github.com/gorilla/sessions
 go get github.com/urfave/negroni
+go get github.com/pilu/fresh
+
+npm install 
+npm start
 
 Then put all files under: src folder of GOPATH
 
