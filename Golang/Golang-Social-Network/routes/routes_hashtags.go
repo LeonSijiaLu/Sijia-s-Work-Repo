@@ -88,3 +88,37 @@ func UnFollowHashTag(c *gin.Context){
 	})
 
 }
+
+func ShowHottestHashtags(c *gin.Context){
+	is_loggedin(c, "")
+	var (
+		hashtag_id int
+		hashtag_name string
+		followers_num int
+		posts_num int
+		created_date string
+	)
+	hottest_hashtags := []interface{}{}
+	db := UT.Conn_DB()
+	defer db.Close()
+	stmt, err := db.Prepare("SELECT hashtag_id, hashtag_name, followers_num, posts_num, DATE(created_date) FROM Hashtags ORDER BY posts_num DESC, followers_num DESC, created_date DESC LIMIT 10")
+	UT.Err(err)
+	rows, err := stmt.Query()
+	UT.Err(err)
+	for rows.Next(){
+		rows.Scan(&hashtag_id, &hashtag_name, &followers_num, &posts_num, &created_date)
+		hashtag := map[string]interface{}{
+			"hashtag_id": hashtag_id,
+			"hashtag_name": hashtag_name,
+			"followers_num": followers_num,
+			"posts_num": posts_num,
+			"created_date": created_date,
+		}
+		hottest_hashtags = append(hottest_hashtags, hashtag)
+	}
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Hottest Hashtags List",
+		"success": true,
+		"hashtags": hottest_hashtags,
+	})
+}

@@ -20,13 +20,15 @@ CREATE TABLE `Profile`(
     `user_id` INT UNSIGNED NOT NULL,
     `allow_unfollowed_views` BOOLEAN DEFAULT true,
     `job` VARCHAR(32) NOT NULL,
-    `quote` TEXT NOT NULL,
+    `quote` VARCHAR(255) NOT NULL,
     `followers_num` INT UNSIGNED NOT NULL DEFAULT 0,
     `following_num` INT UNSIGNED NOT NULL DEFAULT 0,
     `views` INT UNSIGNED NOT NULL DEFAULT 0,
+    `avatar` VARCHAR(255) NOT NULL,
     `created_date` DATETIME NOT NULL,
     PRIMARY KEY(profile_id),
     UNIQUE(user_id),
+    UNIQUE(avatar),
     FOREIGN KEY(user_id) REFERENCES Users(user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -92,6 +94,7 @@ CREATE TABLE `Hashtags`(
     `hashtag_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `hashtag_name` VARCHAR(255) NOT NULL,
     `followers_num` INT UNSIGNED NOT NULL DEFAULT 0,
+    `posts_num` INT UNSIGNED NOT NULL DEFAULT 0,
     `created_date` DATETIME NOT NULL,
     PRIMARY KEY(hashtag_id),
     UNIQUE(hashtag_name)
@@ -173,7 +176,7 @@ DELIMITER $$
 DROP TRIGGER IF EXISTS `create_user_profile`;
 CREATE TRIGGER `create_user_profile` AFTER INSERT ON `Users` FOR EACH ROW
 BEGIN
-    INSERT INTO Profile (user_id, created_date) VALUES(NEW.user_id, NOW());
+    INSERT INTO Profile (user_id, created_date, avatar) VALUES(NEW.user_id, NOW(), CONCAT('users/',NEW.user_id,'/profile/avatar.png'));
 END$$
 
 DROP TRIGGER IF EXISTS `new_follows_time`;
@@ -278,6 +281,18 @@ DROP TRIGGER IF EXISTS `new_posts_hashtags_time`;
 CREATE TRIGGER `new_posts_hashtags_time` BEFORE INSERT ON `Posts_Hashtags` FOR EACH ROW
 BEGIN
     SET NEW.created_date = NOW();
+END$$
+
+DROP TRIGGER IF EXISTS `new_posts_hashtags`;
+CREATE TRIGGER `new_posts_hashtags` AFTER INSERT ON `Posts_Hashtags` FOR EACH ROW
+BEGIN
+    UPDATE Hashtags SET posts_num = posts_num + 1 WHERE hashtag_id = NEW.hashtag_id;
+END$$
+
+DROP TRIGGER IF EXISTS `remove_posts_hashtags`;
+CREATE TRIGGER `remove_posts_hashtags` AFTER DELETE ON `Posts_Hashtags` FOR EACH ROW
+BEGIN
+    UPDATE Hashtags SET posts_num = posts_num - 1 WHERE hashtag_id = OLD.hashtag_id;
 END$$
 
 /*DROP TRIGGER IF EXISTS `new_posts_hashtags`;

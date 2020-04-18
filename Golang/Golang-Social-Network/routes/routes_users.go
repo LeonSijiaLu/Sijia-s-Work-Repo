@@ -8,6 +8,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"strings"
 	"strconv"
+	"os"
+	"io/ioutil"
 )
 
 func ToLogout(c *gin.Context){
@@ -16,19 +18,12 @@ func ToLogout(c *gin.Context){
 	delete(session.Values, "id")
 	delete(session.Values, "username")
 	session.Save(c.Request, c.Writer)
-	c.Redirect(http.StatusFound, "/login")
+	c.Redirect(http.StatusOK, "/login")
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "You have logged out",
 		"success": true,
 	})
 }
-
-/*func Signup(c *gin.Context) {
-	is_not_loggedin(c)
-	c.HTML(http.StatusOK, "signup.html", gin.H{
-		"title": "Signup For Free",
-	})
-}*/
 
 func ToSignUp(c *gin.Context){
 	username := strings.TrimSpace(c.PostForm("username"))
@@ -37,28 +32,56 @@ func ToSignUp(c *gin.Context){
 	email := strings.TrimSpace(c.PostForm("email"))
 
 	if username == "" || password == "" || password_repeated == "" || email == "" {
-		panic("You forgot some values")
+		c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "You forgot some values",})
 	}else if len(username) < 3 || len(username) > 32{
-		panic("Username length needs to be between 3 and 32")
+		c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "Username length needs to be between 3 and 32",})
 	}else if checkmail.ValidateFormat(email) != nil{
-		panic("Incorrect email")
+		c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "Incorrect email",})
 	}else if password != password_repeated{
-		panic("Passwords need to match")
+		c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "Passwords need to match",})
 	}else{
 		db := UT.Conn_DB()
 		defer db.Close()
 		rs, err := db.Exec("INSERT INTO Users(username, password, email) VALUES (?, ?, ?)", username, hash(password), email)
-		UT.Err(err)
-		user_id, _ := rs.LastInsertId()
-		session := UT.GetSession(c)
-		session.Values["id"] = strconv.FormatInt(user_id,10)
-		session.Values["username"] = username
-		session.Save(c.Request, c.Writer) 
-		c.JSON(http.StatusOK, map[string]interface{}{
-			"success": true,
-			"message": "Welcome, " + username + " !!",
-		})
+		if err != nil{
+			c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "Duplicate username or password",})
+		}else{
+			user_id, _ := rs.LastInsertId()
+			user_id_str := strconv.FormatInt(user_id,10)
+
+			userPath := "./web/users/" + user_id_str
+			err := os.MkdirAll(userPath, 0655)
+			profilePath := "./web/users/" + user_id_str + "/profile"
+			err = os.MkdirAll(profilePath, 0655)
+			imgPath := "./web/users/" + user_id_str + "/images"
+			err = os.MkdirAll(imgPath, 0655)
+			UT.Err(err)
+
+			input, err := ioutil.ReadFile("./web/defaults/profile/avatar.png")
+			UT.Err(err)
+			err = ioutil.WriteFile(userPath + "/profile/avatar.png", input, 0655)
+			UT.Err(err)
+
+			session := UT.GetSession(c)
+			session.Values["id"] = user_id_str
+			session.Values["username"] = username
+			session.Save(c.Request, c.Writer) 
+			c.JSON(http.StatusOK, map[string]interface{}{
+				"success": true,
+				"message": "Welcome, " + username + " !!",
+			})
+		}
 	}
+}
+
+func Basics(c *gin.Context){
+	is_loggedin(c, "")
+	my_id, my_username := UT.Get_Id_and_Username(c)
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"success": true,
+		"id": my_id,
+		"username": my_username,
+	})
 }
 
 func ToLogin(c *gin.Context){
@@ -297,4 +320,52 @@ func UnBlockUser(c *gin.Context){
 			"success": true,
 		})
 	}else{panic("You cannot unblock yourself")}	
+}
+
+func ShowHottestUsers(c *gin.Context){
+	is_loggedin(c, "")
+	my_id, _ := UT.Get_Id_and_Username(c)
+	var (
+		user_id int
+		user_likes int
+		user_name string
+	)
+	hottest_users := []interface{}{}
+	db := UT.Conn_DB()
+	defer db.Close()
+	stmt, err := db.Prepare("SELECT created_by, sum(likes) likes FROM Posts WHERE created_by NOT IN (SELECT black_by FROM Blacklist WHERE black_to = ? UNION SELECT follow_to FROM Follow WHERE follow_by = ?) AND created_by != ? GROUP BY created_by ORDER BY likes DESC LIMIT 10")
+	UT.Err(err)
+	rows, err := stmt.Query(my_id, my_id, my_id)
+	UT.Err(err)
+	for rows.Next(){
+		rows.Scan(&user_id, &user_likes)
+		db.QueryRow("SELECT username FROM Users WHERE user_id = ?", user_id).Scan(&user_name)
+		user := map[string]interface{}{
+			"id": user_id,
+			"name": user_name,
+			"likes": user_likes,
+		}
+		hottest_users = append(hottest_users, user)
+	}
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Hottest Users List",
+		"success": true,
+		"users": hottest_users,
+	})
+}
+
+func GetUserID(c *gin.Context){
+	is_loggedin(c, "")
+	var (
+		user_id int
+	)
+	username := c.Param("userName")
+	db := UT.Conn_DB()
+	defer db.Close()
+	db.QueryRow("SELECT user_id FROM Users WHERE username = ?", username).Scan(&user_id)
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "User ID",
+		"success": true,
+		"user_id": user_id,
+	})
 }

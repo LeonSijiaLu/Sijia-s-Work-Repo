@@ -151,11 +151,14 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 
 	var(
 		postID int
+		likes int
+		comments_number int
+		createdBy int
+		post_created_date string
 		title string
 		content string
-		likes int
-		createdBy int
 		allow_comments bool
+		liked int
 	)
 
 	var(
@@ -194,12 +197,13 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 	}
 	//goTo404(c, userCount)
 
-	stmt, err := db.Prepare("SELECT post_id, title, content, likes, created_by, allow_comments FROM Posts WHERE created_by = ? ORDER BY created_date DESC")
+	stmt, err := db.Prepare("SELECT post_id, title, content, likes, created_by, allow_comments, comments_num, DATE(created_date) FROM Posts WHERE created_by = ? ORDER BY created_date DESC")
 	UT.Err(err)
 	rows, err := stmt.Query(target_id)
 	UT.Err(err)
 	for rows.Next(){
-		rows.Scan(&postID, &title, &content, &likes, &createdBy, &allow_comments)
+		rows.Scan(&postID, &title, &content, &likes, &createdBy, &allow_comments, &comments_number, &post_created_date)
+		db.QueryRow("SELECT COUNT(*) FROM Likes WHERE post_id = ? AND like_by = ?", postID, userID).Scan(&liked)
 		if allow_comments == true{
 			post := map[string]interface{}{
 				"post_id": postID,
@@ -207,7 +211,11 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 				"content": content,
 				"created_by": createdBy,
 				"likes": likes,
+				"liked_by_you": liked,
+				"created_date": post_created_date,
 				"comments": ShowComments(c, postID),
+				"allow_comments": allow_comments,
+				"comments_num": comments_number,
 			}
 			posts = append(posts, post)
 		}else{
@@ -217,7 +225,11 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 				"content": content,
 				"created_by": createdBy,
 				"likes": likes,
+				"liked_by_you": liked,
+				"created_date": post_created_date,
 				"comments": allow_comments,
+				"allow_comments": allow_comments,
+				"comments_num": 0,
 			}
 			posts = append(posts, post)
 		}
@@ -232,6 +244,7 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 		"posts": posts,
 		"followers":  follower_num,
 		"followings": following_num,
+		"blocked": false,
 	}
 }
 
@@ -256,7 +269,7 @@ func EditProfile(c *gin.Context){
 	})
 }
 
-func Profile (c *gin.Context){
+func Profile(c *gin.Context){
 	is_loggedin(c, "")
 	target_id := c.Param("id") // id is part of url
 	my_id, _ := UT.Get_Id_and_Username(c)
@@ -265,6 +278,7 @@ func Profile (c *gin.Context){
 		c.JSON(http.StatusOK, map[string]interface{}{
 			"message": "Oops, you are blocked by this user",
 			"success": true,
+			"blocked": true,
 		})
 	}else{
 		open_for_unfollowers := open_for_Unfollowers(target_id)
@@ -274,6 +288,7 @@ func Profile (c *gin.Context){
 				c.JSON(http.StatusOK, map[string]interface{}{
 					"message": "This user only allows follower views, please follow first",
 					"success": true,
+					"blocked": true,
 				})
 			}else{
 				c.JSON(http.StatusOK, DisplayProfile(target_id, my_id, c))
@@ -389,26 +404,55 @@ func ShowComments(c *gin.Context, post_id interface{}) []interface{}{
 		user_id int
 		content string
 		likes int
+		user_name string
+		comment_date string
 	)
 	comments := []interface{}{}
 	db := UT.Conn_DB()
 	defer db.Close()
-	stmt, err := db.Prepare("SELECT comment_id, user_id, content, likes from Comments where post_id = ? ORDER BY likes, created_date DESC")
+	stmt, err := db.Prepare("SELECT Comments.comment_id, Comments.user_id, Comments.content, Comments.likes, Users.username, DATE(Comments.created_date) from Comments INNER JOIN Users using (user_id) where Comments.post_id = ? ORDER BY Comments.likes DESC, Comments.created_date DESC")
 	UT.Err(err)
 	rows, err := stmt.Query(post_id)
 	UT.Err(err)
 	for rows.Next(){
-		rows.Scan(&comment_id, &user_id, &content, &likes)
+		rows.Scan(&comment_id, &user_id, &content, &likes, &user_name, &comment_date)
 		comment := map[string]interface{}{
 			"comment_id": comment_id,
+			"username": user_name,
 			"user_id": user_id,
 			"post_id": post_id,
 			"content": content,
 			"likes": likes,
+			"comment_date": comment_date,
 		}
 		comments = append(comments, comment)
 	}
 	return comments
+}
+
+func ShowLikes(c *gin.Context, post_id interface{}, total_likes int) []interface{}{
+	likes := []interface{}{}
+	if total_likes != 0{
+		var (
+			user_id int
+			user_name string
+		)
+		db := UT.Conn_DB()
+		defer db.Close()
+		stmt, err := db.Prepare("SELECT DISTINCT Likes.like_by, Users.username FROM Likes INNER JOIN Users ON Likes.like_by = Users.user_id WHERE post_id = ?")
+		UT.Err(err)
+		rows, err := stmt.Query(post_id)
+		UT.Err(err)
+		for rows.Next(){
+			rows.Scan(&user_id, &user_name)
+			like := map[string]interface{}{
+				"user_id": user_id,
+				"user_name": user_name,
+			}
+			likes = append(likes, like)
+		}
+	}
+	return likes
 }
 
 func Explore(c *gin.Context){  // only show posts of people who you follow
@@ -420,38 +464,49 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 		comments_num int
 		title string
 		content string
+		name string
 		allow_comments bool
+		created_date string
 	)
 	my_id, _ := UT.Get_Id_and_Username(c)
 	db := UT.Conn_DB()
 	defer db.Close()
-	stmt, err := db.Prepare("select post_id, likes, created_by, comments_num, title, content, allow_comments from Posts where created_by in (select follow_to from Follow where follow_by = ? AND follow_to NOT IN (select black_by from Blacklist where black_to = ?)) ORDER BY created_date DESC LIMIT 10")
+	stmt, err := db.Prepare("select post_id, likes, created_by, comments_num, title, content, allow_comments, DATE(created_date) from Posts where created_by in (select follow_to from Follow where follow_by = ? AND follow_to NOT IN (select black_by from Blacklist where black_to = ?)) ORDER BY created_date DESC LIMIT 10")
 	UT.Err(err)
 	rows, err := stmt.Query(my_id, my_id)
 	UT.Err(err)
 	posts := []interface{}{}
 	for rows.Next(){
-		rows.Scan(&post_id, &likes, &created_by, &comments_num, &title, &content, &allow_comments)
+		rows.Scan(&post_id, &likes, &created_by, &comments_num, &title, &content, &allow_comments, &created_date)
+		db.QueryRow("SELECT username FROM Users WHERE user_id = ?", created_by).Scan(&name)
 		if allow_comments == true{
 			post := map[string]interface{}{
 				"post_id": post_id,
 				"likes": likes,
-				"created_by": created_by,
+				"liked_users": ShowLikes(c, post_id, likes),
+				"user_id": created_by,
+				"user_name": name,
 				"comments_num": comments_num,
 				"title": title,
 				"content": content,
+				"created_date": created_date,
 				"comments": ShowComments(c, post_id),
+				"allow_comments": allow_comments,
 			}
 			posts = append(posts, post)
 		}else{
 			post := map[string]interface{}{
 				"post_id": post_id,
 				"likes": likes,
-				"created_by": created_by,
+				"liked_users": ShowLikes(c, post_id, likes),
+				"user_id": created_by,
+				"user_name": name,
 				"comments_num": comments_num,
 				"title": title,
 				"content": content,
-				"comments": false,
+				"created_date": created_date,
+				"comments": allow_comments,
+				"allow_comments": allow_comments,
 			}
 			posts = append(posts, post)
 		}
@@ -521,7 +576,7 @@ func ExploreFriendsHashtagPosts(c *gin.Context){
 	})
 }
 
-func ExploreAllHashtagPosts (c *gin.Context){
+func ExploreAllHashtagPosts(c *gin.Context){
 	is_loggedin(c, "")
 	var (
 		hashtag_id int
@@ -576,5 +631,64 @@ func ExploreAllHashtagPosts (c *gin.Context){
 		"message": "View posts of Hashtags",
 		"success": true,
 		"posts": posts,
+	})
+}
+
+func ShowHottestPosts(c *gin.Context){
+	is_loggedin(c, "")
+	var (
+		username string
+		post_id int
+		post_likes int
+		created_by string
+		created_date string
+		allow_comments bool
+		comments_num int
+		title string
+		content string
+	)
+	hottest_posts := []interface{}{}
+	db := UT.Conn_DB()
+	defer db.Close()
+	stmt, err := db.Prepare("SELECT Users.username, Posts.post_id, Posts.likes, Posts.created_by, DATE(Posts.created_date), Posts.allow_comments, Posts.comments_num, Posts.title, Posts.content FROM Posts INNER JOIN Users ON Posts.created_by = Users.user_id ORDER BY created_date DESC, likes DESC, comments_num DESC LIMIT 30;")
+	UT.Err(err)
+	rows, err := stmt.Query()
+	UT.Err(err)
+	for rows.Next(){
+		rows.Scan(&username, &post_id, &post_likes, &created_by, &created_date, &allow_comments, &comments_num, &title, &content)
+		if allow_comments == true{
+			post := map[string]interface{}{
+				"post_id": post_id,
+				"user_id": created_by,
+				"user_name": username,
+				"likes": post_likes,
+				"created_date": created_date,
+				"comments": ShowComments(c, post_id),
+				"allow_comments": allow_comments,
+				"comments_num": 0,
+				"title": title,
+				"content": content,
+			}
+			hottest_posts = append(hottest_posts, post)
+		}else{
+			post := map[string]interface{}{
+				"post_id": post_id,
+				"user_id": created_by,
+				"user_name": username,
+				"likes": post_likes,
+				"created_date": created_date,
+				"comments": allow_comments,
+				"allow_comments": allow_comments,
+				"comments_num": 0,
+				"title": title,
+				"content": content,
+			}
+			hottest_posts = append(hottest_posts, post)
+		}
+	}
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Hottest Posts List",
+		"success": true,
+		"posts": hottest_posts,
 	})
 }
