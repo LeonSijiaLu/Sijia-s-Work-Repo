@@ -500,7 +500,7 @@ INSERT INTO `Images` (`post_id`, `user_id`, `image_name`, `image_size`) VALUES
 (20, 10, 'image23.jpg', 11145),
 (21, 11, 'image24.jpg', 11150);
 
-INSERT INTO `Likes` (`post_id`, `like_by`) VALUES 21 posts, 11 users
+INSERT INTO `Likes` (`post_id`, `like_by`) VALUES
 (1, 1),
 (1, 2),
 (1, 3),
@@ -523,8 +523,8 @@ INSERT INTO `Likes` (`post_id`, `like_by`) VALUES 21 posts, 11 users
 (7, 10),
 (7, 1),
 (8, 1),
-(8, 1),
-(8, 1),
+(9, 1),
+(3, 1),
 (9, 2),
 (10, 3),
 (11, 4),
