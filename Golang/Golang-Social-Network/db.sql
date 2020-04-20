@@ -424,6 +424,7 @@ INSERT INTO `Users` (`username`, `password`, `email`) VALUES
 ('hero3', '$2a$10$kLG3iRB1ULBTK.Jnhk.R0.LHuV6sXK1Djcs7X4xI7L2Ap8k9YYMXS', 'hero3@gmail.com'),
 ('nature', '$2a$10$nBi64BlbJMlzuSJfOhPlXevwdCgHOXKLZQUbJQ1q2Y7Ltbpaf1Woa', 'nature@gmail.com');
 
+
 INSERT INTO `Follow` (`follow_by`, `follow_to`) VALUES
 (2, 1),
 (3, 1),
@@ -445,11 +446,13 @@ INSERT INTO `Follow` (`follow_by`, `follow_to`) VALUES
 (7, 5),
 (2, 3);
 
+
 INSERT INTO `Blacklist` (`black_by`, `black_to`) VALUES
 (2, 1),
 (3, 1),
 (1, 2),
 (5, 2);
+
 
 INSERT INTO `Posts` (`title`, `content`, `created_by`, `images_num`) VALUES
 ('Welcome', '#Welcome# Welcome to the community, guys', 1, 2),
@@ -472,7 +475,9 @@ INSERT INTO `Posts` (`title`, `content`, `created_by`, `images_num`) VALUES
 ('Hello', 'World!!', 6, 1),
 ('Good day', 'Good day', 6, 1),
 ('Bad day', 'Bad day', 10, 1),
-('Soso day', '#FirstPost# Soso day', 11, 1);
+('Soso day', '#FirstPost# Soso day', 11, 1),
+('Resident Evil 3 Released', '#RE3# #RE2# As an RE fan, I pre-purchased it. Gonna love it', 1, 9);
+
 
 INSERT INTO `Images` (`post_id`, `user_id`, `image_name`, `image_size`) VALUES
 (1, 1, 'image1.jpeg', 11111),
@@ -498,7 +503,17 @@ INSERT INTO `Images` (`post_id`, `user_id`, `image_name`, `image_size`) VALUES
 (18, 6, 'image21.jpg', 11143),
 (19, 6, 'image22.jpg', 11144),
 (20, 10, 'image23.jpg', 11145),
-(21, 11, 'image24.jpg', 11150);
+(21, 11, 'image24.jpg', 11150),
+(22, 1, 'res1.jpeg', 14000),
+(22, 1, 'res2.jpg', 15000),
+(22, 1, 'res3.jpg', 16000),
+(22, 1, 'res4.jpg', 17000),
+(22, 1, 'res5.jpg', 18000),
+(22, 1, 'res6.jpg', 19000),
+(22, 1, 'res8.jpg', 20000),
+(22, 1, 'res9.jpg', 21000),
+(22, 1, 'res10.jpg', 22000);
+
 
 INSERT INTO `Likes` (`post_id`, `like_by`) VALUES
 (1, 1),
@@ -543,5 +558,15 @@ INSERT INTO `Likes` (`post_id`, `like_by`) VALUES
 (20, 7),
 (20, 8),
 (20, 9),
-(21, 10);
+(21, 10),
+(22, 1),
+(22, 2),
+(22, 3),
+(22, 4),
+(22, 5),
+(22, 6),
+(22, 7),
+(22, 8),
+(22, 9),
+(22, 10);
 
