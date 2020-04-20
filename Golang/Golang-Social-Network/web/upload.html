@@ -227,133 +227,24 @@
 		  </form>
 		  <div class="box-footer clearfix">
 		   <button id="upload_post_button" class="kafe-btn kafe-btn-mint-small pull-right btn-sm">Upload</button>
+		   <input style="display:none" id="upload_images_button" type="file" accept="image/*" multiple/>
 		   <ul class="nav nav-pills nav-sm">
-			<li class="nav-item"><a class="nav-link" href=""><i class="fa fa-camera text-muted"></i></a></li>
-			<li class="nav-item"><a class="nav-link" href=""><i class="fa fa-video text-muted"></i></a></li>
+			<li class="nav-item" id="upload_images_icon">
+				<i class="fa fa-camera text-muted"></i>
+			</li>
 		   </ul>
 		  </div>
 		 </div>	
-		 
 		</div>
 	   </div>
-	  
+	  <div><ul id="upload_images_preview" style="display: flex; list-style: none;"></ul></div>
 	   <div class="row one-row">
 	    <div class="col-lg-12">
-	     <a href="https://picturepan2.github.io/instagram.css/" target="_blank"><h4>Instagram Filters from Picture Pan 2</h4></a>
+	     <a href="https://picturepan2.github.io/instagram.css/" target="_blank"><h4>Your Latest Images</h4></a>
 		</div>
 	   </div>
 	   
-	   <div class="row">
-
-        <div class="col-lg-4 col-md-3 col-sm-6 col-xs-12">
-          <div class="card">
-            <div class="card-image">
-              <img src="assets/img/posts/18.jpg" class="img-responsive" alt="Image"/>
-            </div>
-            <div class="card-header">
-              <span>Normal</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-4 col-md-3 col-sm-6 col-xs-12">
-          <div class="card">
-            <div class="card-image filter-1977">
-              <img src="assets/img/posts/18.jpg" class="img-responsive" alt="Image"/>
-            </div>
-            <div class="card-header">
-              <span class="h6">1977</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-4 col-md-3 col-sm-6 col-xs-12">
-          <div class="card">
-            <div class="card-image filter-willow">
-              <img src="assets/img/posts/18.jpg" class="img-responsive" alt="Image"/>
-            </div>
-            <div class="card-header">
-              <span class="h6">Willow</span>
-            </div>
-          </div>
-        </div>
-		
-       </div><!--/ row-->	   
-	   
-	   <div class="row">
-
-        <div class="col-lg-4 col-md-3 col-sm-6 col-xs-12">
-          <div class="card">
-            <div class="card-image filter-sutro">
-              <img src="assets/img/posts/18.jpg" class="img-responsive" alt="Image"/>
-            </div>
-            <div class="card-header">
-              <span class="h6">Sutro</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-4 col-md-3 col-sm-6 col-xs-12">
-          <div class="card">
-            <div class="card-image filter-reyes">
-              <img src="assets/img/posts/18.jpg" class="img-responsive" alt="Image"/>
-            </div>
-            <div class="card-header">
-              <span class="h6">Reyes</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-4 col-md-3 col-sm-6 col-xs-12">
-          <div class="card">
-            <div class="card-image filter-poprocket">
-              <img src="assets/img/posts/18.jpg" class="img-responsive" alt="Image"/>
-            </div>
-            <div class="card-header">
-              <span class="h6">Poprocket</span>
-            </div>
-          </div>
-        </div>
-		
-       </div><!--/ row-->	
-	   
-	   <div class="row">
-
-        <div class="col-lg-4 col-md-3 col-sm-6 col-xs-12">
-          <div class="card">
-            <div class="card-image filter-inkwell">
-              <img src="assets/img/posts/18.jpg" class="img-responsive" alt="Image"/>
-            </div>
-            <div class="card-header">
-              <span class="h6">Inkwell</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-4 col-md-3 col-sm-6 col-xs-12">
-          <div class="card">
-            <div class="card-image filter-nashville">
-              <img src="assets/img/posts/18.jpg" class="img-responsive" alt="Image"/>
-            </div>
-            <div class="card-header">
-              <span class="h6">Nashville</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-4 col-md-3 col-sm-6 col-xs-12">
-          <div class="card">
-            <div class="card-image filter-moon">
-              <img src="assets/img/posts/18.jpg" class="img-responsive" alt="Image"/>
-            </div>
-            <div class="card-header">
-              <span class="h6">Moon</span>
-            </div>
-          </div>
-        </div>
-		
-       </div><!--/ row-->	
-	  
+		<section id="upload_latest_images"></section>
 	   
 	  </div><!--/ container -->
 	 </section><!--/ newsfeed -->
@@ -366,49 +257,111 @@
 	<script src="assets/js/base.js"></script>
 	<script src="assets/plugins/slimscroll/jquery.slimscroll.js"></script>
 	<script type="text/javascript">
+
+	$.ajax({
+		url: "/api/images",
+  		type: "GET",
+  		timeout: 0,
+		dataType: 'json',
+		success: function(r){
+			var latest_img_board = ""
+			var img_length = r.images.length;
+			$.each(r.images, function(index,image){
+				if ((index + 1)%3 == 1){
+					latest_img_board = latest_img_board + '<div class="row"><div class="col-lg-4 col-md-3 col-sm-6 col-xs-12"><div class="card"><div class="card-image"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></div></div></div>'
+				}else if ((index + 1)%3 == 0 || index + 1 == img_length){
+					latest_img_board = latest_img_board + '<div class="col-lg-4 col-md-3 col-sm-6 col-xs-12"><div class="card"><div class="card-image"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></div></div></div></div>'
+				}else{
+					latest_img_board = latest_img_board + '<div class="col-lg-4 col-md-3 col-sm-6 col-xs-12"><div class="card"><div class="card-image"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></div></div></div>'
+				}
+			});
+			$('#upload_latest_images').html($('#upload_latest_images').html() + latest_img_board);
+		},
+		error: function(e){console.log(e);}
+	});
+
 	$('#upload-navigation-bar').html(
 		$('#upload-navigation-bar').html()+'<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'
 	);
 	$(document).ready(function(){
-		$('#upload_post_button').click(function(){
-			var form = new FormData();
-			form.append("title", $("#upload_post_title").val());
-			form.append("content", $("#upload_post_content").val());
+		var images_num = 0;
 
-			$.ajax({
-				url: "/api/post/add",
-  				type: "POST",
-  				timeout: 0,
-  				processData: false,
-  				mimeType: "multipart/form-data",
-  				contentType: false,
-				dataType: 'json',
-  				data: form,
-				success: function(r){
-					var notify = $.notify({
-						title: '<strong>Congrats!</strong>',
-						message: 'Your post is uploaded'
-					},{
-						type: 'success'
-					});
-					setTimeout(function() {
-						notify.close();
-					}, 2500);
-					$("#upload_post_title").val("");
-					$("#upload_post_content").val("");
-				},
-				error: function(e){
-					var notify = $.notify({
-						title: '<strong>Error!</strong>',
-						message: 'Upload failed.'
-					},{
-						type: 'danger'
-					});
-					setTimeout(function() {
-						notify.close();
-					}, 2500);
-				}
+		function notifyUser (title, message, type, length){
+			var notify = $.notify({
+				title: '<strong>'+title+'</strong>',
+				message: message
+			},{
+				type: type
 			});
+			setTimeout(function() {
+				notify.close();
+			}, length);
+		}
+
+		$('#upload_images_icon').click(function(){
+			images_num = 0;
+			$('#upload_images_button').val("");
+			$('#upload_images_preview').html("");
+			$('#upload_images_button').click();
+		});
+
+		$('#upload_images_button').change(function () {
+			images_num = this.files.length;
+			if(images_num > 9){
+				images_num = 0;
+				$('#upload_images_button').val('');
+				notifyUser('Error!', 'The maximum number of images can upload is 9', 'danger', 3000);
+			}else{
+				if (images_num > 0 && images_num <= 9){
+					$.each($(this.files), function(index, img){
+						var oFReader = new FileReader();
+						oFReader.readAsDataURL(img);
+						oFReader.onload = function(oFREvent) {
+							$('#upload_images_preview').html(
+								$('#upload_images_preview').html() + '<li style="width: 10%; margin-right: 10px;"><img style="width: 100%;" src='+oFREvent.target.result+'><p>'+img.name+'</p></li>'
+							);
+    					};
+					});
+				}
+			}
+        });
+
+		$('#upload_post_button').click(function(){
+			if (images_num == 0 || images_num > 9){
+				notifyUser('Error!', 'Please upload at least 1 image, and at most 9 images', 'danger', 3000);
+			}else if($("#upload_post_title").val() == "" || $("#upload_post_content").val() == ""){
+				notifyUser('Error!', 'People want to see your title and content', 'danger', 3000);
+			}else{
+				var form = new FormData();
+				form.append("title", $("#upload_post_title").val());
+				form.append("content", $("#upload_post_content").val());
+				form.append("images_num", images_num);
+				for (i = 0; i < $("#upload_images_button")[0].files.length; i++) {
+					form.append("images", $("#upload_images_button")[0].files[i]);
+				}
+
+				$.ajax({
+					url: "/api/post/add",
+  					type: "POST",
+  					timeout: 0,
+  					processData: false,
+  					mimeType: "multipart/form-data",
+  					contentType: false,
+					dataType: 'json',
+  					data: form,
+					success: function(r){
+						notifyUser('Congrats!', 'Your post is uploaded', 'success', 3000);
+						images_num = 0;
+						$("#upload_post_title").val("");
+						$("#upload_post_content").val("");
+						$('#upload_images_button').val("");
+						$('#upload_images_preview').html("");
+					},
+					error: function(e){
+						notifyUser('Error!', 'Upload failed !', 'danger', 3000);
+					}
+				});
+			}
 		});
 
 		$('#Slim,#Slim2').slimScroll({

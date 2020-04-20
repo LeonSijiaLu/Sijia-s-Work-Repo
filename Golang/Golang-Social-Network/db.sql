@@ -23,6 +23,7 @@ CREATE TABLE `Profile`(
     `quote` VARCHAR(255) NOT NULL,
     `followers_num` INT UNSIGNED NOT NULL DEFAULT 0,
     `following_num` INT UNSIGNED NOT NULL DEFAULT 0,
+    `posts_num` INT UNSIGNED NOT NULL DEFAULT 0,
     `views` INT UNSIGNED NOT NULL DEFAULT 0,
     `avatar` VARCHAR(255) NOT NULL,
     `created_date` DATETIME NOT NULL,
@@ -60,6 +61,7 @@ CREATE TABLE `Posts` (
     `created_date` DATETIME NOT NULL,
     `allow_comments` BOOLEAN DEFAULT true,
     `comments_num` INT UNSIGNED NOT NULL DEFAULT 0,
+    `images_num` INT UNSIGNED NOT NULL DEFAULT 0,
     `title` VARCHAR(255) NOT NULL,
     `content` TEXT NOT NULL,
     PRIMARY KEY(post_id),
@@ -82,7 +84,7 @@ CREATE TABLE `Comments`(
 DROP TABLE IF EXISTS `Likes`;
 CREATE TABLE `Likes` (
     `post_id` INT UNSIGNED NOT NULL,
-    `like_by` INT UNSIGNED NOT NULL NOT NULL,
+    `like_by` INT UNSIGNED NOT NULL,
     `created_date` DATETIME NOT NULL,
     PRIMARY KEY(post_id, like_by),
     FOREIGN KEY(like_by) REFERENCES Users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -98,6 +100,19 @@ CREATE TABLE `Hashtags`(
     `created_date` DATETIME NOT NULL,
     PRIMARY KEY(hashtag_id),
     UNIQUE(hashtag_name)
+);
+
+DROP TABLE IF EXISTS `Images`;
+CREATE TABLE `Images`(
+    `image_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `post_id` INT UNSIGNED NOT NULL,
+    `user_id` INT UNSIGNED NOT NULL,
+    `image_size` INT UNSIGNED NOT NULL DEFAULT 0,
+    `image_name` VARCHAR(255) NOT NULL,
+    `created_date` DATETIME NOT NULL,
+    PRIMARY KEY(image_id),
+    FOREIGN KEY(user_id) REFERENCES Users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(post_id) REFERENCES Posts(post_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS `Posts_Hashtags`;
@@ -230,6 +245,13 @@ DROP TRIGGER IF EXISTS `new_posts`;
 CREATE TRIGGER `new_posts` BEFORE INSERT ON `Posts` FOR EACH ROW
 BEGIN
     SET NEW.created_date = NOW();
+    UPDATE Profile SET posts_num = posts_num + 1 WHERE user_id = NEW.created_by;
+END$$
+
+DROP TRIGGER IF EXISTS `remove_posts`;
+CREATE TRIGGER `remove_posts` AFTER DELETE ON `Posts` FOR EACH ROW
+BEGIN
+    UPDATE Profile SET posts_num = posts_num - 1 WHERE user_id = OLD.created_by;
 END$$
 
 DROP TRIGGER IF EXISTS `new_comments`;
@@ -248,6 +270,12 @@ DROP TRIGGER IF EXISTS `remove_post_comments`;
 CREATE TRIGGER `remove_post_comments` AFTER DELETE ON `Comments` FOR EACH ROW
 BEGIN
     UPDATE Posts SET comments_num = comments_num - 1 WHERE post_id = OLD.post_id;
+END$$
+
+DROP TRIGGER IF EXISTS `new_images`;
+CREATE TRIGGER `new_images` BEFORE INSERT ON `Images` FOR EACH ROW
+BEGIN
+    SET NEW.created_date = NOW();
 END$$
 DELIMITER ;
 
@@ -398,7 +426,16 @@ INSERT INTO `Users` (`username`, `password`, `email`) VALUES
 
 INSERT INTO `Follow` (`follow_by`, `follow_to`) VALUES
 (2, 1),
+(3, 1),
+(4, 1),
+(5, 1),
+(6, 1),
+(7, 1),
+(8, 1),
+(9, 1),
 (1, 2),
+(1, 3),
+(1, 4),
 (3, 2),
 (4, 2),
 (3, 6),
@@ -414,30 +451,97 @@ INSERT INTO `Blacklist` (`black_by`, `black_to`) VALUES
 (1, 2),
 (5, 2);
 
-INSERT INTO `Posts` (`title`, `content`, `created_by`) VALUES
-('Welcome', '#Welcome# Welcome to the community, guys', 1),
-('Hello,', 'World!!', 2),
-('second', 'second_content', 2),
-('third', 'third content..', 2),
-('Awesome platform', '#Welcome# I love this platform', 5),
-('FirstPost', '#FirstPost# This is my first post !', 4),
-('my title..', 'my content...', 1),
-('ghalib''s first title..', 'and this is content!!!', 3),
-('Wow', '#Welcome# It has been a month now, still loving it', 1),
-('Number 8', 'Number 8', 8),
-('jkj', 'kj', 4),
-('Hey guys', '#FirstPost# First day here', 7),
-('Number 9', '#Number9# I am number 9', 9);
+INSERT INTO `Posts` (`title`, `content`, `created_by`, `images_num`) VALUES
+('Welcome', '#Welcome# Welcome to the community, guys', 1, 2),
+('my title..', 'my content...', 1, 1),
+('first,', 'first_content', 2, 1),
+('second', 'second_content', 2, 1),
+('third', 'third content..', 2, 1),
+('Awesome platform', '#Welcome# I love this platform', 5, 2),
+('FirstPost', '#FirstPost# This is my first post !', 4, 2),
+('ghalib''s first title..', 'and this is content!!!', 3, 1),
+('Wow', '#Welcome# It has been a month now, still loving it', 1, 1),
+('Number 8', 'Number 8', 8, 1),
+('ID 4', 'ID 4', 4, 1),
+('Hey guys', '#FirstPost# First day here', 7, 1),
+('Number 9', '#Number9# I am number 9', 9, 1),
+('Good game', 'Good game', 8, 1),
+('Bad game', 'Bad game', 4, 1),
+('Soso game', '#FirstPost# Soso game', 7, 1),
+('I love this game', '#Number9# I love this game', 9, 1),
+('Hello', 'World!!', 6, 1),
+('Good day', 'Good day', 6, 1),
+('Bad day', 'Bad day', 10, 1),
+('Soso day', '#FirstPost# Soso day', 11, 1);
 
-INSERT INTO `Likes` (`post_id`, `like_by`) VALUES
-(2, 1),
-(2, 2),
-(3, 1),
+INSERT INTO `Images` (`post_id`, `user_id`, `image_name`, `image_size`) VALUES
+(1, 1, 'image1.png', 11111),
+(1, 1, 'image2.png', 11112),
+(2, 1, 'image3.png', 11113),
+(3, 2, 'image4.png', 11114),
+(4, 2, 'image5.png', 11115),
+(5, 2, 'image6.png', 11120),
+(6, 5, 'image7.png', 11121),
+(6, 5, 'image8.png', 11122),
+(7, 4, 'image9.png', 11123),
+(7, 4, 'image10.png', 11124),
+(8, 3, 'image11.png', 11125),
+(9, 1, 'image12.png', 11130),
+(10, 8, 'image13.png', 11131),
+(11, 4, 'image14.png', 11132),
+(12, 7, 'image15.png', 11133),
+(13, 9, 'image16.png', 11134),
+(14, 8, 'image17.png', 11135),
+(15, 4, 'image18.png', 11140),
+(16, 7, 'image19.png', 111141),
+(17, 9, 'image20.png', 11142),
+(18, 6, 'image21.png', 11143),
+(19, 6, 'image22.png', 11144),
+(20, 10, 'image23.png', 11145),
+(21, 11, 'image24.png', 11150);
+
+INSERT INTO `Likes` (`post_id`, `like_by`) VALUES 21 posts, 11 users
+(1, 1),
+(1, 2),
+(1, 3),
+(2, 4),
+(2, 5),
+(2, 6),
+(3, 7),
+(3, 8),
+(3, 9),
+(4, 10),
+(4, 1),
 (4, 2),
-(5, 1),
-(6, 2),
-(2, 7),
-(1, 5),
-(6, 3),
-(7, 1);
+(5, 3),
+(5, 4),
+(5, 5),
+(6, 6),
+(6, 7),
+(6, 8),
+(7, 9),
+(7, 10),
+(7, 1),
+(8, 1),
+(8, 1),
+(8, 1),
+(9, 2),
+(10, 3),
+(11, 4),
+(12, 5),
+(13, 6),
+(14, 7),
+(15, 8),
+(15, 9),
+(15, 10),
+(16, 1),
+(16, 2),
+(16, 3),
+(17, 4),
+(18, 5),
+(19, 6),
+(20, 7),
+(20, 8),
+(20, 9),
+(21, 10);
 

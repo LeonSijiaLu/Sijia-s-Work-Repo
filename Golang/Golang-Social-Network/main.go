@@ -46,6 +46,8 @@ func main(){
 		api.POST("/post/like/:postID", route.LikePost)
 		api.POST("/post/unlike/:postID", route.UnlikePost)
 
+		api.GET("/images", route.ShowImages)
+
 		api.POST("/comments/add/:postID", route.CreateComments)
 		api.POST("/comments/edit/:commentID", route.EditComments)
 		api.POST("/comments/like/:commentID", route.LikeComments)

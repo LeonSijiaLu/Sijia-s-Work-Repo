@@ -55,6 +55,8 @@ func ToSignUp(c *gin.Context){
 			err = os.MkdirAll(profilePath, 0655)
 			imgPath := "./web/users/" + user_id_str + "/images"
 			err = os.MkdirAll(imgPath, 0655)
+			postPath := "./web/users/" + user_id_str + "/posts"
+			err = os.MkdirAll(postPath, 0655)
 			UT.Err(err)
 
 			input, err := ioutil.ReadFile("./web/defaults/profile/avatar.png")

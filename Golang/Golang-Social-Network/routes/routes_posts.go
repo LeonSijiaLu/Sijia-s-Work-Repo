@@ -3,6 +3,7 @@ package routes
 import (
 	UT "Golang-Social-Network/utils"
 	"strings"
+	"strconv"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -11,35 +12,45 @@ func CreatePost(c *gin.Context) {
 	is_loggedin(c, "")
 	title := strings.TrimSpace(c.PostForm("title"))
 	content := strings.TrimSpace(c.PostForm("content"))
+	images_num, _ := strconv.Atoi(c.PostForm("images_num"))
+
 	hashtags, mentions := extractTags_Mentions(content)
 	id, _ := UT.Get_Id_and_Username(c)
 
-	if title == "" || content == ""{
-		panic("Please enter title and content")
+	if title == "" || content == "" || images_num == 0 || images_num > 9{
+		c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "Please enter title, content and make sure images number is between 0 and 9","success": false,})
 	}else{
 		db := UT.Conn_DB()
 		defer db.Close()
-		stmt, _ := db.Prepare("INSERT INTO Posts(title, content, created_by) VALUES (?, ?, ?)")
-		rs, err := stmt.Exec(title, content, id)
-		UT.Err(err)
-		new_postid, _ := rs.LastInsertId()
-		if len(hashtags) != 0{
-			for _, eachHashTag := range hashtags{
-				Create_Follow_HashTag(new_postid, eachHashTag)
+		stmt, _ := db.Prepare("INSERT INTO Posts(title, content, created_by, images_num) VALUES (?, ?, ?, ?)")
+		rs, err := stmt.Exec(title, content, id, images_num)
+		if err != nil{
+			c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "DB error","success": false,})
+		}else{
+			new_postid, _ := rs.LastInsertId()
+			res := CreateImages(c, id, new_postid)
+			if res == false {
+				c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "DB error","success": false,})
+			}else{
+				if len(hashtags) != 0{
+					for _, eachHashTag := range hashtags{
+						Create_Follow_HashTag(new_postid, eachHashTag)
+					}
+				}
+				if len(mentions) != 0{
+					for _, eachMentionUser := range mentions{
+						Create_Mention(new_postid, eachMentionUser)
+					}
+				}
+				c.JSON(http.StatusOK, map[string]interface{}{
+					"message": "Posts successfully created",
+					"success": true,
+					"postID": new_postid,
+					"hastags": hashtags,
+					"mentions": mentions,
+				})
 			}
 		}
-		if len(mentions) != 0{
-			for _, eachMentionUser := range mentions{
-				Create_Mention(new_postid, eachMentionUser)
-			}
-		}
-		c.JSON(http.StatusOK, map[string]interface{}{
-			"message": "Posts successfully created",
-			"success": true,
-			"postID": new_postid,
-			"hastags": hashtags,
-			"mentions": mentions,
-		})
 	}
 }
 

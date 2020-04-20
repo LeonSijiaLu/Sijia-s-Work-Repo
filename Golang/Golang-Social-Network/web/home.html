@@ -403,6 +403,9 @@
 					}
 					comment_board = comment_board +'<div class="modal-meta-bottom"><ul><li><a class="modal-like" href="#"><i class="fa fa-heart"></i></a><span class="modal-one"> '+post.likes+'</span> | <a class="modal-comment" href="#"><i class="fa fa-comments"></i></a><span> '+post.comments_num+'</span> </li><li><span class="thumb-xs"><img class="img-responsive img-circle" src="users/'+my_id+'/profile/avatar.png" alt="..."></span><div class="comment-body"><input class="form-control input-sm" type="text" placeholder="Write your comment..."></div></li></ul></div></div></div></div></div></div></div></div>'
 				});
+				if (post_main == ""){
+					post_main = "<p align='center'>No posts to show</p>";
+				}
 				$('#home_posts').html(
 					$('#home_posts').html() + post_main
 				);

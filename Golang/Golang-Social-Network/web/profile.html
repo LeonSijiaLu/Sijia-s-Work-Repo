@@ -282,10 +282,6 @@
 			 <small><span id="profile_email"></span></small>
            </div><!--/ media -->
 		   </div> 
-		   <div class="col-lg-3">
-           <div class="follow-box">
-		    <a href="" class="kafe-btn kafe-btn-mint"><i class="fa fa-check"></i> Following</a>
-           </div><!--/ dropdown -->
 		   </div>
           </div><!--/ details-box -->
 		  
@@ -353,7 +349,7 @@
 					quote = r.user['quote'];
 					followers_num = r.followers;
 					followings_num = r.followings;
-					posts_num = r.posts.length + 1;
+					posts_num = r.posts.length;
 					posts = r.posts;
 					$('#profile_followers_num').html(followers_num);
 					$('#profile_followings_num').html(followings_num);
