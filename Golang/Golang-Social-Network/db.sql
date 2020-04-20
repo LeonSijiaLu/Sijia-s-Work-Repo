@@ -448,8 +448,6 @@ INSERT INTO `Follow` (`follow_by`, `follow_to`) VALUES
 
 
 INSERT INTO `Blacklist` (`black_by`, `black_to`) VALUES
-(2, 1),
-(3, 1),
 (1, 2),
 (5, 2);
 

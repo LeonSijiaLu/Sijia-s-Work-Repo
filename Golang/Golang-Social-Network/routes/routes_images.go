@@ -65,3 +65,34 @@ func ShowImages(c *gin.Context) {
 		"images": images,
 	})
 }
+
+func GetHottestImages(c *gin.Context){
+	is_loggedin(c, "")
+	id, _ := UT.Get_Id_and_Username(c)
+	db := UT.Conn_DB()
+	defer db.Close()
+	var (
+		post_id int
+		user_id string
+		image_name string
+	)
+	images := []interface{}{}
+	stmt, err := db.Prepare("SELECT Posts.post_id, Posts.created_by, Images.Image_name FROM Posts INNER JOIN Images USING (post_id) WHERE Posts.created_by != ? GROUP BY (Posts.post_id) ORDER BY Posts.created_date DESC, Posts.likes DESC LIMIT 20")
+	if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false,})}
+	rows, err := stmt.Query(id)
+	if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false,})}
+	for rows.Next(){
+		rows.Scan(&post_id, &user_id, &image_name)
+		image := map[string]interface{}{
+			"image_name": image_name,
+			"post_id": post_id,
+			"user_id": user_id,
+		}
+		images = append(images, image)
+	}
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Hottest Images successfully retrieved",
+		"success": true,
+		"images": images,
+	})
+}

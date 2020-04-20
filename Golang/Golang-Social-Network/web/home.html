@@ -306,32 +306,8 @@
 		  </div>
 		 </div>
         </div>
-        <div class="trending-box">
-		 <div class="row">
-		  <div class="col-lg-6">
-		   <a href="#"><img src="assets/img/posts/17.jpg" class="img-responsive" alt="Image"/></a>
-		  </div>
-		  <div class="col-lg-6">
-		   <a href="#"><img src="assets/img/posts/12.jpg" class="img-responsive" alt="Image"/></a>
-		  </div>
-		 </div>
-		 <div class="row">
-		  <div class="col-lg-6">
-		   <a href="#"><img src="assets/img/posts/21.gif" class="img-responsive" alt="Image"/></a>
-		  </div>
-		  <div class="col-lg-6">
-		   <a href="#"><img src="assets/img/posts/23.gif" class="img-responsive" alt="Image"/></a>
-		  </div>
-		 </div>
-		 <div class="row">
-		  <div class="col-lg-6">
-		   <a href="#"><img src="assets/img/posts/11.jpg" class="img-responsive" alt="Image"/></a>
-		  </div>
-		  <div class="col-lg-6">
-		   <a href="#"><img src="assets/img/posts/20.jpg" class="img-responsive" alt="Image"/></a>
-		  </div>
-		 </div>
-        </div>		
+
+        <div id="home_hottest_images" class="trending-box"></div>		
 		</div>
 	   </div>
 	  </div>
@@ -345,6 +321,7 @@
 	<script type="text/javascript">
 	var my_id = "";
 	var my_name = "";
+	var hottest_images_board = ""
 	$.ajax({
 		url: "/basics",
   		type: "GET",
@@ -377,7 +354,7 @@
 				var post_main = "";
 				var comment_board = "";
 				$.each(r.posts, function(index, post){
-					post_main = post_main + '<div class="cardbox"><div class="cardbox-heading"><div class="dropdown pull-right"><button class="btn btn-secondary btn-flat btn-flat-icon" type="button" data-toggle="dropdown" aria-expanded="false"><em class="fa fa-ellipsis-h"></em></button><div class="dropdown-menu dropdown-scale dropdown-menu-right" role="menu" style="position: absolute; transform: translate3d(-136px, 28px, 0px); top: 0px; left: 0px; will-change: transform;"><a class="dropdown-item" href="#">Hide post</a><a class="dropdown-item" href="#">Stop following</a><a class="dropdown-item" href="#">Report</a></div></div><div class="media m-0"><div class="d-flex mr-3"><a href="/view_users?name='+post.user_name+'"><img class="img-responsive img-circle" src="users/'+post.user_id+'/profile/avatar.png" alt="User"></a></div><div class="media-body"><p class="m-0">'+post.user_name+'</p><small><span>'+post.created_date+'</span></small></div></div></div><div class="cardbox-item"><a href="#home_comments_'+post.post_id+'" data-toggle="modal"><img class="img-responsive" src="assets/img/posts/14.jpg" alt="MaterialImg"></a></div><div class="cardbox-base"><ul>'
+					post_main = post_main + '<div class="cardbox"><div class="cardbox-heading"><div class="dropdown pull-right"><button class="btn btn-secondary btn-flat btn-flat-icon" type="button" data-toggle="dropdown" aria-expanded="false"><em class="fa fa-ellipsis-h"></em></button><div class="dropdown-menu dropdown-scale dropdown-menu-right" role="menu" style="position: absolute; transform: translate3d(-136px, 28px, 0px); top: 0px; left: 0px; will-change: transform;"><a class="dropdown-item" href="#">Hide post</a><a class="dropdown-item" href="#">Stop following</a><a class="dropdown-item" href="#">Report</a></div></div><div class="media m-0"><div class="d-flex mr-3"><a href="/view_users?name='+post.user_name+'"><img class="img-responsive img-circle" src="users/'+post.user_id+'/profile/avatar.png" alt="User"></a></div><div class="media-body"><p class="m-0">'+post.user_name+'</p><small><span>'+post.created_date+'</span></small></div></div></div><div class="cardbox-item"><a href="#home_comments_'+post.post_id+'" data-toggle="modal"><img class="img-responsive" src="users/'+post.user_id+'/posts/'+post.post_id+'/'+post.images[0].image_name+'" alt="MaterialImg"></a></div><div class="cardbox-base"><ul>'
 					if (post.likes != 0){
 						for (i = 0; i < post.liked_users.length; i++) {
 	  						if (i >= 10) { break; }
@@ -415,6 +392,26 @@
 			},
 			error: function(e){console.log(e);}
 		});
+	});
+
+	$.ajax({
+		url: "/api/images/popular",
+  		type: "GET",
+  		timeout: 0,
+		dataType: 'json',
+		success: function(r){
+			$.each(r.images, function(index, image){
+				if ((index + 1)%2 == 1){
+					hottest_images_board = hottest_images_board + '<div class="row"><div class="col-lg-6"><a href="#"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></a></div>'
+				}else if ((index + 1)%2 == 0 || index + 1 == posts_length){
+					hottest_images_board = hottest_images_board + '<div class="col-lg-6"><a href="#"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></a></div></div>'
+				}else{
+					hottest_images_board = hottest_images_board + '<div class="col-lg-6"><a href="#"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></a></div>'
+				}
+			});
+			$('#home_hottest_images').html($('#home_hottest_images').html() + hottest_images_board);
+		},
+		error: function(e){console.log(e);}
 	});
 
 	$('#home-navigation-bar').html(

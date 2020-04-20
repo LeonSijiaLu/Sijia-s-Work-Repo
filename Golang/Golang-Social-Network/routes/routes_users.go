@@ -331,6 +331,8 @@ func ShowHottestUsers(c *gin.Context){
 		user_id int
 		user_likes int
 		user_name string
+		latest_post_id int
+		latest_image_name string
 	)
 	hottest_users := []interface{}{}
 	db := UT.Conn_DB()
@@ -341,11 +343,13 @@ func ShowHottestUsers(c *gin.Context){
 	UT.Err(err)
 	for rows.Next(){
 		rows.Scan(&user_id, &user_likes)
-		db.QueryRow("SELECT username FROM Users WHERE user_id = ?", user_id).Scan(&user_name)
+		db.QueryRow("SELECT username, post_id, image_name from Images INNER JOIN Users using(user_id) where user_id = ? ORDER BY created_date DESC LIMIT 1", user_id).Scan(&user_name, &latest_post_id, &latest_image_name)
 		user := map[string]interface{}{
 			"id": user_id,
 			"name": user_name,
 			"likes": user_likes,
+			"latest_post": latest_post_id,
+			"latest_image": latest_image_name,
 		}
 		hottest_users = append(hottest_users, user)
 	}

@@ -226,7 +226,7 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 				"created_date": post_created_date,
 				"comments": ShowComments(c, postID),
 				"allow_comments": allow_comments,
-				"images": ShowPostImages(c, postID, my_id),
+				"images": ShowPostImages(c, postID, target_id),
 				"comments_num": comments_number,
 			}
 			posts = append(posts, post)
@@ -241,7 +241,7 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 				"created_date": post_created_date,
 				"comments": allow_comments,
 				"allow_comments": allow_comments,
-				"images": ShowPostImages(c, postID, my_id),
+				"images": ShowPostImages(c, postID, target_id),
 				"comments_num": 0,
 			}
 			posts = append(posts, post)
@@ -448,7 +448,7 @@ func ShowPostImages(c *gin.Context, post_id interface{}, user_id interface{}) []
 	images := []interface{}{}
 	db := UT.Conn_DB()
 	defer db.Close()
-	stmt, _ := db.Prepare("SELECT image_name FROM Images WHERE user_id = ? AND post_id = ? ORDER BY created_date")
+	stmt, _ := db.Prepare("SELECT image_name FROM Images WHERE user_id = ? AND post_id = ? ORDER BY created_date DESC")
 	rows, _ := stmt.Query(user_id, post_id)
 	for rows.Next(){
 		rows.Scan(&image_name)
@@ -521,6 +521,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 				"content": content,
 				"created_date": created_date,
 				"comments": ShowComments(c, post_id),
+				"images": ShowPostImages(c, post_id, created_by),
 				"allow_comments": allow_comments,
 			}
 			posts = append(posts, post)
@@ -536,6 +537,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 				"content": content,
 				"created_date": created_date,
 				"comments": allow_comments,
+				"images": ShowPostImages(c, post_id, created_by),
 				"allow_comments": allow_comments,
 			}
 			posts = append(posts, post)
@@ -694,6 +696,7 @@ func ShowHottestPosts(c *gin.Context){
 				"likes": post_likes,
 				"created_date": created_date,
 				"comments": ShowComments(c, post_id),
+				"images": ShowPostImages(c, post_id, created_by),
 				"allow_comments": allow_comments,
 				"comments_num": 0,
 				"title": title,
@@ -708,6 +711,7 @@ func ShowHottestPosts(c *gin.Context){
 				"likes": post_likes,
 				"created_date": created_date,
 				"comments": allow_comments,
+				"images": ShowPostImages(c, post_id, created_by),
 				"allow_comments": allow_comments,
 				"comments_num": 0,
 				"title": title,

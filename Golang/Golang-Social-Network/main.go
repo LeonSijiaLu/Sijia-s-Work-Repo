@@ -47,6 +47,7 @@ func main(){
 		api.POST("/post/unlike/:postID", route.UnlikePost)
 
 		api.GET("/images", route.ShowImages)
+		api.GET("/images/popular", route.GetHottestImages)
 
 		api.POST("/comments/add/:postID", route.CreateComments)
 		api.POST("/comments/edit/:commentID", route.EditComments)
