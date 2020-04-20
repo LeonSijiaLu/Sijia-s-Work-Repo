@@ -570,3 +570,30 @@ INSERT INTO `Likes` (`post_id`, `like_by`) VALUES
 (22, 9),
 (22, 10);
 
+INSERT INTO `Comments` (`post_id`, `user_id`, `content`) VALUES 
+(22, 1, "Love it"),
+(22, 2, "Love RE"),
+(22, 3, "Capcom is doint good"),
+(22, 4, "Awesome"),
+(22, 5, "Cool"),
+(1, 3, "Sounds good"),
+(2, 4, "Nice"),
+(3, 5, "Like it"),
+(4, 6, "Wow"),
+(5, 7, "Super cool"),
+(6, 1, "Enjoy it"),
+(7, 8, "Look good"),
+(8, 9, "HAHA"),
+(1, 1, "Really?"),
+(9, 3, "Not bad"),
+(1, 6, "Enjoy it"),
+(10, 8, "Look good"),
+(11, 9, "HAHA"),
+(12, 3, "Really?"),
+(13, 5, "Not bad"),
+(14, 10, "Thumbs up"),
+(15, 9, "I am here"),
+(16, 8, "Love it, too"),
+(17, 7, "Playing it now"),
+(18, 4, "Good game, bro");
+

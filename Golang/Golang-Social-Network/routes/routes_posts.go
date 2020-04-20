@@ -226,6 +226,7 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 				"created_date": post_created_date,
 				"comments": ShowComments(c, postID),
 				"allow_comments": allow_comments,
+				"images": ShowPostImages(c, postID, my_id),
 				"comments_num": comments_number,
 			}
 			posts = append(posts, post)
@@ -240,6 +241,7 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 				"created_date": post_created_date,
 				"comments": allow_comments,
 				"allow_comments": allow_comments,
+				"images": ShowPostImages(c, postID, my_id),
 				"comments_num": 0,
 			}
 			posts = append(posts, post)
@@ -439,6 +441,23 @@ func ShowComments(c *gin.Context, post_id interface{}) []interface{}{
 		comments = append(comments, comment)
 	}
 	return comments
+}
+
+func ShowPostImages(c *gin.Context, post_id interface{}, user_id interface{}) []interface{}{
+	var image_name string
+	images := []interface{}{}
+	db := UT.Conn_DB()
+	defer db.Close()
+	stmt, _ := db.Prepare("SELECT image_name FROM Images WHERE user_id = ? AND post_id = ? ORDER BY created_date")
+	rows, _ := stmt.Query(user_id, post_id)
+	for rows.Next(){
+		rows.Scan(&image_name)
+		image := map[string]interface{}{
+			"image_name": image_name,
+		}
+		images = append(images, image)
+	}
+	return images
 }
 
 func ShowLikes(c *gin.Context, post_id interface{}, total_likes int) []interface{}{
