@@ -477,6 +477,28 @@ INSERT INTO `Posts` (`title`, `content`, `created_by`, `images_num`) VALUES
 ('Resident Evil 3 Released', '#RE3# #RE2# As an RE fan, I pre-purchased it. Gonna love it', 1, 9);
 
 
+INSERT INTO `Hashtags` (`hashtag_name`) VALUES
+('Welcome'),
+('FirstPost'),
+('Number9'),
+('RE3'),
+('RE2');
+
+
+INSERT INTO `Posts_Hashtags` (`post_id`, `hashtag_id`) VALUES
+(1,1),
+(6,1),
+(7,2),
+(9,1),
+(12,2),
+(13,3),
+(16,2),
+(17,3),
+(21,2),
+(22,4),
+(22,5);
+
+
 INSERT INTO `Images` (`post_id`, `user_id`, `image_name`, `image_size`) VALUES
 (1, 1, 'image1.jpeg', 11111),
 (1, 1, 'image2.jpg', 11112),

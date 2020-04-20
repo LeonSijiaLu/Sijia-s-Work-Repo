@@ -373,18 +373,18 @@
 					}else{
 						post_board = post_board + '<div class="col-lg-4"><a href="#profile_comments_'+post.post_id+'" data-toggle="modal"><div class="explorebox" style="background: linear-gradient( rgba(34,34,34,0.2), rgba(34,34,34,0.2)), url(users/'+id+'/posts/'+post.post_id+'/'+post.images[0].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"><div class="explore-top"><div class="explore-like"><i class="fa fa-heart"></i> <span>'+post.likes+'</span></div><div class="explore-circle pull-right"><i class="far fa-bookmark"></i></div></div></div></a></div>'
 					}
-					comment_board = comment_board + '<div id="profile_comments_'+post.post_id+'" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-body"><div class="row"><div class="col-md-8 modal-image"><img style="width: 100% !important; height: auto !important;" class="img-responsive" src="users/'+id+'/posts/'+post.post_id+'/'+post.images[0].image_name+'" alt="Image"/><img style="width: 100% !important; height: auto !important;" class="img-responsive" src="users/'+id+'/posts/'+post.post_id+'/'+post.images[0].image_name+'" alt="Image"/></div><div class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href=""><img class="img-responsive img-circle" src="users/'+post.created_by+'/profile/avatar.png" alt="Image"/></a><strong><a href="">'+name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all">'+post.title+'</p><div style="word-break: break-all">'+post.content+'</div><a href="" class="kafe kafe-btn-mint-small"><i class="fa fa-check-square"></i> Following</a></div>'
+					comment_board = comment_board + '<div id="profile_comments_'+post.post_id+'" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-body"><div class="row"><div style="overflow: hidden; padding: 0" class="col-md-8 modal-image">'
+					comment_board = comment_board + '<ul style="width: '+post.images.length+'00%; display: flex; list-style: none; padding-left: 0">'
+				
+					$.each(post.images, function(image_index, image){
+						comment_board = comment_board + '<li style="width: 100%"><img style="height: auto !important" class="img-responsive" src="users/'+id+'/posts/'+post.post_id+'/'+image.image_name+'" alt="Image"/></li>'
+					});
+					
+					comment_board = comment_board + '</ul>'
+					comment_board = comment_board + '</div><div class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href=""><img class="img-responsive img-circle" src="users/'+post.created_by+'/profile/avatar.png" alt="Image"/></a><strong><a href="">'+name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all">'+post.title+'</p><div style="word-break: break-all">'+post.content+'</div><a href="" class="kafe kafe-btn-mint-small"><i class="fa fa-check-square"></i> Following</a></div>'
 					
 					
-					
-					
-					
-					
-					
-					
-					
-					
-					
+				
 					if (post.comments != 0 && post.comments != false) {
 						comment_board = comment_board +'<ul class="img-comment-list">'
 						$.each(post.comments, function(index, comment) {

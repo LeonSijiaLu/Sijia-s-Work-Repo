@@ -698,7 +698,7 @@ func ShowHottestPosts(c *gin.Context){
 				"comments": ShowComments(c, post_id),
 				"images": ShowPostImages(c, post_id, created_by),
 				"allow_comments": allow_comments,
-				"comments_num": 0,
+				"comments_num": comments_num,
 				"title": title,
 				"content": content,
 			}

@@ -46,7 +46,7 @@ func ShowImages(c *gin.Context) {
 		post_id int
 	)
 	images := []interface{}{}
-	stmt, err := db.Prepare("SELECT image_name, post_id FROM Images WHERE user_id = ? ORDER BY created_date LIMIT 30")
+	stmt, err := db.Prepare("SELECT image_name, post_id FROM Images WHERE user_id = ? ORDER BY created_date DESC LIMIT 30")
 	if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false,})}
 	rows, err := stmt.Query(id)
 	if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false,})}
