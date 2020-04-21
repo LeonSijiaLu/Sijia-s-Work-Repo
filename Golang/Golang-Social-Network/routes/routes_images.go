@@ -36,7 +36,7 @@ func CreateImages(c *gin.Context, my_id interface{}, post_id int64) bool{
 	return true
 }
 
-func ShowImages(c *gin.Context) {
+func ShowImages(c *gin.Context){
 	is_loggedin(c, "")
 	id, _ := UT.Get_Id_and_Username(c)
 	db := UT.Conn_DB()
@@ -95,4 +95,28 @@ func GetHottestImages(c *gin.Context){
 		"success": true,
 		"images": images,
 	})
+}
+
+func ShowProfileImages(target_id interface{}, images_num int) interface{}{
+	db := UT.Conn_DB()
+	defer db.Close()
+	var (
+		image_name string
+		post_id int
+	)
+	images := []interface{}{}
+	stmt, err := db.Prepare("SELECT image_name, post_id FROM Images WHERE user_id = ? ORDER BY created_date DESC LIMIT ?")
+	if err != nil{return false}
+	rows, err := stmt.Query(target_id, images_num)
+	if err != nil{return false}
+	for rows.Next(){
+		rows.Scan(&image_name, &post_id)
+		image := map[string]interface{}{
+			"image_name": image_name,
+			"post_id": post_id,
+			"user_id": target_id,
+		}
+		images = append(images, image)
+	}
+	return images
 }

@@ -234,6 +234,7 @@
 	<script src="assets/js/jquery.min.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>
 	<script src="assets/js/base.js"></script>
+	<script src="assets/js/slider.js"></script>
 	<script src="assets/plugins/slimscroll/jquery.slimscroll.js"></script>
 	<script type="text/javascript">
 	var my_id = "";
@@ -263,7 +264,20 @@
 					}else{
 						post_board = post_board + '<div class="col-lg-4"><a href="#exploring_comments_'+post.post_id+'" data-toggle="modal"><div class="explorebox" style="background: linear-gradient( rgba(34,34,34,0.2), rgba(34,34,34,0.2)), url(users/'+post.user_id+'/posts/'+post.post_id+'/'+post.images[0].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"><div class="explore-top"><div class="explore-like"><i class="fa fa-heart"></i> <span>'+post.likes+'</span></div><div class="explore-circle pull-right"><i class="far fa-bookmark"></i></div></div><div class="explore-body"><div class=""><img class="img-circle" src="users/'+post.user_id+'/profile/avatar.png" alt="user"></div></div></div></a></div>'
 					}
-					comment_board = comment_board + '<div id="exploring_comments_'+post.post_id+'" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-body"><div class="row"><div class="col-md-8 modal-image"><img class="img-responsive" src="users/'+post.user_id+'/posts/'+post.post_id+'/'+post.images[0].image_name+'" alt="Image"/></div><div class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href="/view_users?name='+post.user_name+'"><img class="img-responsive img-circle" src="users/'+post.user_id+'/profile/avatar.png" alt="Image"/></a><strong><a href="">'+post.user_name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all">'+post.title+'</p><div style="word-break: break-all">'+post.content+'</div><a href="" class="kafe kafe-btn-mint-small"><i class="fa fa-check-square"></i> Following</a></div>'
+					comment_board = comment_board + '<div id="exploring_comments_'+post.post_id+'" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-body"><div class="row"><div style="overflow: hidden; padding: 0" class="col-md-8 modal-image">'
+					
+					if (post.images.length > 1){
+						comment_board = comment_board + '<a id="pre-button" class="pre-page" onclick="plusSlides(exploring_comments_'+post.post_id+'.id, '+post.images.length+', 1)">&#10094;</a>'
+						comment_board = comment_board + '<a id="next-button" class="next-page" onclick="plusSlides(exploring_comments_'+post.post_id+'.id, '+post.images.length+', -1)">&#10095;</a>'
+					}
+										
+					comment_board = comment_board + '<ul class="mySlidesBox" style="width: '+post.images.length+'00%; display: flex; list-style: none; padding-left: 0; transition: 0.2s ease;">'
+					$.each(post.images, function(image_index, image){
+						comment_board = comment_board + '<li class="mySlides" style="width: 100%; background: rgba(0,0,0,0.8); border-radius: 0, 5px, 5px, 0;"><img style="height: auto !important; margin: auto;" class="img-responsive" src="users/'+post.user_id+'/posts/'+post.post_id+'/'+image.image_name+'" alt="Image"/></li>'
+					});					
+					comment_board = comment_board + '</ul>'
+					comment_board = comment_board + '</div><div style="border-left: solid 1px #f4f4f4;" class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href="/view_users?name='+post.user_name+'"><img class="img-responsive img-circle" src="users/'+post.user_id+'/profile/avatar.png" alt="Image"/></a><strong><a href="">'+post.user_name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all">'+post.title+'</p><div style="word-break: break-all">'+post.content+'</div><a href="" class="kafe kafe-btn-mint-small"><i class="fa fa-check-square"></i> Following</a></div>'
+				
 					if (post.comments != 0 && post.comments != false) { // it allows comments
 						comment_board = comment_board +'<ul class="img-comment-list">'
 						$.each(post.comments, function(index, comment) {
@@ -298,7 +312,7 @@
 				var hottest_images = "";
 				for (index = 0; index < r.users.length; index++) {
 					if (index >= 4) { break; }
-					hottest_images = hottest_images + '<div class="col-lg-3"><div class="tr-section"><div class="tr-post"><div class="entry-header"><div class="entry-thumbnail"><a href="#"><img class="img-fluid" src="users/'+r.users[index].id+'/posts/'+r.users[index].latest_post+'/'+r.users[index].latest_image+'" alt="Image"></a></div></div><div class="post-content"><div class="author-post text-center"><a href="/view_users?name='+r.users[index].name+'"><img class="img-fluid rounded-circle" src="users/'+r.users[index].id+'/profile/avatar.png" alt="Image"></a></div><div class="card-content"><h4>'+r.users[index].name+'</h4><span>@'+r.users[index].name+'</span></div><a href="" class="kafe-btn kafe-btn-mint-small full-width"> Follow</a></div></div></div></div>'
+					hottest_images = hottest_images + '<div class="col-lg-3"><div class="tr-section"><div class="tr-post"><div class="entry-header"><div class="entry-thumbnail"><a href="#"><img style="width: auto;" class="img-fluid" src="users/'+r.users[index].id+'/posts/'+r.users[index].latest_post+'/'+r.users[index].latest_image+'" alt="Image"></a></div></div><div class="post-content"><div class="author-post text-center"><a href="/view_users?name='+r.users[index].name+'"><img class="img-fluid rounded-circle" src="users/'+r.users[index].id+'/profile/avatar.png" alt="Image"></a></div><div class="card-content"><h4>'+r.users[index].name+'</h4><span>@'+r.users[index].name+'</span></div><a href="" class="kafe-btn kafe-btn-mint-small full-width"> Follow</a></div></div></div></div>'
 				}
 				$('#exploring_top_row').html(
 					$('#exploring_top_row').html() + hottest_images
@@ -310,6 +324,7 @@
 	$('#exploring-navigation-bar').html(
 		$('#exploring-navigation-bar').html()+'<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'
 	);
+
 	$(document).ready(function(){
 		$('#Slim,#Slim2').slimScroll({
 	        height:"auto",

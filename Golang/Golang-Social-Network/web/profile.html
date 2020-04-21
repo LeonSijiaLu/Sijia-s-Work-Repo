@@ -211,56 +211,7 @@
 	 =============================================== --> 
 	 <section class="profile">
 	  <div class="container-fluid">
-	   <div class="row">
-	   
-	   <div class="col-lg-3">
-		 <div class="profilebox hidden-xs hidden-sm" 
-		   style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url('assets/img/posts/4.jpg') no-repeat;
-		          background-size: cover;
-                  background-position: center center;
-                  -webkit-background-size: cover;
-                  -moz-background-size: cover;
-                  -o-background-size: cover;">		  
-		 </div>
-		 <div class="profilebox hidden-xs hidden-sm" 
-		   style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url('assets/img/posts/1.jpg') no-repeat;
-		          background-size: cover;
-                  background-position: center center;
-                  -webkit-background-size: cover;
-                  -moz-background-size: cover;
-                  -o-background-size: cover;">		  
-		 </div>
-	   </div>
-	   <div class="col-lg-6">
-		 <div class="profilebox-large hidden-xs hidden-sm" 
-		   style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url('assets/img/posts/9.jpg') no-repeat;
-		          background-size: cover;
-                  background-position: center center;
-                  -webkit-background-size: cover;
-                  -moz-background-size: cover;
-                  -o-background-size: cover;">		  
-		 </div>
-	   </div>
-	   <div class="col-lg-3">
-		 <div class="profilebox hidden-xs hidden-sm" 
-		   style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url('assets/img/posts/11.jpg') no-repeat;
-		          background-size: cover;
-                  background-position: center center;
-                  -webkit-background-size: cover;
-                  -moz-background-size: cover;
-                  -o-background-size: cover;">		  
-		 </div>
-		 <div class="profilebox" 
-		   style="background: linear-gradient( rgba(34,34,34,0.6), rgba(34,34,34,0.6)), url('assets/img/posts/12.jpg') no-repeat;
-		          background-size: cover;
-                  background-position: center center;
-                  -webkit-background-size: cover;
-                  -moz-background-size: cover;
-                  -o-background-size: cover;">		  
-		 </div>
-	   </div>
-		
-       </div><!--/ row-->	
+	   <div id="profile_bg" class="row"></div><!--/ row-->	
 	  </div><!--/ container -->
 	 </section><!--/ profile -->
   
@@ -319,6 +270,7 @@
 	<script src="assets/js/jquery.min.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>
 	<script src="assets/js/base.js"></script>
+	<script src="assets/js/slider.js"></script>
 	<script src="assets/plugins/slimscroll/jquery.slimscroll.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 	<script type='text/javascript'>
@@ -330,6 +282,7 @@
 		var email = "";
 		var quote = "";
 		var posts = "";
+		var profile_bg_content = "";
 		$.ajax({
 			url: "/basics",
   			type: "GET",
@@ -358,7 +311,41 @@
 					$('#profile_quote').html(quote);
 					$('#profile_user').html(
 						$('#profile_user').html() + '<div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="post-content"><div class="author-post text-center"><a href="#"><img class="img-fluid img-circle" src="users/'+id+'/profile/avatar.png" alt="Image"></a></div></div></div></div></div>'
-					)
+					);
+					if (r.profile_bg_images.length < 5){
+						if (r.profile_bg_images.length == 0){
+							profile_bg_content = profile_bg_content + '<div class="col-lg-3"><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(assets/img/posts/black.jpg) no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(assets/img/posts/black.jpg) no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'
+							profile_bg_content = profile_bg_content + '<div class="col-lg-6"><div class="profilebox-large hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(assets/img/posts/black.jpg) no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'
+							profile_bg_content = profile_bg_content + '<div class="col-lg-3"><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(assets/img/posts/black.jpg) no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div><div class="profilebox" style="background: linear-gradient( rgba(34,34,34,0.6), rgba(34,34,34,0.6)), url(assets/img/posts/black.jpg) no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'
+						}else if(r.profile_bg_images.length == 1){
+							profile_bg_content = profile_bg_content + '<div class="col-lg-3"><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(users/'+id+'/posts/'+r.profile_bg_images[0].post_id+'/'+r.profile_bg_images[0].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(assets/img/posts/black.jpg) no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'
+							profile_bg_content = profile_bg_content + '<div class="col-lg-6"><div class="profilebox-large hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(assets/img/posts/black.jpg) no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'
+							profile_bg_content = profile_bg_content + '<div class="col-lg-3"><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(assets/img/posts/black.jpg) no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div><div class="profilebox" style="background: linear-gradient( rgba(34,34,34,0.6), rgba(34,34,34,0.6)), url(assets/img/posts/black.jpg) no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'	
+						}else if(r.profile_bg_images.length == 2){
+							profile_bg_content = profile_bg_content + '<div class="col-lg-3"><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(users/'+id+'/posts/'+r.profile_bg_images[0].post_id+'/'+r.profile_bg_images[0].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(users/'+id+'/posts/'+r.profile_bg_images[1].post_id+'/'+r.profile_bg_images[1].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'
+							profile_bg_content = profile_bg_content + '<div class="col-lg-6"><div class="profilebox-large hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(assets/img/posts/black.jpg) no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'
+							profile_bg_content = profile_bg_content + '<div class="col-lg-3"><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(assets/img/posts/black.jpg) no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div><div class="profilebox" style="background: linear-gradient( rgba(34,34,34,0.6), rgba(34,34,34,0.6)), url(assets/img/posts/black.jpg) no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'	
+						}else if(r.profile_bg_images.length == 3){
+							profile_bg_content = profile_bg_content + '<div class="col-lg-3"><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(users/'+id+'/posts/'+r.profile_bg_images[0].post_id+'/'+r.profile_bg_images[0].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(users/'+id+'/posts/'+r.profile_bg_images[1].post_id+'/'+r.profile_bg_images[1].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'
+							profile_bg_content = profile_bg_content + '<div class="col-lg-6"><div class="profilebox-large hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(users/'+id+'/posts/'+r.profile_bg_images[2].post_id+'/'+r.profile_bg_images[2].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'
+							profile_bg_content = profile_bg_content + '<div class="col-lg-3"><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(assets/img/posts/black.jpg) no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div><div class="profilebox" style="background: linear-gradient( rgba(34,34,34,0.6), rgba(34,34,34,0.6)), url(assets/img/posts/black.jpg) no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'
+						}else if(r.profile_bg_images.length == 4){
+							profile_bg_content = profile_bg_content + '<div class="col-lg-3"><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(users/'+id+'/posts/'+r.profile_bg_images[0].post_id+'/'+r.profile_bg_images[0].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(users/'+id+'/posts/'+r.profile_bg_images[1].post_id+'/'+r.profile_bg_images[1].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'
+							profile_bg_content = profile_bg_content + '<div class="col-lg-6"><div class="profilebox-large hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(users/'+id+'/posts/'+r.profile_bg_images[2].post_id+'/'+r.profile_bg_images[2].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'
+							profile_bg_content = profile_bg_content + '<div class="col-lg-3"><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(users/'+id+'/posts/'+r.profile_bg_images[3].post_id+'/'+r.profile_bg_images[3].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div><div class="profilebox" style="background: linear-gradient( rgba(34,34,34,0.6), rgba(34,34,34,0.6)), url(assets/img/posts/black.jpg) no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'
+						}
+						$('#profile_bg').html(
+							$('#profile_bg').html() + profile_bg_content
+						);
+					}else{
+						profile_bg_content = profile_bg_content + '<div class="col-lg-3"><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(users/'+id+'/posts/'+r.profile_bg_images[0].post_id+'/'+r.profile_bg_images[0].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(users/'+id+'/posts/'+r.profile_bg_images[1].post_id+'/'+r.profile_bg_images[1].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'
+						profile_bg_content = profile_bg_content + '<div class="col-lg-6"><div class="profilebox-large hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(users/'+id+'/posts/'+r.profile_bg_images[2].post_id+'/'+r.profile_bg_images[2].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'
+						profile_bg_content = profile_bg_content + '<div class="col-lg-3"><div class="profilebox hidden-xs hidden-sm" style="background: linear-gradient( rgba(34,34,34,0.45), rgba(34,34,34,0.45)), url(users/'+id+'/posts/'+r.profile_bg_images[3].post_id+'/'+r.profile_bg_images[3].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div><div class="profilebox" style="background: linear-gradient( rgba(34,34,34,0.6), rgba(34,34,34,0.6)), url(users/'+id+'/posts/'+r.profile_bg_images[4].post_id+'/'+r.profile_bg_images[4].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"></div></div>'
+
+						$('#profile_bg').html(
+							$('#profile_bg').html() + profile_bg_content
+						);
+					}
 				},
 				error: function(e){console.log(e);}
 			}).done(function(){
@@ -374,17 +361,20 @@
 						post_board = post_board + '<div class="col-lg-4"><a href="#profile_comments_'+post.post_id+'" data-toggle="modal"><div class="explorebox" style="background: linear-gradient( rgba(34,34,34,0.2), rgba(34,34,34,0.2)), url(users/'+id+'/posts/'+post.post_id+'/'+post.images[0].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"><div class="explore-top"><div class="explore-like"><i class="fa fa-heart"></i> <span>'+post.likes+'</span></div><div class="explore-circle pull-right"><i class="far fa-bookmark"></i></div></div></div></a></div>'
 					}
 					comment_board = comment_board + '<div id="profile_comments_'+post.post_id+'" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-body"><div class="row"><div style="overflow: hidden; padding: 0" class="col-md-8 modal-image">'
-					comment_board = comment_board + '<ul style="width: '+post.images.length+'00%; display: flex; list-style: none; padding-left: 0">'
-				
+					
+					if (post.images.length > 1){
+						comment_board = comment_board + '<a id="pre-button" class="pre-page" onclick="plusSlides(profile_comments_'+post.post_id+'.id, '+post.images.length+', 1)">&#10094;</a>'
+						comment_board = comment_board + '<a id="next-button" class="next-page" onclick="plusSlides(profile_comments_'+post.post_id+'.id, '+post.images.length+', -1)">&#10095;</a>'
+					}
+					
+					comment_board = comment_board + '<ul class="mySlidesBox" style="width: '+post.images.length+'00%; display: flex; list-style: none; padding-left: 0; transition: 0.2s ease;">'
 					$.each(post.images, function(image_index, image){
-						comment_board = comment_board + '<li style="width: 100%"><img style="height: auto !important" class="img-responsive" src="users/'+id+'/posts/'+post.post_id+'/'+image.image_name+'" alt="Image"/></li>'
+						comment_board = comment_board + '<li class="mySlides" style="width: 100%; background: rgba(0,0,0,0.8); border-radius: 0, 5px, 5px, 0;"><img style="height: auto !important; margin: auto;" class="img-responsive" src="users/'+id+'/posts/'+post.post_id+'/'+image.image_name+'" alt="Image"/></li>'
 					});
-					
 					comment_board = comment_board + '</ul>'
-					comment_board = comment_board + '</div><div class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href=""><img class="img-responsive img-circle" src="users/'+post.created_by+'/profile/avatar.png" alt="Image"/></a><strong><a href="">'+name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all">'+post.title+'</p><div style="word-break: break-all">'+post.content+'</div><a href="" class="kafe kafe-btn-mint-small"><i class="fa fa-check-square"></i> Following</a></div>'
+					comment_board = comment_board + '</div><div style="border-left: solid 1px #f4f4f4;" class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href=""><img class="img-responsive img-circle" src="users/'+post.created_by+'/profile/avatar.png" alt="Image"/></a><strong><a href="">'+name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all;">'+post.title+'</p><div style="word-break: break-all">'+post.content+'</div></div>'
 					
-					
-				
+	
 					if (post.comments != 0 && post.comments != false) {
 						comment_board = comment_board +'<ul class="img-comment-list">'
 						$.each(post.comments, function(index, comment) {
@@ -411,6 +401,7 @@
 		$('#profile-navigation-bar').html(
 			$('#profile-navigation-bar').html()+'<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'
 		);
+
 		$(document).ready(function(){
 			$('#Slim,#Slim2').slimScroll({
 	        	height:"auto",

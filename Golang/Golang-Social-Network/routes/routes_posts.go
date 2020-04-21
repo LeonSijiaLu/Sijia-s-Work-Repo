@@ -257,6 +257,7 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 		"posts": posts,
 		"followers":  follower_num,
 		"followings": following_num,
+		"profile_bg_images": ShowProfileImages(target_id, 5),
 		"blocked": false,
 	}
 }
