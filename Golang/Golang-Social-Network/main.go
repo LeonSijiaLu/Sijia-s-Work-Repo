@@ -32,6 +32,7 @@ func main(){
 	router.GET("/view_profile", route.ViewProfile) // direct to page that display your profile info
 	router.GET("/followers", route.Followers)
 	router.GET("/followings", route.Followings)
+	router.GET("/search", route.Search)
 
 	api := router.Group("/api")
 	{
@@ -43,11 +44,13 @@ func main(){
 		api.POST("/post/add", route.CreatePost)
 		api.POST("/post/delete/:postID", route.DeletePost)
 		api.POST("/post/edit/:postID", route.UpdatePost)
-		api.POST("/post/like/:postID", route.LikePost)
-		api.POST("/post/unlike/:postID", route.UnlikePost)
+
+		api.POST("/post/likePressed/:postID", route.LikeOrUnlike)
 
 		api.GET("/images", route.ShowImages)
 		api.GET("/images/popular", route.GetHottestImages)
+
+		api.POST("/search_content", route.SearchContent)
 
 		api.POST("/comments/add/:postID", route.CreateComments)
 		api.POST("/comments/edit/:commentID", route.EditComments)
@@ -74,6 +77,8 @@ func main(){
 //		api.POST("/follow_topic", route.FollowTopic)
 //		api.POST("/unfollow_topic", route.UnFollowTopic)
 		api.GET("/hashtag/popular", route.ShowHottestHashtags)
+		api.GET("/hashtag/following", route.GetFollowingHashtags)
+		api.POST("/hashtag/posts", route.GetHashtagPosts)
 		api.POST("/hashtag/follow/:hashtagName", route.FollowHashTag)
 		api.POST("/hashtag/unfollow/:hashtagName", route.UnFollowHashTag)
 	}

@@ -40,6 +40,87 @@
    Navbar Styles
    ========================================================================== */
 
+.liked_post {
+    color: #e16a70 !important;
+}
+
+.search-bar {
+    position: relative;
+    margin-left: 10%;
+    width: 80%;
+}
+
+.search-bar>form {
+    background: #f4f4f4 none repeat scroll 0 0;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    -ms-border-radius: 30px;
+    -o-border-radius: 30px;
+    border-radius: 30px;
+    float: left;
+    height: 44px;
+    width: 100%;
+}
+
+.search-bar>form>input {
+    width: 100%;
+    background: transparent none repeat scroll 0 0;
+    border: medium none;
+    color: #46495b;
+    float: left;
+    font-family: Rubik;
+    font-size: 13px;
+    padding: 12px 50px 12px 35px;
+}
+
+.search-bar>form>button {
+    background: transparent none repeat scroll 0 0;
+    border: medium none;
+    color: #a7a7a7;
+    padding: 12px 22px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+}
+
+.hashtag-option-button {
+    transition: all 0.5s;
+}
+
+.hashtag-option-button h4 {
+    cursor: pointer;
+    position: relative;
+    transition: 0.5s;
+}
+
+.hashtag-option-button-checked {
+    background: #0fc19e;
+}
+
+.hashtag-option-button-checked h4,
+.hashtag-option-button-checked span {
+    color: white !important;
+}
+
+.hashtag-option-button h4:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+
+.hashtag-option-button:hover h4 {
+    padding-right: 25px;
+}
+
+.hashtag-option-button:hover h4:after {
+    opacity: 1;
+    right: 0;
+}
+
 .page-dot {
     cursor: pointer;
     height: 15px;

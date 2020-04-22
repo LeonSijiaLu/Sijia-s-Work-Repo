@@ -322,7 +322,16 @@ CREATE TRIGGER `remove_posts_hashtags` AFTER DELETE ON `Posts_Hashtags` FOR EACH
 BEGIN
     UPDATE Hashtags SET posts_num = posts_num - 1 WHERE hashtag_id = OLD.hashtag_id;
 END$$
+DELIMITER ;
 
+DELIMITER $$
+CREATE PROCEDURE Follow_Relations (IN targetID INT UNSIGNED, IN userID INT UNSIGNED, OUT followers_num INT, OUT followings_num INT, OUT following_bool BOOL) 
+BEGIN 
+    SELECT COUNT(*) INTO followings_num FROM Follow WHERE follow_by = targetID; 
+    SELECT COUNT(*) INTO followers_num FROM Follow WHERE follow_to = targetID; 
+    SELECT COUNT(*) INTO following_bool FROM Follow WHERE follow_by = userID AND follow_to = targetID; 
+END$$
+DELIMITER ;
 /*DROP TRIGGER IF EXISTS `new_posts_hashtags`;
 CREATE TRIGGER `new_posts_hashtags` AFTER INSERT ON `Posts_Hashtags` FOR EACH ROW
 BEGIN
@@ -497,6 +506,29 @@ INSERT INTO `Posts_Hashtags` (`post_id`, `hashtag_id`) VALUES
 (21,2),
 (22,4),
 (22,5);
+
+
+INSERT INTO `Users_Hashtags` (`user_id`, `hashtag_id`) VALUES
+(1,4),
+(1,5),
+(2,4),
+(2,5),
+(3,4),
+(3,5),
+(4,4),
+(4,5),
+(5,4),
+(5,5),
+(9,4),
+(10,5),
+(6,1),
+(8,3),
+(8,1),
+(7,2),
+(7,5),
+(6,3),
+(1,2),
+(1,3);
 
 
 INSERT INTO `Images` (`post_id`, `user_id`, `image_name`, `image_size`) VALUES

@@ -120,3 +120,20 @@ func ShowProfileImages(target_id interface{}, images_num int) interface{}{
 	}
 	return images
 }
+
+func ShowPostImages(c *gin.Context, post_id interface{}, user_id interface{}) []interface{}{
+	var image_name string
+	images := []interface{}{}
+	db := UT.Conn_DB()
+	defer db.Close()
+	stmt, _ := db.Prepare("SELECT image_name FROM Images WHERE user_id = ? AND post_id = ? ORDER BY created_date DESC")
+	rows, _ := stmt.Query(user_id, post_id)
+	for rows.Next(){
+		rows.Scan(&image_name)
+		image := map[string]interface{}{
+			"image_name": image_name,
+		}
+		images = append(images, image)
+	}
+	return images
+}

@@ -70,7 +70,7 @@
 		   <div class="search-dashboard">
                <form>
                     <input id="search_content" placeholder="Search here" type="text">
-                    <button type="button" id="search_button" onclick="setSearchResults();"><i class="fa fa-search"></i></button>
+                    <button type="button" id="search_button" onclick="loadSearchResults();"><i class="fa fa-search"></i></button>
                </form>
           </div>							
 		   </li>
@@ -199,31 +199,30 @@
 		</div><!-- /.nav-right -->
        </div><!-- /.container -->
       </nav><!-- /.navbar -->
-     </header><!-- Page Header -->  
+     </header><!-- Page Header --> 
   
 	 <!-- ==============================================
 	 Navbar Second Section
 	 =============================================== -->
-	<section id="stories-navigation-bar" class="nav-sec"></section>	
+	<section id="followers-navigation-bar"class="nav-sec"></section>	
   
 	 <!-- ==============================================
 	 News Feed Section
 	 =============================================== --> 
-	 <section class="stories">
-	  <div id="hashtag_post_board" class="container col-lg-9"></div>
-	  <div class="col-lg-3">
-	  	<div class="suggestion-box full-width">
-		  	<p style="text-align: center; margin-bottom: auto;">Popular Hashtags</p>
-	  		<div class="suggestions-list" id="hottest_hashtags"></div>
-	  	</div>
+	 <section class="followers">
+	  <div class="container-fluid">
+	   <div class="row">
+	    <div class="col-lg-8 col-lg-offset-2">
+			<div class="followers-box full-width">
+				<div id="search-main-bar" class="followers-list"></div>
+				<div id="search-results" class="followers-list"></div>
+			</div>
+		</div>
 		
-		<div style="margin-top: 100px;" class="suggestion-box full-width">
-		  	<p style="text-align: center; margin-bottom: auto;">Following Hashtags</p>
-	  		<div class="suggestions-list" id="following_hashtags"></div>
-	  	</div>
-	  </div>
-	 </section><!--/ newsfeed -->
-
+       </div><!--/ row-->	
+	  </div><!--/ container -->
+	 </section><!--/ profile -->
+	   
      <!-- ==============================================
 	 Scripts
 	 =============================================== -->
@@ -232,79 +231,63 @@
 	<script src="assets/js/base.js"></script>
 	<script src="assets/js/notify.js"></script>
 	<script src="assets/js/search.js"></script>
-	<script src="assets/js/hashtag.js"></script>
 	<script src="assets/js/account.js"></script>
 	<script src="assets/plugins/slimscroll/jquery.slimscroll.js"></script>
-	<script type="text/javascript">
-	var my_id = "";
-	var my_name = "";
+	<script type='text/javascript'>
 	$.ajax({
 		url: "/basics",
   		type: "GET",
   		timeout: 0,
 		dataType: 'json',
 		success: function(r){
-			my_id = r.id;
-			my_name = r.username;
+			id = r.id;
+			name = r.username;
 			$('#header_user_info').html(
-				$('#header_user_info').html() + '<span class="avatar w-32"><a href="/view_profile"><img src="users/'+my_id+'/profile/avatar.png" class="img-resonsive img-circle" width="25" height="25" alt="..."></a></span><span class="hidden-xs">'+my_name+'</span>'
+				$('#header_user_info').html() + '<span class="avatar w-32"><a href="/view_profile"><img src="users/'+id+'/profile/avatar.png" class="img-resonsive img-circle" width="25" height="25" alt="..."></a></span><span class="hidden-xs">'+name+'</span>'
 			);
 		},
 		error: function(e){console.log(e);}
-	}).done(function(){
-		$.ajax({
-			url: "/api/hashtag/popular",
-  			type: "GET",
-  			timeout: 0,
-			dataType: 'json',
-			success: function(r){
-				$.each(r.hashtags, function(index,hashtag){
-					if (index == 0){
-						showHashtagPosts(hashtag.hashtag_name, hashtag.hashtag_id)
-						$('#hottest_hashtags').html(
-							$('#hottest_hashtags').html() + '<div style="border-top: solid 1px #f4f4f4;" class="suggestion-body hashtag-option-button hashtag-option-button-checked" onclick="showHashtagPosts(' + "'" + hashtag.hashtag_name + "'" + ', ' + "'" + hashtag.hashtag_id + "'" + '); checkedButton(this)"><div style="width: 100%" class="name-box"><h4 style="text-align: center">#'+hashtag.hashtag_name+'#</h4><span style="float: left;">Posts Number: '+hashtag.posts_num+'</span><span style="float: right;">Followers Number: '+hashtag.followers_num+'</span></div></div>'
-						); 
-					}else{
-						$('#hottest_hashtags').html(
-							$('#hottest_hashtags').html() + '<div style="border-top: solid 1px #f4f4f4;" class="suggestion-body hashtag-option-button" onclick="showHashtagPosts(' + "'" + hashtag.hashtag_name + "'" + ', ' + "'" + hashtag.hashtag_id + "'" + '); checkedButton(this)"><div style="width: 100%" class="name-box"><h4 style="text-align: center">#'+hashtag.hashtag_name+'#</h4><span style="float: left;">Posts Number: '+hashtag.posts_num+'</span><span style="float: right;">Followers Number: '+hashtag.followers_num+'</span></div></div>'
-						); 
-					}
-				});
-			},
-			error: function(e){console.log(e);}
-		});
-
-		$.ajax({
-			url: "/api/hashtag/following",
-  			type: "GET",
-  			timeout: 0,
-			dataType: 'json',
-			success: function(r){
-				if (r.hashtags.length > 0){
-					$.each(r.hashtags, function(index,hashtag){
-						$('#following_hashtags').html(
-							$('#following_hashtags').html() + '<div style="border-top: solid 1px #f4f4f4;" class="suggestion-body hashtag-option-button" onclick="showHashtagPosts(' + "'" + hashtag.hashtag_name + "'" + ', ' + "'" + hashtag.hashtag_id + "'" + '); checkedButton(this)"><div style="width: 100%" class="name-box"><h4 style="text-align: center">#'+hashtag.hashtag_name+'#</h4><span style="float: left;">Posts Number: '+hashtag.posts_num+'</span><span style="float: right;">Followers Number: '+hashtag.followers_num+'</span></div></div>'
-						); 
-					});
-				}else{
-					$('#following_hashtags').html(
-						$('#following_hashtags').html() + '<p style="text-align: center">You do not have following hashtags</p>'
-					);
-				}
-			},
-			error: function(e){console.log(e);}
-		});
 	});
 
-	$('#stories-navigation-bar').html(
-		$('#stories-navigation-bar').html()+'<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'
+	$('#search-main-bar').html(
+		$('#search-main-bar').html() + '<div class="search-bar"><form><input id="search_content_main" placeholder="Search here" type="text"><button type="button" id="search_button_main" onclick="loadSearchMainResults();"><i class="fa fa-search"></i></button></form></div>'
 	);
 
-	function checkedButton(this_button){
-		$('.hashtag-option-button').removeClass('hashtag-option-button-checked');
-		$(this_button).addClass('hashtag-option-button-checked');
+	function loadSearchMainResults(){
+		setSearchMainResults();
+		readSearchResults();
 	}
 
+	function loadSearchResults(){
+		setSearchResults();
+		readSearchResults();
+	}
+
+	function readSearchResults(){
+		$('#search-results').html("");
+		if (localStorage.getItem('search_res')){
+			var res = JSON.parse(localStorage.getItem("search_res"));
+			localStorage.removeItem("search_res");
+			var search_body = "";
+			if(res.users.length > 0){
+				$.each(res.users, function(index, user){
+    	    	    search_body = search_body + '<div class="followers-body"><a href="/view_users?name=' + user.user_name + '"><img class="img-responsive img-circle" src="users/' + user.user_id + '/profile/avatar.png" alt=""></a><div class="name-box"><h4>' + user.user_name + '</h4><span>@' + user.user_name + '</span></div></div>'	
+				});
+			}
+			if(res.hashtags.length > 0){
+				$.each(res.hashtags, function(index, hashtag){
+					search_body = search_body + '<div class="followers-body"><a href="/view_users?name=' + hashtag.hashtag_name + '"></a><div class="name-box"><h4>#' + hashtag.hashtag_name + '#</h4></div></div>'	
+				});
+			}
+			$('#search-results').html(
+				$('#search-results').html() + search_body
+			);
+		}
+	}
+
+	$('#followers-navigation-bar').html(
+		$('#followers-navigation-bar').html() + '<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'
+	)
 	$(document).ready(function(){
 		$('#Slim,#Slim2').slimScroll({
 	        height:"auto",
@@ -312,8 +295,27 @@
 			railVisible: true,
 			alwaysVisible: true,
 			size:"8px",
-		});	
-	});		
+		});		
+		readSearchResults();
+	});	
+
+
+
+                /*var search_results = "";
+                search_results = search_results + '<div class="followers-body"><a href="/view_users?name=' + user.name + '"><img class="img-responsive img-circle" src="users/' + user.id + '/profile/avatar.png" alt=""></a><div class="name-box"><h4>' + user.name + '</h4><span>@' + user.name + '</span><div class="followers-base"><ul class="list-group"><li class="list-group-item full-width"><div class="pull-left" style="margin-right: 20px;">'
+                for (i = 0; i < user_followers.length; i++) {
+                    if (i >= 10) { break; }
+                    search_results = search_results + '<a href="/view_users?name=' + user_followers[i].name + '"><img src="users/' + user_followers[i].id + '/profile/avatar.png" alt="" class="img-circle max-w-40 "></a>'
+                }
+                search_results = search_results + '<button class="btn btn-add-gray"><i class="fa fa-plus"></i></button><span> ' + user_followers.length + ' Followers </span></div></li> <li class="list-group-item full-width"><div class="pull-left">'
+
+                for (i = 0; i < user_followings.length; i++) {
+                    if (i >= 10) { break; }
+                    search_results = search_results + '<a href="/view_users?name=' + user_followings[i].name + '"><img src="users/' + user_followings[i].id + '/profile/avatar.png" alt="" class="img-circle max-w-40 "></a>'
+                }
+                search_results = search_results + '<button class="btn btn-add-gray"><i class="fa fa-plus"></i></button><span> ' + user_followings.length + ' Following </span></div></li></ul></div></div><span><a href="" class="kafe-btn kafe-btn-mint-small"> Follow</a></span></div>'
+                */
 	</script>
+
   </body>
 </html>

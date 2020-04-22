@@ -69,8 +69,8 @@
 		   <li>
 		   <div class="search-dashboard">
                <form>
-                    <input placeholder="Search here" type="text">
-                    <button type="submit"><i class="fa fa-search"></i></button>
+                    <input id="search_content" placeholder="Search here" type="text">
+                    <button type="button" id="search_button" onclick="setSearchResults();"><i class="fa fa-search"></i></button>
                </form>
           </div>							
 		   </li>
@@ -182,22 +182,16 @@
 		   </li>
 		  
 		 <li class="dropdown mega-avatar">
-		  <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-		   <span class="avatar w-32"><img src="assets/img/users/2.jpg" class="img-resonsive img-circle" width="25" height="25" alt="..."></span>
-		   <!-- hidden-xs hides the username on small devices so only the image appears. -->
-		   <span class="hidden-xs">
-			Alex Grantte
-		   </span>
-		  </a>
+		  <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" id="header_user_info"></a>
 		  <div class="dropdown-menu w dropdown-menu-scale pull-right">
-		   <a class="dropdown-item" href="#"><span>New Story</span></a> 
-		   <a class="dropdown-item" href="#"><span>Become a Member</span></a> 
+		   <a class="dropdown-item" href="/home" style="cursor: pointer;"><span>Home</span></a> 
+		   <a class="dropdown-item" href="/exploring" style="cursor: pointer;"><span>Explore</span></a> 
 		   <div class="dropdown-divider"></div>
-		   <a class="dropdown-item" href="#"><span>Profile</span></a> 
-		   <a class="dropdown-item" href="#"><span>Settings</span></a> 
-		   <a class="dropdown-item" href="#">Need help?</a> 
+		   <a class="dropdown-item" href="/upload" style="cursor: pointer;"><span>Upload</span></a> 
+		   <a class="dropdown-item" href="/stories" style="cursor: pointer;"><span>Stories</span></a> 
+		   <a class="dropdown-item" href="/view_profile" style="cursor: pointer;">Profile</a> 
 		   <div class="dropdown-divider"></div>
-		   <a class="dropdown-item" href="#">Sign out</a>
+		   <a class="dropdown-item" onclick="logout();" style="cursor: pointer;">Sign out</a>
 		  </div>
 		 </li><!-- /navbar-item -->	
 		 
@@ -235,6 +229,11 @@
 	<script src="assets/js/bootstrap.min.js"></script>
 	<script src="assets/js/base.js"></script>
 	<script src="assets/js/slider.js"></script>
+	<script src="assets/js/notify.js"></script>
+	<script src="assets/js/search.js"></script>
+	<script src="assets/js/like.js"></script>
+	<script src="assets/js/comment.js"></script>
+	<script src="assets/js/account.js"></script>
 	<script src="assets/plugins/slimscroll/jquery.slimscroll.js"></script>
 	<script type="text/javascript">
 	var my_id = "";
@@ -244,7 +243,13 @@
   		type: "GET",
   		timeout: 0,
 		dataType: 'json',
-		success: function(r){my_id = r.id;my_name = r.username;},
+		success: function(r){
+			my_id = r.id;
+			my_name = r.username;
+			$('#header_user_info').html(
+				$('#header_user_info').html() + '<span class="avatar w-32"><a href="/view_profile"><img src="users/'+my_id+'/profile/avatar.png" class="img-resonsive img-circle" width="25" height="25" alt="..."></a></span><span class="hidden-xs">'+my_name+'</span>'
+			);
+		},
 		error: function(e){console.log(e);}
 	}).done(function(){
 		$.ajax({
@@ -258,11 +263,35 @@
 				var posts_length = r.posts.length;
 				$.each(r.posts,function(index, post){
 					if ((index + 1)%3 == 1){
-						post_board = post_board + '<div class="row"><div class="col-lg-4"><a href="#exploring_comments_'+post.post_id+'" data-toggle="modal"><div class="explorebox" style="background: linear-gradient( rgba(34,34,34,0.2), rgba(34,34,34,0.2)), url(users/'+post.user_id+'/posts/'+post.post_id+'/'+post.images[0].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"><div class="explore-top"><div class="explore-like"><i class="fa fa-heart"></i> <span>'+post.likes+'</span></div><div class="explore-circle pull-right"><i class="far fa-bookmark"></i></div></div><div class="explore-body"><div class=""><img class="img-circle" src="users/'+post.user_id+'/profile/avatar.png" alt="user"></div></div></div></a></div>'
+						post_board = post_board + '<div class="row"><div class="col-lg-4"><a href="#exploring_comments_'+post.post_id+'" data-toggle="modal"><div class="explorebox" style="background: linear-gradient( rgba(34,34,34,0.2), rgba(34,34,34,0.2)), url(users/'+post.user_id+'/posts/'+post.post_id+'/'+post.images[0].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"><div class="explore-top"><div class="explore-like">'
+						
+						if(post.liked_by_you == true){
+							post_board = post_board + '<i style="color: grey;" class="fa fa-heart liked_post" onclick="likePost(this, ' + "'" + post.post_id + "'" + ');"></i> <span class="likes_num liked_post" style="color: grey;">'+post.likes+'</span>'
+						}else{
+							post_board = post_board + '<i style="color: grey;" class="fa fa-heart" onclick="likePost(this, ' + "'" + post.post_id + "'" + ');"></i> <span class="likes_num" style="color: grey;">'+post.likes+'</span>'
+						}
+
+						post_board = post_board + '</div><div class="explore-circle pull-right"><i class="far fa-bookmark"></i></div></div><div class="explore-body"><div class=""><img class="img-circle" src="users/'+post.user_id+'/profile/avatar.png" alt="user"></div></div></div></a></div>'
 					}else if ((index + 1)%3 == 0 || index + 1 == posts_length){
-						post_board = post_board + '<div class="col-lg-4"><a href="#exploring_comments_'+post.post_id+'" data-toggle="modal"><div class="explorebox" style="background: linear-gradient( rgba(34,34,34,0.2), rgba(34,34,34,0.2)), url(users/'+post.user_id+'/posts/'+post.post_id+'/'+post.images[0].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"><div class="explore-top"><div class="explore-like"><i class="fa fa-heart"></i> <span>'+post.likes+'</span></div><div class="explore-circle pull-right"><i class="far fa-bookmark"></i></div></div><div class="explore-body"><div class=""><img class="img-circle" src="users/'+post.user_id+'/profile/avatar.png" alt="user"></div></div></div></a></div></div>'
+						post_board = post_board + '<div class="col-lg-4"><a href="#exploring_comments_'+post.post_id+'" data-toggle="modal"><div class="explorebox" style="background: linear-gradient( rgba(34,34,34,0.2), rgba(34,34,34,0.2)), url(users/'+post.user_id+'/posts/'+post.post_id+'/'+post.images[0].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"><div class="explore-top"><div class="explore-like">'
+						
+						if(post.liked_by_you == true){
+							post_board = post_board + '<i style="color: grey;" class="fa fa-heart liked_post" onclick="likePost(this, ' + "'" + post.post_id + "'" + ');"></i> <span class="likes_num liked_post" style="color: grey;">'+post.likes+'</span>'
+						}else{
+							post_board = post_board + '<i style="color: grey;" class="fa fa-heart" onclick="likePost(this, ' + "'" + post.post_id + "'" + ');"></i> <span class="likes_num" style="color: grey;">'+post.likes+'</span>'
+						}
+						
+						post_board = post_board + '</div><div class="explore-circle pull-right"><i class="far fa-bookmark"></i></div></div><div class="explore-body"><div class=""><img class="img-circle" src="users/'+post.user_id+'/profile/avatar.png" alt="user"></div></div></div></a></div></div>'
 					}else{
-						post_board = post_board + '<div class="col-lg-4"><a href="#exploring_comments_'+post.post_id+'" data-toggle="modal"><div class="explorebox" style="background: linear-gradient( rgba(34,34,34,0.2), rgba(34,34,34,0.2)), url(users/'+post.user_id+'/posts/'+post.post_id+'/'+post.images[0].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"><div class="explore-top"><div class="explore-like"><i class="fa fa-heart"></i> <span>'+post.likes+'</span></div><div class="explore-circle pull-right"><i class="far fa-bookmark"></i></div></div><div class="explore-body"><div class=""><img class="img-circle" src="users/'+post.user_id+'/profile/avatar.png" alt="user"></div></div></div></a></div>'
+						post_board = post_board + '<div class="col-lg-4"><a href="#exploring_comments_'+post.post_id+'" data-toggle="modal"><div class="explorebox" style="background: linear-gradient( rgba(34,34,34,0.2), rgba(34,34,34,0.2)), url(users/'+post.user_id+'/posts/'+post.post_id+'/'+post.images[0].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"><div class="explore-top"><div class="explore-like">'
+						
+						if(post.liked_by_you == true){
+							post_board = post_board + '<i style="color: grey;" class="fa fa-heart liked_post" onclick="likePost(this, ' + "'" + post.post_id + "'" + ');"></i> <span class="likes_num liked_post" style="color: grey;">'+post.likes+'</span>'
+						}else{
+							post_board = post_board + '<i style="color: grey;" class="fa fa-heart" onclick="likePost(this, ' + "'" + post.post_id + "'" + ');"></i> <span class="likes_num" style="color: grey;">'+post.likes+'</span>'
+						}
+						
+						post_board = post_board + '</div><div class="explore-circle pull-right"><i class="far fa-bookmark"></i></div></div><div class="explore-body"><div class=""><img class="img-circle" src="users/'+post.user_id+'/profile/avatar.png" alt="user"></div></div></div></a></div>'
 					}
 					comment_board = comment_board + '<div id="exploring_comments_'+post.post_id+'" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-body"><div class="row"><div style="overflow: hidden; padding: 0" class="col-md-8 modal-image">'
 					
@@ -291,7 +320,7 @@
 							comment_board = comment_board + '<p>This post has no comments</p>'
 						}
 					}
-					comment_board = comment_board +'<div class="modal-meta-bottom"><ul><li><a class="modal-like" href="#"><i class="fa fa-heart"></i></a><span class="modal-one"> '+post.likes+'</span> | <a class="modal-comment" href="#"><i class="fa fa-comments"></i></a><span> '+post.comments_num+'</span> </li><li><span class="thumb-xs"><img class="img-responsive img-circle" src="users/'+my_id+'/profile/avatar.png" alt="..."></span><div class="comment-body"><input class="form-control input-sm" type="text" placeholder="Write your comment..."></div></li></ul></div></div></div></div></div></div></div></div>'
+					comment_board = comment_board +'<div class="modal-meta-bottom"><ul><li><span class="thumb-xs"><img class="img-responsive img-circle" src="users/'+my_id+'/profile/avatar.png" alt="..."></span><div style="display: flex;"  class="comment-body"><input style="margin-right: 10px;" class="form-control input-sm post-comment-input" type="text" placeholder="Write your comment..."><a style="cursor: pointer;" onclick="commentPost(this, ' + "'" + post.post_id + "'" + ');" class="kafe kafe-btn-mint-small"><i class="fa"></i> Submit</a></div></li></ul></div></div></div></div></div></div></div></div>'
 				});
 				$('#exploring_main').html(
 					$('#exploring_main').html() + post_board

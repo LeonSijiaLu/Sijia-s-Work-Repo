@@ -113,45 +113,59 @@ func UpdatePost(c *gin.Context){
 	}
 }
 
-func LikePost(c *gin.Context){
+func LikeOrUnlike(c *gin.Context){
 	is_loggedin(c, "")
 	post_id := c.Param("postID")
 	id, _ := UT.Get_Id_and_Username(c)
+	var (
+		liked bool
+		likes_num int
+		res bool
+	)
+	db := UT.Conn_DB()
+	defer db.Close()
+	db.QueryRow("SELECT COUNT(*) FROM Likes WHERE post_id = ? AND like_by = ?", post_id, id).Scan(&liked)
+	if liked == true{
+		likes_num, res = UnlikePost(post_id, id)
+	}else{
+		likes_num, res = LikePost(post_id, id)
+	}
+	if res == false{
+		c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "DB Error","success": false,"likes_num": 0,});
+	}else{
+		c.JSON(http.StatusOK, map[string]interface{}{
+			"message": "Returned likes number successfully",
+			"success": true,
+			"likes_num": likes_num,
+		});
+	}
+}
+
+func LikePost(post_id interface{}, id interface{}) (int, bool){
 	if post_id == "" {
-		panic("Please select a post to like")
+		return 0, false
 	}else{
 		var likeNum int
 		db := UT.Conn_DB()
 		defer db.Close()
 		_, err := db.Exec("INSERT INTO Likes(post_id, like_by) VALUES(?, ?)", post_id, id)
-		UT.Err(err)
+		if err != nil{return 0, false}
 		db.QueryRow("SELECT likes FROM Posts WHERE post_id = ?", post_id).Scan(&likeNum)
-		c.JSON(http.StatusOK, map[string]interface{}{
-			"message": "Liked the post successfully",
-			"success": true,
-			"likes": likeNum,
-		})
+		return likeNum, true
 	}
 }
 
-func UnlikePost(c *gin.Context){
-	is_loggedin(c, "")
-	post_id := c.Param("postID")
-	id, _ := UT.Get_Id_and_Username(c)
+func UnlikePost(post_id interface{}, id interface{}) (int, bool){
 	if post_id == "" {
-		panic("Please select a post to unlike")
+		return 0, false
 	}else{
 		var likeNum int
 		db := UT.Conn_DB()
 		defer db.Close()
 		_, err := db.Exec("DELETE FROM Likes WHERE post_id = ? AND like_by = ?", post_id, id)
-		UT.Err(err)
+		if err != nil{return 0, false}
 		db.QueryRow("SELECT likes FROM Posts WHERE post_id = ?", post_id).Scan(&likeNum)
-		c.JSON(http.StatusOK, map[string]interface{}{
-			"message": "Unliked the post successfully",
-			"success": true,
-			"likes": likeNum,
-		})
+		return likeNum, true
 	}
 }
 
@@ -185,6 +199,7 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 	var(
 		follower_num int
 		following_num int
+		following_bool bool
 	)
 
 	posts := []interface{}{}
@@ -214,7 +229,7 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 	UT.Err(err)
 	for rows.Next(){
 		rows.Scan(&postID, &title, &content, &likes, &createdBy, &allow_comments, &comments_number, &post_created_date)
-		db.QueryRow("SELECT COUNT(*) FROM Likes WHERE post_id = ? AND like_by = ?", postID, userID).Scan(&liked)
+		db.QueryRow("SELECT COUNT(*) FROM Likes WHERE post_id = ? AND like_by = ?", postID, my_id).Scan(&liked)
 		if allow_comments == true{
 			post := map[string]interface{}{
 				"post_id": postID,
@@ -250,6 +265,7 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 
 	db.QueryRow("SELECT COUNT(*) FROM Follow WHERE follow_by = ?", target_id).Scan(&following_num)
 	db.QueryRow("SELECT COUNT(*) FROM Follow WHERE follow_to = ?", target_id).Scan(&follower_num)
+	db.QueryRow("SELECT COUNT(*) FROM Follow WHERE follow_by = ? AND follow_to = ?", my_id, target_id).Scan(&following_bool)
 	return map[string]interface{}{
 		"message": "Found user posts",
 		"success": true,
@@ -257,6 +273,7 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 		"posts": posts,
 		"followers":  follower_num,
 		"followings": following_num,
+		"following_bool": following_bool,
 		"profile_bg_images": ShowProfileImages(target_id, 5),
 		"blocked": false,
 	}
@@ -321,15 +338,15 @@ func CreateComments(c *gin.Context){
 	)
 	post_id := c.Param("postID")
 	content := strings.TrimSpace(c.PostForm("content"))
-	if content == "" {panic("Comments content cannot be empty")}
+	if content == "" {c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "Please enter content","success": false,})}
 	id, _ := UT.Get_Id_and_Username(c)
 	db := UT.Conn_DB()
 	defer db.Close()
 	db.QueryRow("SELECT COUNT(*), allow_comments FROM Posts WHERE post_id = ?", post_id).Scan(&posts_count, &allow_comments)
-	if posts_count != 1 {panic("Invalid post id")}
+	if posts_count != 1 {c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "DB Error","success": false,})}
 	if allow_comments == true{
 		stmt, err := db.Prepare("INSERT INTO Comments (post_id, user_id, content) VALUES(?, ?, ?)")
-		UT.Err(err)
+		if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "DB Error","success": false,})}
 		stmt.Exec(post_id, id, content)
 		c.JSON(http.StatusOK, map[string]interface{}{
 			"message": "Your comments has been uploaded",
@@ -444,23 +461,6 @@ func ShowComments(c *gin.Context, post_id interface{}) []interface{}{
 	return comments
 }
 
-func ShowPostImages(c *gin.Context, post_id interface{}, user_id interface{}) []interface{}{
-	var image_name string
-	images := []interface{}{}
-	db := UT.Conn_DB()
-	defer db.Close()
-	stmt, _ := db.Prepare("SELECT image_name FROM Images WHERE user_id = ? AND post_id = ? ORDER BY created_date DESC")
-	rows, _ := stmt.Query(user_id, post_id)
-	for rows.Next(){
-		rows.Scan(&image_name)
-		image := map[string]interface{}{
-			"image_name": image_name,
-		}
-		images = append(images, image)
-	}
-	return images
-}
-
 func ShowLikes(c *gin.Context, post_id interface{}, total_likes int) []interface{}{
 	likes := []interface{}{}
 	if total_likes != 0{
@@ -498,6 +498,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 		name string
 		allow_comments bool
 		created_date string
+		liked_by_you bool
 	)
 	my_id, _ := UT.Get_Id_and_Username(c)
 	db := UT.Conn_DB()
@@ -510,6 +511,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 	for rows.Next(){
 		rows.Scan(&post_id, &likes, &created_by, &comments_num, &title, &content, &allow_comments, &created_date)
 		db.QueryRow("SELECT username FROM Users WHERE user_id = ?", created_by).Scan(&name)
+		db.QueryRow("SELECT COUNT(*) FROM Likes WHERE post_id = ? AND like_by = ?", post_id, my_id).Scan(&liked_by_you)
 		if allow_comments == true{
 			post := map[string]interface{}{
 				"post_id": post_id,
@@ -524,6 +526,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 				"comments": ShowComments(c, post_id),
 				"images": ShowPostImages(c, post_id, created_by),
 				"allow_comments": allow_comments,
+				"liked_by_you": liked_by_you,
 			}
 			posts = append(posts, post)
 		}else{
@@ -540,6 +543,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 				"comments": allow_comments,
 				"images": ShowPostImages(c, post_id, created_by),
 				"allow_comments": allow_comments,
+				"liked_by_you": liked_by_you,
 			}
 			posts = append(posts, post)
 		}
@@ -679,8 +683,10 @@ func ShowHottestPosts(c *gin.Context){
 		comments_num int
 		title string
 		content string
+		liked_by_you bool
 	)
 	hottest_posts := []interface{}{}
+	my_id, _ := UT.Get_Id_and_Username(c)
 	db := UT.Conn_DB()
 	defer db.Close()
 	stmt, err := db.Prepare("SELECT Users.username, Posts.post_id, Posts.likes, Posts.created_by, DATE(Posts.created_date), Posts.allow_comments, Posts.comments_num, Posts.title, Posts.content FROM Posts INNER JOIN Users ON Posts.created_by = Users.user_id ORDER BY created_date DESC, likes DESC, comments_num DESC LIMIT 30;")
@@ -689,6 +695,7 @@ func ShowHottestPosts(c *gin.Context){
 	UT.Err(err)
 	for rows.Next(){
 		rows.Scan(&username, &post_id, &post_likes, &created_by, &created_date, &allow_comments, &comments_num, &title, &content)
+		db.QueryRow("SELECT COUNT(*) FROM Likes WHERE post_id = ? AND like_by = ?", post_id, my_id).Scan(&liked_by_you)
 		if allow_comments == true{
 			post := map[string]interface{}{
 				"post_id": post_id,
@@ -702,6 +709,7 @@ func ShowHottestPosts(c *gin.Context){
 				"comments_num": comments_num,
 				"title": title,
 				"content": content,
+				"liked_by_you": liked_by_you,
 			}
 			hottest_posts = append(hottest_posts, post)
 		}else{
@@ -717,6 +725,7 @@ func ShowHottestPosts(c *gin.Context){
 				"comments_num": 0,
 				"title": title,
 				"content": content,
+				"liked_by_you": liked_by_you,
 			}
 			hottest_posts = append(hottest_posts, post)
 		}

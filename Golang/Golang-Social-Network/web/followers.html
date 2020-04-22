@@ -69,8 +69,8 @@
 		   <li>
 		   <div class="search-dashboard">
                <form>
-                    <input placeholder="Search here" type="text">
-                    <button type="submit"><i class="fa fa-search"></i></button>
+                    <input id="search_content" placeholder="Search here" type="text">
+                    <button type="button" id="search_button" onclick="setSearchResults();"><i class="fa fa-search"></i></button>
                </form>
           </div>							
 		   </li>
@@ -182,22 +182,16 @@
 		   </li>
 		  
 		 <li class="dropdown mega-avatar">
-		  <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-		   <span class="avatar w-32"><img src="assets/img/users/2.jpg" class="img-resonsive img-circle" width="25" height="25" alt="..."></span>
-		   <!-- hidden-xs hides the username on small devices so only the image appears. -->
-		   <span class="hidden-xs">
-			Alex Grantte
-		   </span>
-		  </a>
+		  <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" id="header_user_info"></a>
 		  <div class="dropdown-menu w dropdown-menu-scale pull-right">
-		   <a class="dropdown-item" href="#"><span>New Story</span></a> 
-		   <a class="dropdown-item" href="#"><span>Become a Member</span></a> 
+		   <a class="dropdown-item" href="/home" style="cursor: pointer;"><span>Home</span></a> 
+		   <a class="dropdown-item" href="/exploring" style="cursor: pointer;"><span>Explore</span></a> 
 		   <div class="dropdown-divider"></div>
-		   <a class="dropdown-item" href="#"><span>Profile</span></a> 
-		   <a class="dropdown-item" href="#"><span>Settings</span></a> 
-		   <a class="dropdown-item" href="#">Need help?</a> 
+		   <a class="dropdown-item" href="/upload" style="cursor: pointer;"><span>Upload</span></a> 
+		   <a class="dropdown-item" href="/stories" style="cursor: pointer;"><span>Stories</span></a> 
+		   <a class="dropdown-item" href="/view_profile" style="cursor: pointer;">Profile</a> 
 		   <div class="dropdown-divider"></div>
-		   <a class="dropdown-item" href="#">Sign out</a>
+		   <a class="dropdown-item" onclick="logout();" style="cursor: pointer;">Sign out</a>
 		  </div>
 		 </li><!-- /navbar-item -->	
 		 
@@ -234,6 +228,9 @@
 	<script src="assets/js/jquery.min.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>
 	<script src="assets/js/base.js"></script>
+	<script src="assets/js/notify.js"></script>
+	<script src="assets/js/search.js"></script>
+	<script src="assets/js/account.js"></script>
 	<script src="assets/plugins/slimscroll/jquery.slimscroll.js"></script>
 	<script type='text/javascript'>
 	var data = "";

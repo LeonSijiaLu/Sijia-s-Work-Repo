@@ -81,3 +81,10 @@ func Upload(c *gin.Context) {
 		"title": "Upload",
 	})
 }
+
+func Search(c *gin.Context) {
+	is_loggedin(c, "")
+	c.HTML(http.StatusOK, "search.html", gin.H{
+		"title": "Search",
+	})
+}

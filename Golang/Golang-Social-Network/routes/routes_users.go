@@ -18,7 +18,6 @@ func ToLogout(c *gin.Context){
 	delete(session.Values, "id")
 	delete(session.Values, "username")
 	session.Save(c.Request, c.Writer)
-	c.Redirect(http.StatusOK, "/login")
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "You have logged out",
 		"success": true,
@@ -124,6 +123,7 @@ func GetFollowers(c *gin.Context){
 	var (
 		follower_id int
 		follower_name string
+		following_bool bool
 		my_id interface{}
 		message string
 	)
@@ -139,15 +139,17 @@ func GetFollowers(c *gin.Context){
 		message = "View "+ username +"'s followers"
 	}
 	stmt, err := db.Prepare("SELECT follow_by FROM Follow WHERE follow_to = ? ORDER BY created_date DESC")
-	UT.Err(err)
+	if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "DB Error",})}
 	rows, err := stmt.Query(my_id)
-	UT.Err(err)
+	if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "DB Error",})}
 	for rows.Next(){
 		rows.Scan(&follower_id)
 		db.QueryRow("SELECT username FROM Users WHERE user_id = ?", follower_id).Scan(&follower_name)
+		db.QueryRow("SELECT COUNT(*) FROM Follow WHERE follow_by = ? AND follow_to = ?", my_id, follower_id).Scan(&following_bool)
 		follower := map[string]interface{}{
 			"id": follower_id,
 			"name": follower_name,
+			"follow_relations":following_bool,
 		}
 		followers = append(followers, follower)
 	}
