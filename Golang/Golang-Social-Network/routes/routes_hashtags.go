@@ -167,6 +167,7 @@ func GetHashtagPosts(c *gin.Context){
 		post_id int
 		user_id int
 		user_name string
+		avatar string
 		title string
 		content string
 		likes int
@@ -177,15 +178,16 @@ func GetHashtagPosts(c *gin.Context){
 
 	db := UT.Conn_DB()
 	defer db.Close()
-	stmt, _ := db.Prepare("SELECT Users.username, Posts.created_by, Posts.post_id, Posts.title, Posts.content, Posts.likes, Posts.allow_comments, Posts.comments_num, DATE(Posts.created_date) FROM Posts_Hashtags INNER JOIN Posts USING (post_id) INNER JOIN Users ON Posts.created_by = Users.user_id WHERE Posts_Hashtags.hashtag_id = ?")
+	stmt, _ := db.Prepare("SELECT Users.username, Users.avatar, Posts.created_by, Posts.post_id, Posts.title, Posts.content, Posts.likes, Posts.allow_comments, Posts.comments_num, DATE(Posts.created_date) FROM Posts_Hashtags INNER JOIN Posts USING (post_id) INNER JOIN Users ON Posts.created_by = Users.user_id WHERE Posts_Hashtags.hashtag_id = ?")
 	rows, _ := stmt.Query(hashtag_id)
 	for rows.Next(){
-		rows.Scan(&user_name, &user_id, &post_id, &title, &content, &likes, &allow_comments, &comments_number, &created_date)
+		rows.Scan(&user_name, &avatar, &user_id, &post_id, &title, &content, &likes, &allow_comments, &comments_number, &created_date)
 		if allow_comments == true{
 			post := map[string]interface{}{
 				"post_id": post_id,
 				"user_id": user_id,
 				"user_name": user_name,
+				"avatar": avatar,
 				"title": title, 
 				"content": content,
 				"likes": likes,
@@ -201,6 +203,7 @@ func GetHashtagPosts(c *gin.Context){
 				"post_id": post_id,
 				"user_id": user_id,
 				"user_name": user_name,
+				"avatar": avatar,
 				"title": title, 
 				"content": content,
 				"likes": likes,

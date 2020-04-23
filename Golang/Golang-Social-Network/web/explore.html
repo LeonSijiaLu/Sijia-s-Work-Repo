@@ -239,6 +239,7 @@
 	<script type="text/javascript">
 	var my_id = "";
 	var my_name = "";
+	var my_avatar = "";
 	$.ajax({
 		url: "/basics",
   		type: "GET",
@@ -247,8 +248,9 @@
 		success: function(r){
 			my_id = r.id;
 			my_name = r.username;
+			my_avatar = r.avatar;
 			$('#header_user_info').html(
-				$('#header_user_info').html() + '<span class="avatar w-32"><a href="/view_profile"><img src="users/'+my_id+'/profile/avatar.png" class="img-resonsive img-circle" width="25" height="25" alt="..."></a></span><span class="hidden-xs">'+my_name+'</span>'
+				$('#header_user_info').html() + '<span class="avatar w-32"><a href="/view_profile"><img src="users/'+my_id+'/profile/'+my_avatar+'" class="img-resonsive img-circle" width="25" height="25" alt="..."></a></span><span class="hidden-xs">'+my_name+'</span>'
 			);
 		},
 		error: function(e){console.log(e);}
@@ -272,7 +274,7 @@
 							post_board = post_board + '<i style="color: grey;" class="fa fa-heart" onclick="likePost(this, ' + "'" + post.post_id + "'" + ');"></i> <span class="likes_num" style="color: grey;">'+post.likes+'</span>'
 						}
 
-						post_board = post_board + '</div><div class="explore-circle pull-right"><i class="far fa-bookmark"></i></div></div><div class="explore-body"><div class=""><img class="img-circle" src="users/'+post.user_id+'/profile/avatar.png" alt="user"></div></div></div></a></div>'
+						post_board = post_board + '</div><div class="explore-circle pull-right"><i class="far fa-bookmark"></i></div></div><div class="explore-body"><div class=""><img class="img-circle" src="users/'+post.user_id+'/profile/'+post.avatar+'" alt="user"></div></div></div></a></div>'
 					}else if ((index + 1)%3 == 0 || index + 1 == posts_length){
 						post_board = post_board + '<div class="col-lg-4"><a href="#exploring_comments_'+post.post_id+'" data-toggle="modal"><div class="explorebox" style="background: linear-gradient( rgba(34,34,34,0.2), rgba(34,34,34,0.2)), url(users/'+post.user_id+'/posts/'+post.post_id+'/'+post.images[0].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"><div class="explore-top"><div class="explore-like">'
 						
@@ -282,7 +284,7 @@
 							post_board = post_board + '<i style="color: grey;" class="fa fa-heart" onclick="likePost(this, ' + "'" + post.post_id + "'" + ');"></i> <span class="likes_num" style="color: grey;">'+post.likes+'</span>'
 						}
 						
-						post_board = post_board + '</div><div class="explore-circle pull-right"><i class="far fa-bookmark"></i></div></div><div class="explore-body"><div class=""><img class="img-circle" src="users/'+post.user_id+'/profile/avatar.png" alt="user"></div></div></div></a></div></div>'
+						post_board = post_board + '</div><div class="explore-circle pull-right"><i class="far fa-bookmark"></i></div></div><div class="explore-body"><div class=""><img class="img-circle" src="users/'+post.user_id+'/profile/'+post.avatar+'" alt="user"></div></div></div></a></div></div>'
 					}else{
 						post_board = post_board + '<div class="col-lg-4"><a href="#exploring_comments_'+post.post_id+'" data-toggle="modal"><div class="explorebox" style="background: linear-gradient( rgba(34,34,34,0.2), rgba(34,34,34,0.2)), url(users/'+post.user_id+'/posts/'+post.post_id+'/'+post.images[0].image_name+') no-repeat;background-size: cover;background-position: center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;"><div class="explore-top"><div class="explore-like">'
 						
@@ -292,7 +294,7 @@
 							post_board = post_board + '<i style="color: grey;" class="fa fa-heart" onclick="likePost(this, ' + "'" + post.post_id + "'" + ');"></i> <span class="likes_num" style="color: grey;">'+post.likes+'</span>'
 						}
 						
-						post_board = post_board + '</div><div class="explore-circle pull-right"><i class="far fa-bookmark"></i></div></div><div class="explore-body"><div class=""><img class="img-circle" src="users/'+post.user_id+'/profile/avatar.png" alt="user"></div></div></div></a></div>'
+						post_board = post_board + '</div><div class="explore-circle pull-right"><i class="far fa-bookmark"></i></div></div><div class="explore-body"><div class=""><img class="img-circle" src="users/'+post.user_id+'/profile/'+post.avatar+'" alt="user"></div></div></div></a></div>'
 					}
 					comment_board = comment_board + '<div id="exploring_comments_'+post.post_id+'" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-body"><div class="row"><div style="overflow: hidden; padding: 0" class="col-md-8 modal-image">'
 					
@@ -306,12 +308,12 @@
 						comment_board = comment_board + '<li class="mySlides" style="width: 100%; background: rgba(0,0,0,0.8); border-radius: 0, 5px, 5px, 0;"><img style="height: auto !important; margin: auto;" class="img-responsive" src="users/'+post.user_id+'/posts/'+post.post_id+'/'+image.image_name+'" alt="Image"/></li>'
 					});					
 					comment_board = comment_board + '</ul>'
-					comment_board = comment_board + '</div><div style="border-left: solid 1px #f4f4f4;" class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href="/view_users?name='+post.user_name+'"><img class="img-responsive img-circle" src="users/'+post.user_id+'/profile/avatar.png" alt="Image"/></a><strong><a href="">'+post.user_name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all">'+post.title+'</p><div style="word-break: break-all">'+post.content+'</div><a href="" class="kafe kafe-btn-mint-small"><i class="fa fa-check-square"></i> Following</a></div>'
+					comment_board = comment_board + '</div><div style="border-left: solid 1px #f4f4f4;" class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href="/view_users?name='+post.user_name+'"><img class="img-responsive img-circle" src="users/'+post.user_id+'/profile/'+post.avatar+'" alt="Image"/></a><strong><a href="">'+post.user_name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all">'+post.title+'</p><div style="word-break: break-all">'+post.content+'</div><a href="" class="kafe kafe-btn-mint-small"><i class="fa fa-check-square"></i> Following</a></div>'
 				
 					if (post.comments != 0 && post.comments != false) { // it allows comments
 						comment_board = comment_board +'<ul class="img-comment-list">'
 						$.each(post.comments, function(index, comment) {
-							comment_board = comment_board + '<li><div class="comment-img"><a href="/view_users?name='+comment.username+'"><img src="users/'+comment.user_id+'/profile/avatar.png" class="img-responsive img-circle" alt="Image"/></a></div><div class="comment-text"><strong><a href="/view_users?name='+comment.username+'">'+comment.username+'</a></strong><p class="">'+comment.content+'</p> <span class="date sub-text">'+comment.comment_date+'</span></div></li>'
+							comment_board = comment_board + '<li><div class="comment-img"><a href="/view_users?name='+comment.username+'"><img src="users/'+comment.user_id+'/profile/'+comment.avatar+'" class="img-responsive img-circle" alt="Image"/></a></div><div class="comment-text"><strong><a href="/view_users?name='+comment.username+'">'+comment.username+'</a></strong><p class="">'+comment.content+'</p> <span class="date sub-text">'+comment.comment_date+'</span></div></li>'
 						});
 						comment_board = comment_board +'</ul>'
 					}else{
@@ -321,7 +323,7 @@
 							comment_board = comment_board + '<p>This post has no comments</p>'
 						}
 					}
-					comment_board = comment_board +'<div class="modal-meta-bottom"><ul><li><span class="thumb-xs"><img class="img-responsive img-circle" src="users/'+my_id+'/profile/avatar.png" alt="..."></span><div style="display: flex;"  class="comment-body"><input style="margin-right: 10px;" class="form-control input-sm post-comment-input" type="text" placeholder="Write your comment..."><a style="cursor: pointer;" onclick="commentPost(this, ' + "'" + post.post_id + "'" + ');" class="kafe kafe-btn-mint-small"><i class="fa"></i> Submit</a></div></li></ul></div></div></div></div></div></div></div></div>'
+					comment_board = comment_board +'<div class="modal-meta-bottom"><ul><li><span class="thumb-xs"><img class="img-responsive img-circle" src="users/'+my_id+'/profile/'+my_avatar+'" alt="..."></span><div style="display: flex;"  class="comment-body"><input style="margin-right: 10px;" class="form-control input-sm post-comment-input" type="text" placeholder="Write your comment..."><a style="cursor: pointer;" onclick="commentPost(this, ' + "'" + post.post_id + "'" + ');" class="kafe kafe-btn-mint-small"><i class="fa"></i> Submit</a></div></li></ul></div></div></div></div></div></div></div></div>'
 				});
 				$('#exploring_main').html(
 					$('#exploring_main').html() + post_board
@@ -350,7 +352,7 @@
 				var hottest_images = "";
 				for (index = 0; index < r.users.length; index++) {
 					if (index >= 4) { break; }
-					hottest_images = hottest_images + '<div class="col-lg-3"><div class="tr-section"><div class="tr-post"><div class="entry-header"><div class="entry-thumbnail"><a href="#"><img style="width: auto;" class="img-fluid" src="users/'+r.users[index].id+'/posts/'+r.users[index].latest_post+'/'+r.users[index].latest_image+'" alt="Image"></a></div></div><div class="post-content"><div class="author-post text-center"><a href="/view_users?name='+r.users[index].name+'"><img class="img-fluid rounded-circle" src="users/'+r.users[index].id+'/profile/avatar.png" alt="Image"></a></div><div class="card-content"><h4>'+r.users[index].name+'</h4><span>@'+r.users[index].name+'</span></div><a onclick="reloadHottestImages(this, ' + "'" + r.users[index].id + "'" + ')" class="kafe-btn kafe-btn-mint-small full-width not-following"> Follow</a></div></div></div></div>'
+					hottest_images = hottest_images + '<div class="col-lg-3"><div class="tr-section"><div class="tr-post"><div class="entry-header"><div class="entry-thumbnail"><a href="#"><img style="width: auto;" class="img-fluid" src="users/'+r.users[index].id+'/posts/'+r.users[index].latest_post+'/'+r.users[index].latest_image+'" alt="Image"></a></div></div><div class="post-content"><div class="author-post text-center"><a href="/view_users?name='+r.users[index].name+'"><img class="img-fluid rounded-circle" src="users/'+r.users[index].id+'/profile/'+r.users[index].avatar+'" alt="Image"></a></div><div class="card-content"><h4>'+r.users[index].name+'</h4><span>@'+r.users[index].name+'</span></div><a onclick="reloadHottestImages(this, ' + "'" + r.users[index].id + "'" + ')" class="kafe-btn kafe-btn-mint-small full-width not-following"> Follow</a></div></div></div></div>'
 				}
 				$('#exploring_top_row').html(
 					$('#exploring_top_row').html() + hottest_images

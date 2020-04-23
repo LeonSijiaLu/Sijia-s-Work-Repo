@@ -252,7 +252,7 @@
 	}).done(function(){
 		if (data.length > 0){
 			$.each(data, function(index, user){
-				loadFollowersRelations(user.id, user.name, user.follow_relations, true, false);
+				loadFollowersRelations(user.id, user.name, user.avatar, user.follow_relations, true, false);
 			});
 		}else{
 			$('#profile_followers').html(
@@ -264,7 +264,7 @@
 		$('#followers-navigation-bar').html() + '<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'
 	)
 
-	function loadFollowersRelations(user_id, user_name, user_relations, init, click_follow_button){
+	function loadFollowersRelations(user_id, user_name, user_avatar, user_relations, init, click_follow_button){
 		$.ajax({
 			url: "/api/user/followings/"+user_name,
 			type: "GET",
@@ -285,21 +285,21 @@
 				if (init == true){
 					follow_main = follow_main + '<div class="followers-body">'
 				}
-				follow_main = follow_main + '<a href="/view_users?name='+user_name+'"><img class="img-responsive img-circle" src="users/'+user_id+'/profile/avatar.png" alt=""></a><div class="name-box"><h4>'+user_name+'</h4><span>@'+user_name+'</span><div class="followers-base"><ul class="list-group"><li class="list-group-item full-width"><div class="pull-left" style="margin-right: 20px;">'
+				follow_main = follow_main + '<a href="/view_users?name='+user_name+'"><img class="img-responsive img-circle" src="users/'+user_id+'/profile/'+user_avatar+'" alt=""></a><div class="name-box"><h4>'+user_name+'</h4><span>@'+user_name+'</span><div class="followers-base"><ul class="list-group"><li class="list-group-item full-width"><div class="pull-left" style="margin-right: 20px;">'
 				for (i = 0; i < user_followers.length; i++) {
 					if (i >= 10) { break; }
-  					follow_main = follow_main + '<a href="/view_users?name='+user_followers[i].name+'"><img src="users/'+user_followers[i].id+'/profile/avatar.png" alt="" class="img-circle max-w-40 "></a>'
+  					follow_main = follow_main + '<a href="/view_users?name='+user_followers[i].name+'"><img src="users/'+user_followers[i].id+'/profile/'+user_followers[i].avatar+'" alt="" class="img-circle max-w-40 "></a>'
 				}
 				follow_main = follow_main + '<button class="btn btn-add-gray"><i class="fa fa-plus"></i></button><span> '+user_followers.length+' Followers </span></div></li> <li class="list-group-item full-width"><div class="pull-left">'
 				for (i = 0; i < user_followings.length; i++) {
   					if (i >= 10) { break; }
-					follow_main = follow_main + '<a href="/view_users?name='+user_followings[i].name+'"><img src="users/'+user_followings[i].id+'/profile/avatar.png" alt="" class="img-circle max-w-40 "></a>'
+					follow_main = follow_main + '<a href="/view_users?name='+user_followings[i].name+'"><img src="users/'+user_followings[i].id+'/profile/'+user_followings[i].avatar+'" alt="" class="img-circle max-w-40 "></a>'
 				}
 				follow_main = follow_main + '<button class="btn btn-add-gray"><i class="fa fa-plus"></i></button><span> '+user_followings.length+' Following </span></div></li></ul></div></div>'
 				if(user_relations == true){
-					follow_main = follow_main + '<span><a class="kafe-btn kafe-btn-mint-small" onclick="reloadFollowersRelations(this, ' + "'" + user_id + "'" + ', ' + "'" + user_name + "'" + ', '+ user_relations +', false);"><i class="fa fa-check"></i> Following</a></span>'
+					follow_main = follow_main + '<span><a class="kafe-btn kafe-btn-mint-small" onclick="reloadFollowersRelations(this, ' + "'" + user_id + "'" + ', ' + "'" + user_name + "'" + ', ' + "'" + user_avatar + "'" + ', '+ user_relations +', false);"><i class="fa fa-check"></i> Following</a></span>'
 				}else{
-					follow_main = follow_main + '<span><a class="kafe-btn kafe-btn-mint-small not-following" onclick="reloadFollowersRelations(this, ' + "'" + user_id + "'" + ', ' + "'" + user_name + "'" + ', '+ user_relations +', false);"> Follow</a></span>'
+					follow_main = follow_main + '<span><a class="kafe-btn kafe-btn-mint-small not-following" onclick="reloadFollowersRelations(this, ' + "'" + user_id + "'" + ', ' + "'" + user_name + "'" + ', ' + "'" + user_avatar + "'" + ', '+ user_relations +', false);"> Follow</a></span>'
 				}
 				if (init == true){
 					follow_main = follow_main + '</div>'
@@ -319,14 +319,14 @@
 		});
 	}
 
-	function reloadFollowersRelations(follow_Button, user_id, user_name, user_relations, init){
+	function reloadFollowersRelations(follow_Button, user_id, user_name, user_avatar, user_relations, init){
 		followUser(follow_Button, user_id);
 		if (user_relations == true){
 			user_relations = false;
 		}else{
 			user_relations = true;
 		}
-		loadFollowersRelations(user_id, user_name, user_relations, init, follow_Button);
+		loadFollowersRelations(user_id, user_name, user_avatar, user_relations, init, follow_Button);
 	}
 
 	$(document).ready(function(){

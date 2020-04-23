@@ -56,16 +56,17 @@ func ToSignUp(c *gin.Context){
 			err = os.MkdirAll(imgPath, 0655)
 			postPath := "./web/users/" + user_id_str + "/posts"
 			err = os.MkdirAll(postPath, 0655)
-			UT.Err(err)
+			if err != nil {c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "File Server Error",})}
 
 			input, err := ioutil.ReadFile("./web/defaults/profile/avatar.png")
-			UT.Err(err)
+			if err != nil {c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "File Server Error",})}
 			err = ioutil.WriteFile(userPath + "/profile/avatar.png", input, 0655)
-			UT.Err(err)
+			if err != nil {c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "File Server Error",})}
 
 			session := UT.GetSession(c)
 			session.Values["id"] = user_id_str
 			session.Values["username"] = username
+			session.Values["avatar"] = "avatar.png"
 			session.Save(c.Request, c.Writer) 
 			c.JSON(http.StatusOK, map[string]interface{}{
 				"success": true,
@@ -78,10 +79,12 @@ func ToSignUp(c *gin.Context){
 func Basics(c *gin.Context){
 	is_loggedin(c, "")
 	my_id, my_username := UT.Get_Id_and_Username(c)
+	my_avatar := UT.Get_Avatar(c)
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"success": true,
 		"id": my_id,
 		"username": my_username,
+		"avatar": my_avatar,
 	})
 }
 
@@ -95,9 +98,10 @@ func ToLogin(c *gin.Context){
 		var count_id int
 		var username string
 		var password string
+		var avatar string
 		db := UT.Conn_DB()
 		defer db.Close()
-		db.QueryRow("SELECT COUNT(user_id), user_id, username, password FROM Users WHERE username = ?", login_username).Scan(&count_id, &id, &username, &password)
+		db.QueryRow("SELECT COUNT(user_id), user_id, username, password, avatar FROM Users WHERE username = ?", login_username).Scan(&count_id, &id, &username, &password, &avatar)
 		if count_id != 1{
 			panic("Incorrect username or password")
 		}else{
@@ -108,6 +112,7 @@ func ToLogin(c *gin.Context){
 				session := UT.GetSession(c)
 				session.Values["id"] = strconv.FormatInt(int64(id), 10)
 				session.Values["username"] = username
+				session.Values["avatar"] = avatar
 				session.Save(c.Request, c.Writer)
 				c.JSON(http.StatusOK, map[string]interface{}{
 					"success": true,
@@ -123,6 +128,7 @@ func GetFollowers(c *gin.Context){
 	var (
 		follower_id int
 		follower_name string
+		follower_avatar string
 		following_bool bool
 		my_id interface{}
 		message string
@@ -144,11 +150,12 @@ func GetFollowers(c *gin.Context){
 	if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "DB Error",})}
 	for rows.Next(){
 		rows.Scan(&follower_id)
-		db.QueryRow("SELECT username FROM Users WHERE user_id = ?", follower_id).Scan(&follower_name)
+		db.QueryRow("SELECT username, avatar FROM Users WHERE user_id = ?", follower_id).Scan(&follower_name, &follower_avatar)
 		db.QueryRow("SELECT COUNT(*) FROM Follow WHERE follow_by = ? AND follow_to = ?", my_id, follower_id).Scan(&following_bool)
 		follower := map[string]interface{}{
 			"id": follower_id,
 			"name": follower_name,
+			"avatar": follower_avatar,
 			"follow_relations":following_bool,
 		}
 		followers = append(followers, follower)
@@ -165,6 +172,7 @@ func GetFollowings(c *gin.Context){
 	var (
 		following_id int
 		following_name string
+		following_avatar string
 		my_id interface{}
 		message string
 	)
@@ -180,15 +188,16 @@ func GetFollowings(c *gin.Context){
 		message = "View "+ username +"'s followings"
 	}
 	stmt, err := db.Prepare("SELECT follow_to FROM Follow WHERE follow_by = ? ORDER BY created_date DESC")
-	UT.Err(err)
+	if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "DB Error",})}
 	rows, err := stmt.Query(my_id)
-	UT.Err(err)
+	if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "DB Error",})}
 	for rows.Next(){
 		rows.Scan(&following_id)
-		db.QueryRow("SELECT username FROM Users WHERE user_id = ?", following_id).Scan(&following_name)
+		db.QueryRow("SELECT username, avatar FROM Users WHERE user_id = ?", following_id).Scan(&following_name, &following_avatar)
 		following := map[string]interface{}{
 			"id": following_id,
 			"name": following_name,
+			"avatar": following_avatar,
 		}
 		followings = append(followings, following)
 	}
@@ -337,6 +346,7 @@ func ShowHottestUsers(c *gin.Context){
 		user_id int
 		user_likes int
 		user_name string
+		user_avatar string
 		latest_post_id int
 		latest_image_name string
 	)
@@ -349,10 +359,11 @@ func ShowHottestUsers(c *gin.Context){
 	UT.Err(err)
 	for rows.Next(){
 		rows.Scan(&user_id, &user_likes)
-		db.QueryRow("SELECT username, post_id, image_name from Images INNER JOIN Users using(user_id) where user_id = ? ORDER BY created_date DESC LIMIT 1", user_id).Scan(&user_name, &latest_post_id, &latest_image_name)
+		db.QueryRow("SELECT username, avatar, post_id, image_name from Images INNER JOIN Users using(user_id) where user_id = ? ORDER BY created_date DESC LIMIT 1", user_id).Scan(&user_name, &user_avatar, &latest_post_id, &latest_image_name)
 		user := map[string]interface{}{
 			"id": user_id,
 			"name": user_name,
+			"avatar": user_avatar,
 			"likes": user_likes,
 			"latest_post": latest_post_id,
 			"latest_image": latest_image_name,

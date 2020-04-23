@@ -242,8 +242,9 @@
 		success: function(r){
 			id = r.id;
 			name = r.username;
+			avatar = r.avatar;
 			$('#header_user_info').html(
-				$('#header_user_info').html() + '<span class="avatar w-32"><a href="/view_profile"><img src="users/'+id+'/profile/avatar.png" class="img-resonsive img-circle" width="25" height="25" alt="..."></a></span><span class="hidden-xs">'+name+'</span>'
+				$('#header_user_info').html() + '<span class="avatar w-32"><a href="/view_profile"><img src="users/'+id+'/profile/'+avatar+'" class="img-resonsive img-circle" width="25" height="25" alt="..."></a></span><span class="hidden-xs">'+name+'</span>'
 			);
 		},
 		error: function(e){console.log(e);}
@@ -271,7 +272,7 @@
 			var search_body = "";
 			if(res.users.length > 0){
 				$.each(res.users, function(index, user){
-    	    	    search_body = search_body + '<div class="followers-body"><a href="/view_users?name=' + user.user_name + '"><img class="img-responsive img-circle" src="users/' + user.user_id + '/profile/avatar.png" alt=""></a><div class="name-box"><h4>' + user.user_name + '</h4><span>@' + user.user_name + '</span></div></div>'	
+    	    	    search_body = search_body + '<div class="followers-body"><a href="/view_users?name=' + user.user_name + '"><img class="img-responsive img-circle" src="users/' + user.user_id + '/profile/'+user.user_avatar+'" alt=""></a><div class="name-box"><h4>' + user.user_name + '</h4><span>@' + user.user_name + '</span></div></div>'	
 				});
 			}
 			if(res.hashtags.length > 0){

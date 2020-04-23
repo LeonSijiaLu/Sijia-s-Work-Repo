@@ -275,6 +275,7 @@
 	<script type='text/javascript'>
 		var id = "";
 		var name = "";
+		var p_avatar = "";
 		var posts_num = "";
 		var followers_num = "";
 		var followings_num = "";
@@ -290,8 +291,9 @@
 			success: function(r){
 				id = r.id;
 				name = r.username;
+				p_avatar = r.avatar;
 				$('#header_user_info').html(
-					$('#header_user_info').html() + '<span class="avatar w-32"><a href="/view_profile"><img src="users/'+id+'/profile/avatar.png" class="img-resonsive img-circle" width="25" height="25" alt="..."></a></span><span class="hidden-xs">'+name+'</span>'
+					$('#header_user_info').html() + '<span class="avatar w-32"><a href="/view_profile"><img src="users/'+id+'/profile/'+p_avatar+'" class="img-resonsive img-circle" width="25" height="25" alt="..."></a></span><span class="hidden-xs">'+name+'</span>'
 				);
 			},
 			error: function(e){console.log(e);}
@@ -315,7 +317,7 @@
 					$('#profile_email').html(email);
 					$('#profile_quote').html(quote);
 					$('#profile_user').html(
-						$('#profile_user').html() + '<div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="post-content"><div class="author-post text-center"><a href="#"><img class="img-fluid img-circle" src="users/'+id+'/profile/avatar.png" alt="Image"></a></div></div></div></div></div>'
+						$('#profile_user').html() + '<div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="post-content"><div class="author-post text-center"><a href="#"><img class="img-fluid img-circle" src="users/'+id+'/profile/'+p_avatar+'" alt="Image"></a></div></div></div></div></div>'
 					);
 					if (r.profile_bg_images.length < 5){
 						if (r.profile_bg_images.length == 0){
@@ -401,13 +403,13 @@
 						comment_board = comment_board + '<li class="mySlides" style="width: 100%; background: rgba(0,0,0,0.8); border-radius: 0, 5px, 5px, 0;"><img style="height: auto !important; margin: auto;" class="img-responsive" src="users/'+id+'/posts/'+post.post_id+'/'+image.image_name+'" alt="Image"/></li>'
 					});
 					comment_board = comment_board + '</ul>'
-					comment_board = comment_board + '</div><div style="border-left: solid 1px #f4f4f4;" class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href=""><img class="img-responsive img-circle" src="users/'+post.created_by+'/profile/avatar.png" alt="Image"/></a><strong><a href="">'+name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all;">'+post.title+'</p><div style="word-break: break-all">'+post.content+'</div></div>'
+					comment_board = comment_board + '</div><div style="border-left: solid 1px #f4f4f4;" class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href=""><img class="img-responsive img-circle" src="users/'+post.created_by+'/profile/'+post.avatar+'" alt="Image"/></a><strong><a href="">'+name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all;">'+post.title+'</p><div style="word-break: break-all">'+post.content+'</div></div>'
 					
 	
 					if (post.comments != 0 && post.comments != false) {
 						comment_board = comment_board +'<ul class="img-comment-list">'
 						$.each(post.comments, function(index, comment) {
-							comment_board = comment_board + '<li><div class="comment-img"><a href="/view_users?name='+comment.username+'"><img src="users/'+comment.user_id+'/profile/avatar.png" class="img-responsive img-circle" alt="Image"/></a></div><div class="comment-text"><strong><a href="/view_users?name='+comment.username+'">'+comment.username+'</a></strong><p class="">'+comment.content+'</p> <span class="date sub-text">'+comment.comment_date+'</span></div></li>'
+							comment_board = comment_board + '<li><div class="comment-img"><a href="/view_users?name='+comment.username+'"><img src="users/'+comment.user_id+'/profile/'+comment.avatar+'" class="img-responsive img-circle" alt="Image"/></a></div><div class="comment-text"><strong><a href="/view_users?name='+comment.username+'">'+comment.username+'</a></strong><p class="">'+comment.content+'</p> <span class="date sub-text">'+comment.comment_date+'</span></div></li>'
 						});
 							comment_board = comment_board +'</ul>'
 					}else{
@@ -417,7 +419,7 @@
 							comment_board = comment_board + '<p>This post has no comments</p>'
 						}
 					}
-					comment_board = comment_board +'<div class="modal-meta-bottom"><ul><li><span class="thumb-xs"><img class="img-responsive img-circle" src="users/'+id+'/profile/avatar.png" alt="..."></span><div style="display: flex;"  class="comment-body"><input style="margin-right: 10px;" class="form-control input-sm post-comment-input" type="text" placeholder="Write your comment..."><a style="cursor: pointer;" onclick="commentPost(this, ' + "'" + post.post_id + "'" + ');" class="kafe kafe-btn-mint-small"><i class="fa"></i> Submit</a></div></li></ul></div></div></div></div></div></div></div></div>'
+					comment_board = comment_board +'<div class="modal-meta-bottom"><ul><li><span class="thumb-xs"><img class="img-responsive img-circle" src="users/'+id+'/profile/'+p_avatar+'" alt="..."></span><div style="display: flex;"  class="comment-body"><input style="margin-right: 10px;" class="form-control input-sm post-comment-input" type="text" placeholder="Write your comment..."><a style="cursor: pointer;" onclick="commentPost(this, ' + "'" + post.post_id + "'" + ');" class="kafe kafe-btn-mint-small"><i class="fa"></i> Submit</a></div></li></ul></div></div></div></div></div></div></div></div>'
 				});
 				$('#profile_main').html(
 					$('#profile_main').html() + post_board

@@ -15,6 +15,7 @@ func SearchContent(c *gin.Context){
 	var(
 		user_name string
 		user_id int
+		user_avatar string
 		hashtag_name string
 		hashtag_id int
 	)
@@ -23,15 +24,16 @@ func SearchContent(c *gin.Context){
 	search_words := strings.Fields(c.PostForm("search"))  
 
 	for _, word := range search_words {
-		stmt, err := db.Prepare("SELECT username, user_id FROM Users WHERE username LIKE ?")
+		stmt, err := db.Prepare("SELECT username, user_id, avatar FROM Users WHERE username LIKE ?")
 		if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "DB Error","success": false,})}
 		rows, err := stmt.Query("%"+word+"%")
 		if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "DB Error","success": false,})}
 		for rows.Next(){
-			rows.Scan(&user_name, &user_id)
+			rows.Scan(&user_name, &user_id, &user_avatar)
 			user := map[string]interface{}{
 				"user_id": user_id,
 				"user_name": user_name,
+				"user_avatar": user_avatar,
 			}
 			users = append(users, user)
 		}

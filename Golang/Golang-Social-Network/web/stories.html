@@ -238,6 +238,7 @@
 	<script type="text/javascript">
 	var my_id = "";
 	var my_name = "";
+	var my_avatar = "";
 	$.ajax({
 		url: "/basics",
   		type: "GET",
@@ -246,8 +247,9 @@
 		success: function(r){
 			my_id = r.id;
 			my_name = r.username;
+			my_avatar = r.avatar;
 			$('#header_user_info').html(
-				$('#header_user_info').html() + '<span class="avatar w-32"><a href="/view_profile"><img src="users/'+my_id+'/profile/avatar.png" class="img-resonsive img-circle" width="25" height="25" alt="..."></a></span><span class="hidden-xs">'+my_name+'</span>'
+				$('#header_user_info').html() + '<span class="avatar w-32"><a href="/view_profile"><img src="users/'+my_id+'/profile/'+my_avatar+'" class="img-resonsive img-circle" width="25" height="25" alt="..."></a></span><span class="hidden-xs">'+my_name+'</span>'
 			);
 		},
 		error: function(e){console.log(e);}

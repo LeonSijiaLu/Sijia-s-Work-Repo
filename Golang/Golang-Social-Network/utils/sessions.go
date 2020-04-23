@@ -19,3 +19,9 @@ func Get_Id_and_Username(c *gin.Context) (interface{}, interface{}){
 	username := session.Values["username"]
 	return id, username
 }
+
+func Get_Avatar(c *gin.Context) (interface{}){
+	session := GetSession(c)
+	avatar := session.Values["avatar"]
+	return avatar
+}

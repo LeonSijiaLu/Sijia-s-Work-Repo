@@ -262,8 +262,9 @@
 		success: function(r){
 			id = r.id;
 			name = r.username;
+			avatar = r.avatar;
 			$('#header_user_info').html(
-				$('#header_user_info').html() + '<span class="avatar w-32"><a href="/view_profile"><img src="users/'+id+'/profile/avatar.png" class="img-resonsive img-circle" width="25" height="25" alt="..."></a></span><span class="hidden-xs">'+name+'</span>'
+				$('#header_user_info').html() + '<span class="avatar w-32"><a href="/view_profile"><img src="users/'+id+'/profile/'+avatar+'" class="img-resonsive img-circle" width="25" height="25" alt="..."></a></span><span class="hidden-xs">'+name+'</span>'
 			);
 		},
 		error: function(e){console.log(e);}

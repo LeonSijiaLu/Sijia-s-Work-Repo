@@ -281,15 +281,15 @@
 				error: function(e){console.log(e);}
 			}).done(function(){
 				var follow_main = "";
-				follow_main = follow_main + '<div class="followers-body"><a href="/view_users?name='+user.name+'"><img class="img-responsive img-circle" src="users/'+user.id+'/profile/avatar.png" alt=""></a><div class="name-box"><h4>'+user.name+'</h4><span>@'+user.name+'</span><div class="followers-base"><ul class="list-group"><li class="list-group-item full-width"><div class="pull-left" style="margin-right: 20px;">'
+				follow_main = follow_main + '<div class="followers-body"><a href="/view_users?name='+user.name+'"><img class="img-responsive img-circle" src="users/'+user.id+'/profile/'+user.avatar+'" alt=""></a><div class="name-box"><h4>'+user.name+'</h4><span>@'+user.name+'</span><div class="followers-base"><ul class="list-group"><li class="list-group-item full-width"><div class="pull-left" style="margin-right: 20px;">'
 				for (i = 0; i < user_followers.length; i++) {
 					if (i >= 10) { break; }
-  					follow_main = follow_main + '<a href="/view_users?name='+user_followers[i].name+'"><img src="users/'+user_followers[i].id+'/profile/avatar.png" alt="" class="img-circle max-w-40 "></a>'
+  					follow_main = follow_main + '<a href="/view_users?name='+user_followers[i].name+'"><img src="users/'+user_followers[i].id+'/profile/'+user.avatar+'" alt="" class="img-circle max-w-40 "></a>'
 				}
 				follow_main = follow_main + '<button class="btn btn-add-gray"><i class="fa fa-plus"></i></button><span> '+user_followers.length+' Followers </span></div></li> <li class="list-group-item full-width"><div class="pull-left">'
 				for (i = 0; i < user_followings.length; i++) {
   					if (i >= 10) { break; }
-					follow_main = follow_main + '<a href="/view_users?name='+user_followings[i].name+'"><img src="users/'+user_followings[i].id+'/profile/avatar.png" alt="" class="img-circle max-w-40 "></a>'
+					follow_main = follow_main + '<a href="/view_users?name='+user_followings[i].name+'"><img src="users/'+user_followings[i].id+'/profile/'+user.avatar+'" alt="" class="img-circle max-w-40 "></a>'
 				}
 				follow_main = follow_main + '<button class="btn btn-add-gray"><i class="fa fa-plus"></i></button><span> '+user_followings.length+' Following </span></div></li></ul></div></div></div>'
 				$('#profile_followings').html(

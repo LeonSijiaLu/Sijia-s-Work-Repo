@@ -191,6 +191,7 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 		userID int
 		username string
 		email string
+		avatar string
 		job string
 		quote string
 		views int
@@ -210,7 +211,7 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 		UT.Err(err)
 	}
 
-	db.QueryRow("SELECT COUNT(user_id), user_id, username, email FROM Users WHERE user_id = ?", target_id).Scan(&userCount, &userID, &username, &email)
+	db.QueryRow("SELECT COUNT(user_id), user_id, username, email, avatar FROM Users WHERE user_id = ?", target_id).Scan(&userCount, &userID, &username, &email, &avatar)
 	db.QueryRow("SELECT job, quote, views FROM Profile WHERE user_id = ?", target_id).Scan(&job, &quote, &views)
 	if userCount != 1 {panic("Invalid target user")}
 	user := map[string]interface{}{
@@ -220,6 +221,7 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 		"job": job,
 		"quote": quote,
 		"views": views,
+		"avatar": avatar,
 	}
 	//goTo404(c, userCount)
 
@@ -236,6 +238,7 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 				"title": title,
 				"content": content,
 				"created_by": createdBy,
+				"avatar": avatar,
 				"likes": likes,
 				"liked_by_you": liked,
 				"created_date": post_created_date,
@@ -251,6 +254,7 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 				"title": title,
 				"content": content,
 				"created_by": createdBy,
+				"avatar": avatar,
 				"likes": likes,
 				"liked_by_you": liked,
 				"created_date": post_created_date,
@@ -436,20 +440,22 @@ func ShowComments(c *gin.Context, post_id interface{}) []interface{}{
 		content string
 		likes int
 		user_name string
+		avatar string
 		comment_date string
 	)
 	comments := []interface{}{}
 	db := UT.Conn_DB()
 	defer db.Close()
-	stmt, err := db.Prepare("SELECT Comments.comment_id, Comments.user_id, Comments.content, Comments.likes, Users.username, DATE(Comments.created_date) from Comments INNER JOIN Users using (user_id) where Comments.post_id = ? ORDER BY Comments.likes DESC, Comments.created_date DESC")
+	stmt, err := db.Prepare("SELECT Comments.comment_id, Comments.user_id, Comments.content, Comments.likes, Users.username, Users.avatar, DATE(Comments.created_date) from Comments INNER JOIN Users using (user_id) where Comments.post_id = ? ORDER BY Comments.likes DESC, Comments.created_date DESC")
 	UT.Err(err)
 	rows, err := stmt.Query(post_id)
 	UT.Err(err)
 	for rows.Next(){
-		rows.Scan(&comment_id, &user_id, &content, &likes, &user_name, &comment_date)
+		rows.Scan(&comment_id, &user_id, &content, &likes, &user_name, &avatar, &comment_date)
 		comment := map[string]interface{}{
 			"comment_id": comment_id,
 			"username": user_name,
+			"avatar": avatar,
 			"user_id": user_id,
 			"post_id": post_id,
 			"content": content,
@@ -467,18 +473,20 @@ func ShowLikes(c *gin.Context, post_id interface{}, total_likes int) []interface
 		var (
 			user_id int
 			user_name string
+			avatar string
 		)
 		db := UT.Conn_DB()
 		defer db.Close()
-		stmt, err := db.Prepare("SELECT DISTINCT Likes.like_by, Users.username FROM Likes INNER JOIN Users ON Likes.like_by = Users.user_id WHERE post_id = ?")
+		stmt, err := db.Prepare("SELECT DISTINCT Likes.like_by, Users.username, Users.avatar FROM Likes INNER JOIN Users ON Likes.like_by = Users.user_id WHERE post_id = ?")
 		UT.Err(err)
 		rows, err := stmt.Query(post_id)
 		UT.Err(err)
 		for rows.Next(){
-			rows.Scan(&user_id, &user_name)
+			rows.Scan(&user_id, &user_name, &avatar)
 			like := map[string]interface{}{
 				"user_id": user_id,
 				"user_name": user_name,
+				"avatar": avatar,
 			}
 			likes = append(likes, like)
 		}
@@ -496,6 +504,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 		title string
 		content string
 		name string
+		avatar string
 		allow_comments bool
 		created_date string
 		liked_by_you bool
@@ -510,7 +519,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 	posts := []interface{}{}
 	for rows.Next(){
 		rows.Scan(&post_id, &likes, &created_by, &comments_num, &title, &content, &allow_comments, &created_date)
-		db.QueryRow("SELECT username FROM Users WHERE user_id = ?", created_by).Scan(&name)
+		db.QueryRow("SELECT username, avatar FROM Users WHERE user_id = ?", created_by).Scan(&name, &avatar)
 		db.QueryRow("SELECT COUNT(*) FROM Likes WHERE post_id = ? AND like_by = ?", post_id, my_id).Scan(&liked_by_you)
 		if allow_comments == true{
 			post := map[string]interface{}{
@@ -519,6 +528,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 				"liked_users": ShowLikes(c, post_id, likes),
 				"user_id": created_by,
 				"user_name": name,
+				"avatar": avatar,
 				"comments_num": comments_num,
 				"title": title,
 				"content": content,
@@ -536,6 +546,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 				"liked_users": ShowLikes(c, post_id, likes),
 				"user_id": created_by,
 				"user_name": name,
+				"avatar": avatar,
 				"comments_num": comments_num,
 				"title": title,
 				"content": content,
@@ -675,6 +686,7 @@ func ShowHottestPosts(c *gin.Context){
 	is_loggedin(c, "")
 	var (
 		username string
+		avatar string
 		post_id int
 		post_likes int
 		created_by string
@@ -689,18 +701,19 @@ func ShowHottestPosts(c *gin.Context){
 	my_id, _ := UT.Get_Id_and_Username(c)
 	db := UT.Conn_DB()
 	defer db.Close()
-	stmt, err := db.Prepare("SELECT Users.username, Posts.post_id, Posts.likes, Posts.created_by, DATE(Posts.created_date), Posts.allow_comments, Posts.comments_num, Posts.title, Posts.content FROM Posts INNER JOIN Users ON Posts.created_by = Users.user_id ORDER BY created_date DESC, likes DESC, comments_num DESC LIMIT 30;")
+	stmt, err := db.Prepare("SELECT Users.username, Users.avatar, Posts.post_id, Posts.likes, Posts.created_by, DATE(Posts.created_date), Posts.allow_comments, Posts.comments_num, Posts.title, Posts.content FROM Posts INNER JOIN Users ON Posts.created_by = Users.user_id ORDER BY created_date DESC, likes DESC, comments_num DESC LIMIT 30;")
 	UT.Err(err)
 	rows, err := stmt.Query()
 	UT.Err(err)
 	for rows.Next(){
-		rows.Scan(&username, &post_id, &post_likes, &created_by, &created_date, &allow_comments, &comments_num, &title, &content)
+		rows.Scan(&username, &avatar, &post_id, &post_likes, &created_by, &created_date, &allow_comments, &comments_num, &title, &content)
 		db.QueryRow("SELECT COUNT(*) FROM Likes WHERE post_id = ? AND like_by = ?", post_id, my_id).Scan(&liked_by_you)
 		if allow_comments == true{
 			post := map[string]interface{}{
 				"post_id": post_id,
 				"user_id": created_by,
 				"user_name": username,
+				"avatar": avatar,
 				"likes": post_likes,
 				"created_date": created_date,
 				"comments": ShowComments(c, post_id),
@@ -717,6 +730,7 @@ func ShowHottestPosts(c *gin.Context){
 				"post_id": post_id,
 				"user_id": created_by,
 				"user_name": username,
+				"avatar": avatar,
 				"likes": post_likes,
 				"created_date": created_date,
 				"comments": allow_comments,
