@@ -252,6 +252,20 @@
 		},
 		error: function(e){console.log(e);}
 	}).done(function(){
+		loadStoriesHottestImages();
+		loadStoriesFollowingHashtags();
+	});
+
+	$('#stories-navigation-bar').html(
+		$('#stories-navigation-bar').html()+'<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'
+	);
+
+	function checkedButton(this_button){
+		$('.hashtag-option-button').removeClass('hashtag-option-button-checked');
+		$(this_button).addClass('hashtag-option-button-checked');
+	}
+
+	function loadStoriesHottestImages(){
 		$.ajax({
 			url: "/api/hashtag/popular",
   			type: "GET",
@@ -273,7 +287,9 @@
 			},
 			error: function(e){console.log(e);}
 		});
+	}
 
+	function loadStoriesFollowingHashtags(){
 		$.ajax({
 			url: "/api/hashtag/following",
   			type: "GET",
@@ -294,15 +310,6 @@
 			},
 			error: function(e){console.log(e);}
 		});
-	});
-
-	$('#stories-navigation-bar').html(
-		$('#stories-navigation-bar').html()+'<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'
-	);
-
-	function checkedButton(this_button){
-		$('.hashtag-option-button').removeClass('hashtag-option-button-checked');
-		$(this_button).addClass('hashtag-option-button-checked');
 	}
 
 	$(document).ready(function(){

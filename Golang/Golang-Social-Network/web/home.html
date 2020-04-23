@@ -263,20 +263,9 @@
 		},
 		error: function(e){console.log(e);}
 	}).done(function(){
-		$.ajax({
-			url: "/api/user/popular",
-	  		type: "GET",
-	  		timeout: 0,
-			dataType: 'json',
-			success: function(r){
-				$.each(r.users, function(index,user){
-					$('#hottest_users').html(
-						$('#hottest_users').html() + '<div class="suggestion-body"><a href="/view_users?name='+user.name+'"><img class="img-responsive img-circle" src="users/'+user.id+'/profile/avatar.png" alt="Image"></a><div class="name-box"><h4>'+user.name+'</h4><span>@'+user.name+'</span></div><span><i class="fa fa-plus"></i></span></div>'
-					);
-				});
-			},
-			error: function(e){console.log(e);}
-		});
+		loadHottestUser();
+		loadHottestImages();
+		loadHottestHashtags();
 
 		$.ajax({
 			url: "/api/explore",
@@ -348,38 +337,60 @@
 		});
 	});
 
-	$.ajax({
-		url: "/api/images/popular",
-  		type: "GET",
-  		timeout: 0,
-		dataType: 'json',
-		success: function(r){
-			$.each(r.images, function(index, image){
-				if ((index + 1)%2 == 1){
-					hottest_images_board = hottest_images_board + '<div class="row"><div class="col-lg-6"><a href="#"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></a></div>'
-				}else if ((index + 1)%2 == 0 || index + 1 == posts_length){
-					hottest_images_board = hottest_images_board + '<div class="col-lg-6"><a href="#"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></a></div></div>'
-				}else{
-					hottest_images_board = hottest_images_board + '<div class="col-lg-6"><a href="#"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></a></div>'
-				}
-			});
-			$('#home_hottest_images').html($('#home_hottest_images').html() + hottest_images_board);
-		},
-		error: function(e){console.log(e);}
-	});
+	function loadHottestImages(){
+		$.ajax({
+			url: "/api/images/popular",
+  			type: "GET",
+  			timeout: 0,
+			dataType: 'json',
+			success: function(r){
+				$.each(r.images, function(index, image){
+					if ((index + 1)%2 == 1){
+						hottest_images_board = hottest_images_board + '<div class="row"><div class="col-lg-6"><a href="#"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></a></div>'
+					}else if ((index + 1)%2 == 0 || index + 1 == posts_length){
+						hottest_images_board = hottest_images_board + '<div class="col-lg-6"><a href="#"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></a></div></div>'
+					}else{
+						hottest_images_board = hottest_images_board + '<div class="col-lg-6"><a href="#"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></a></div>'
+					}
+				});
+				$('#home_hottest_images').html($('#home_hottest_images').html() + hottest_images_board);
+			},
+			error: function(e){console.log(e);}
+		});
+	}
 
-	$.ajax({
-		url: "/api/hashtag/popular",
-  		type: "GET",
-  		timeout: 0,
-		dataType: 'json',
-		success: function(r){
-			$.each(r.hashtags, function(index,hashtag){
-				showOnePostsPerHashtag(hashtag.hashtag_name, hashtag.hashtag_id);
-			});
-		},
-		error: function(e){console.log(e);}
-	});
+	function loadHottestHashtags(){
+		$.ajax({
+			url: "/api/hashtag/popular",
+  			type: "GET",
+  			timeout: 0,
+			dataType: 'json',
+			success: function(r){
+				$.each(r.hashtags, function(index,hashtag){
+					showOnePostsPerHashtag(hashtag.hashtag_name, hashtag.hashtag_id);
+				});
+			},
+			error: function(e){console.log(e);}
+		});
+	}
+
+
+	function loadHottestUser(){
+		$.ajax({
+			url: "/api/user/popular",
+	  		type: "GET",
+	  		timeout: 0,
+			dataType: 'json',
+			success: function(r){
+				$.each(r.users, function(index,user){
+					$('#hottest_users').html(
+						$('#hottest_users').html() + '<div class="suggestion-body"><a href="/view_users?name='+user.name+'"><img class="img-responsive img-circle" src="users/'+user.id+'/profile/avatar.png" alt="Image"></a><div class="name-box"><h4>'+user.name+'</h4><span>@'+user.name+'</span></div><span><i class="fa fa-plus"></i></span></div>'
+					);
+				});
+			},
+			error: function(e){console.log(e);}
+		});
+	}
 
 	$('#home-navigation-bar').html(
 		$('#home-navigation-bar').html()+'<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'

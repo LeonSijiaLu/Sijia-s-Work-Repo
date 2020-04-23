@@ -40,6 +40,10 @@
    Navbar Styles
    ========================================================================== */
 
+.not-following {
+    background: cornflowerblue !important;
+}
+
 .liked_post {
     color: #e16a70 !important;
 }

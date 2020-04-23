@@ -65,8 +65,9 @@ func main(){
 		api.GET("/user/followers/:userName", route.GetFollowers)
 		api.GET("/user/followings/:userName", route.GetFollowings)
 		api.GET("/user/hashtags/:userName", route.GetHashtags)
-		api.POST("/user/follow/:userName", route.FollowUser)
-		api.POST("/user/unfollow/:userName", route.UnFollowUser)
+
+		api.POST("/user/followPressed/:userID", route.FollowOrUnfollowUser)
+
 		api.POST("/user/blacklist/:userName", route.BlockUser)
 		api.POST("/user/unblacklist/:userName", route.UnBlockUser)
 		api.POST("/user/ID/:userName", route.GetUserID)

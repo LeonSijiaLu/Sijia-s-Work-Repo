@@ -234,6 +234,7 @@
 	<script src="assets/js/like.js"></script>
 	<script src="assets/js/comment.js"></script>
 	<script src="assets/js/account.js"></script>
+	<script src="assets/js/follow.js"></script>
 	<script src="assets/plugins/slimscroll/jquery.slimscroll.js"></script>
 	<script type="text/javascript">
 	var my_id = "";
@@ -332,6 +333,14 @@
 			error: function(e){console.log(e);}
 		});
 
+		loadHottestImages();
+	});
+	$('#exploring-navigation-bar').html(
+		$('#exploring-navigation-bar').html()+'<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'
+	);
+
+	function loadHottestImages(){
+		$('#exploring_top_row').html("");
 		$.ajax({
 			url: "/api/user/popular",
   			type: "GET",
@@ -341,7 +350,7 @@
 				var hottest_images = "";
 				for (index = 0; index < r.users.length; index++) {
 					if (index >= 4) { break; }
-					hottest_images = hottest_images + '<div class="col-lg-3"><div class="tr-section"><div class="tr-post"><div class="entry-header"><div class="entry-thumbnail"><a href="#"><img style="width: auto;" class="img-fluid" src="users/'+r.users[index].id+'/posts/'+r.users[index].latest_post+'/'+r.users[index].latest_image+'" alt="Image"></a></div></div><div class="post-content"><div class="author-post text-center"><a href="/view_users?name='+r.users[index].name+'"><img class="img-fluid rounded-circle" src="users/'+r.users[index].id+'/profile/avatar.png" alt="Image"></a></div><div class="card-content"><h4>'+r.users[index].name+'</h4><span>@'+r.users[index].name+'</span></div><a href="" class="kafe-btn kafe-btn-mint-small full-width"> Follow</a></div></div></div></div>'
+					hottest_images = hottest_images + '<div class="col-lg-3"><div class="tr-section"><div class="tr-post"><div class="entry-header"><div class="entry-thumbnail"><a href="#"><img style="width: auto;" class="img-fluid" src="users/'+r.users[index].id+'/posts/'+r.users[index].latest_post+'/'+r.users[index].latest_image+'" alt="Image"></a></div></div><div class="post-content"><div class="author-post text-center"><a href="/view_users?name='+r.users[index].name+'"><img class="img-fluid rounded-circle" src="users/'+r.users[index].id+'/profile/avatar.png" alt="Image"></a></div><div class="card-content"><h4>'+r.users[index].name+'</h4><span>@'+r.users[index].name+'</span></div><a onclick="reloadHottestImages(this, ' + "'" + r.users[index].id + "'" + ')" class="kafe-btn kafe-btn-mint-small full-width"> Follow</a></div></div></div></div>'
 				}
 				$('#exploring_top_row').html(
 					$('#exploring_top_row').html() + hottest_images
@@ -349,10 +358,12 @@
 			},
 			error: function(e){console.log(e);}
 		});
-	});
-	$('#exploring-navigation-bar').html(
-		$('#exploring-navigation-bar').html()+'<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'
-	);
+	}
+
+	function reloadHottestImages(follow_button, user_id){
+		followUser(follow_button, user_id);
+		loadHottestImages();
+	}
 
 	$(document).ready(function(){
 		$('#Slim,#Slim2').slimScroll({

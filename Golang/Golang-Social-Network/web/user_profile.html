@@ -272,6 +272,7 @@
 	<script src="assets/js/like.js"></script>
 	<script src="assets/js/comment.js"></script>
 	<script src="assets/js/account.js"></script>
+	<script src="assets/js/follow.js"></script>
 	<script src="assets/plugins/slimscroll/jquery.slimscroll.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 	<script type='text/javascript'>
@@ -330,15 +331,15 @@
 							posts_num = r.posts.length;
 							posts = r.posts;
 							if (r.following_bool == true){
-								$('#follow_relation').html($('#follow_relation').html() + '<a style="cursor: pointer;" class="kafe-btn kafe-btn-mint"><i class="fa fa-check"></i> Following</a>');
+								$('#follow_relation').html($('#follow_relation').html() + '<a style="cursor: pointer;" class="kafe-btn kafe-btn-mint" onclick="followUser(this, ' + "'" + id + "'" + ');"><i class="fa fa-check"></i> Following</a>');
 							}else{
-								$('#follow_relation').html($('#follow_relation').html() + '<a style="cursor: pointer; background: cornflowerblue;" class="kafe-btn kafe-btn-mint"><i class="fa"></i> Follow</a>');
+								$('#follow_relation').html($('#follow_relation').html() + '<a style="cursor: pointer;" class="kafe-btn kafe-btn-mint not-following" onclick="followUser(this, ' + "'" + id + "'" + ');"><i class="fa"></i> Follow</a>');
 							}
 							$('#profile_followers_num').html(
-								$('#profile_followers_num').html() + '<a href="/followers">Followers <span >'+followers_num+'</span></a>'
+								$('#profile_followers_num').html() + '<a href="/followers?name='+name+'">Followers <span >'+followers_num+'</span></a>'
 							);
 							$('#profile_followings_num').html(
-								$('#profile_followings_num').html() + '<a href="/followings">Following <span >'+followings_num+'</span></a>'
+								$('#profile_followings_num').html() + '<a href="/followings?name='+name+'">Following <span >'+followings_num+'</span></a>'
 							);
 							$('#profile_posts_num').html(
 								$('#profile_posts_num').html() + '<a href="">Posts <span id="profile_posts_num">'+posts_num+'</span></a>'

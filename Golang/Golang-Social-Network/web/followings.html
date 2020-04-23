@@ -231,13 +231,19 @@
 	<script src="assets/js/notify.js"></script>
 	<script src="assets/js/search.js"></script>
 	<script src="assets/js/account.js"></script>
+	<script src="assets/js/follow.js"></script>
 	<script src="assets/plugins/slimscroll/jquery.slimscroll.js"></script>
 	<script type='text/javascript'>
 	var data = "";
 	var user_followers = "";
 	var user_followings = "";
+	var name = "";
+	var append_name = new window.URLSearchParams(window.location.search).get('name');
+	if (append_name != null && append_name != ""){
+		name = "/"+append_name;
+	}
 	$.ajax({
-		url: "/api/user/followings",
+		url: "/api/user/followings"+name,
   		type: "GET",
   		timeout: 0,
 		dataType: 'json',
@@ -245,45 +251,48 @@
 		error: function(e){console.log(e);}
 	}).done(function(){
 		$.each(data, function(index, user){
-			$.ajax({
-				url: "/api/user/followings/"+user.name,
-				type: "GET",
-  				timeout: 0,
-				dataType: 'json',
-				success: function(r){user_followings = r.followings;},
-				error: function(e){console.log(e);}
-			}).done(function(){
-				$.ajax({
-					url: "/api/user/followers/"+user.name,
-					type: "GET",
-  					timeout: 0,
-					dataType: 'json',
-					success: function(r){user_followers = r.followers;},
-					error: function(e){console.log(e);}
-				}).done(function(){
-					var follow_main = "";
-					follow_main = follow_main + '<div class="followers-body"><a href="/view_users?name='+user.name+'"><img class="img-responsive img-circle" src="users/'+user.id+'/profile/avatar.png" alt=""></a><div class="name-box"><h4>'+user.name+'</h4><span>@'+user.name+'</span><div class="followers-base"><ul class="list-group"><li class="list-group-item full-width"><div class="pull-left" style="margin-right: 20px;">'
-					for (i = 0; i < user_followers.length; i++) {
-						if (i >= 10) { break; }
-  						follow_main = follow_main + '<a href="/view_users?name='+user_followers[i].name+'"><img src="users/'+user_followers[i].id+'/profile/avatar.png" alt="" class="img-circle max-w-40 "></a>'
-					}
-					follow_main = follow_main + '<button class="btn btn-add-gray"><i class="fa fa-plus"></i></button><span> '+user_followers.length+' Followers </span></div></li> <li class="list-group-item full-width"><div class="pull-left">'
-
-					for (i = 0; i < user_followings.length; i++) {
-  						if (i >= 10) { break; }
-						follow_main = follow_main + '<a href="/view_users?name='+user_followings[i].name+'"><img src="users/'+user_followings[i].id+'/profile/avatar.png" alt="" class="img-circle max-w-40 "></a>'
-					}
-					follow_main = follow_main + '<button class="btn btn-add-gray"><i class="fa fa-plus"></i></button><span> '+user_followings.length+' Following </span></div></li></ul></div></div><span><a href="" class="kafe-btn kafe-btn-mint-small"> <i class="fa fa-check"></i>Following</a></span></div>'
-					$('#profile_followings').html(
-						$('#profile_followings').html() + follow_main
-					);
-				});
-			});
+			loadFollowingsRelations(user);
 		});
 	});
 	$('#followings-navigation-bar').html(
 		$('#followings-navigation-bar').html() + '<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'
 	)
+
+	function loadFollowingsRelations(user){
+		$.ajax({
+			url: "/api/user/followings/"+user.name,
+			type: "GET",
+  			timeout: 0,
+			dataType: 'json',
+			success: function(r){user_followings = r.followings;},
+			error: function(e){console.log(e);}
+		}).done(function(){
+			$.ajax({
+				url: "/api/user/followers/"+user.name,
+				type: "GET",
+  				timeout: 0,
+				dataType: 'json',
+				success: function(r){user_followers = r.followers;},
+				error: function(e){console.log(e);}
+			}).done(function(){
+				var follow_main = "";
+				follow_main = follow_main + '<div class="followers-body"><a href="/view_users?name='+user.name+'"><img class="img-responsive img-circle" src="users/'+user.id+'/profile/avatar.png" alt=""></a><div class="name-box"><h4>'+user.name+'</h4><span>@'+user.name+'</span><div class="followers-base"><ul class="list-group"><li class="list-group-item full-width"><div class="pull-left" style="margin-right: 20px;">'
+				for (i = 0; i < user_followers.length; i++) {
+					if (i >= 10) { break; }
+  					follow_main = follow_main + '<a href="/view_users?name='+user_followers[i].name+'"><img src="users/'+user_followers[i].id+'/profile/avatar.png" alt="" class="img-circle max-w-40 "></a>'
+				}
+				follow_main = follow_main + '<button class="btn btn-add-gray"><i class="fa fa-plus"></i></button><span> '+user_followers.length+' Followers </span></div></li> <li class="list-group-item full-width"><div class="pull-left">'
+				for (i = 0; i < user_followings.length; i++) {
+  					if (i >= 10) { break; }
+					follow_main = follow_main + '<a href="/view_users?name='+user_followings[i].name+'"><img src="users/'+user_followings[i].id+'/profile/avatar.png" alt="" class="img-circle max-w-40 "></a>'
+				}
+				follow_main = follow_main + '<button class="btn btn-add-gray"><i class="fa fa-plus"></i></button><span> '+user_followings.length+' Following </span></div></li></ul></div></div><span><a class="kafe-btn kafe-btn-mint-small" onclick="followUser(this, ' + "'" + user.id + "'" + ');"> <i class="fa fa-check"></i>Following</a></span></div>'
+				$('#profile_followings').html(
+					$('#profile_followings').html() + follow_main
+				);
+			});
+		});
+	}
 
 	$(document).ready(function(){
 		$('#Slim,#Slim2').slimScroll({

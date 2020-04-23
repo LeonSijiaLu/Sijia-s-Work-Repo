@@ -238,48 +238,52 @@ func GetHashtags(c *gin.Context){
 	})
 }
 
-func FollowUser(c *gin.Context){
+func FollowOrUnfollowUser(c *gin.Context){
 	is_loggedin(c, "")
-	var (
-		target_id int
-	)
-	username := c.Param("userName")
 	db := UT.Conn_DB()
 	defer db.Close()
-	db.QueryRow("SELECT user_id FROM Users WHERE username = ?", username).Scan(&target_id)
-	if target_id == 0 {panic("Invalid username")}
+	var (
+		follow_relations bool
+		res bool
+	)
 	my_id, _ := UT.Get_Id_and_Username(c)
-	if my_id == 0 {panic("Invalid user id")}
-	if my_id != target_id{
-		_, err := db.Exec("INSERT INTO Follow (follow_by, follow_to) VALUES(?, ?)", my_id, target_id)
-		UT.Err(err)
-		c.JSON(http.StatusOK, map[string]interface{}{
-			"message": "Followed user successfully",
-			"success": true,
-		})
-	}else{panic("You cannot follow yourself")}
+	user_id := c.Param("userID")
+	if my_id != user_id {
+		db.QueryRow("SELECT COUNT(*) FROM Follow WHERE follow_by = ? AND follow_to = ?", my_id, user_id).Scan(&follow_relations)
+		if follow_relations == true {
+			res = UnFollowUser(my_id, user_id)
+		}else{
+			res = FollowUser(my_id, user_id)
+		}
+		if res == true{
+			c.JSON(http.StatusOK, map[string]interface{}{
+				"message": "Success",
+				"success": true,
+			});
+		}else{
+			c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "DB Error",})
+		}
+	}
 }
 
-func UnFollowUser(c *gin.Context){
-	is_loggedin(c, "")
-	var (
-		target_id int
-	)
-	username := c.Param("userName")
+func FollowUser(my_id interface{}, target_id interface{}) bool{
 	db := UT.Conn_DB()
 	defer db.Close()
-	db.QueryRow("SELECT user_id FROM Users WHERE username = ?", username).Scan(&target_id)
-	if target_id == 0 {panic("Invalid username")}
-	my_id, _ := UT.Get_Id_and_Username(c)
-	if my_id == 0 {panic("Invalid user id")}
+	if my_id != target_id{
+		_, err := db.Exec("INSERT INTO Follow (follow_by, follow_to) VALUES(?, ?)", my_id, target_id)
+		if err != nil{return false}
+	}
+	return true
+}
+
+func UnFollowUser(my_id interface{}, target_id interface{}) bool{
+	db := UT.Conn_DB()
+	defer db.Close()
 	if my_id != target_id{
 		_, err := db.Exec("DELETE FROM Follow WHERE follow_by = ? AND follow_to = ?", my_id, target_id)
-		UT.Err(err)
-		c.JSON(http.StatusOK, map[string]interface{}{
-			"message": "Unfollowed user successfully",
-			"success": true,
-		})
-	}else{panic("You cannot unfollow yourself")}
+		if err != nil{return false}
+	}
+	return true
 }
 
 func BlockUser(c *gin.Context){
