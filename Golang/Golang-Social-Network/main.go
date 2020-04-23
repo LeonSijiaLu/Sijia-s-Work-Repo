@@ -59,6 +59,7 @@ func main(){
 		api.POST("/comments/like/:commentID", route.LikeComments)
 		api.POST("/comments/unlike/:commentID", route.UnlikeComments)
 		api.POST("/comments/delete/:commentID", route.DeleteComments)
+		api.GET("/comments/show/:postID", route.DisplayComments)
 
 		api.GET("/user/popular", route.ShowHottestUsers)
 		api.GET("/user/followers", route.GetFollowers)

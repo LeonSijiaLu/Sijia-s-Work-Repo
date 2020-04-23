@@ -311,20 +311,9 @@
 					
 					comment_board = comment_board + '</div><div style="border-left: solid 1px #f4f4f4;" class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href=""><img class="img-responsive img-circle" src="users/'+post.user_id+'/profile/'+post.avatar+'" alt="Image"/></a><strong><a href="">'+post.user_name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all">'+post.title+'</p><div style="word-break: break-all">'+post.content+'</div><a href="" class="kafe kafe-btn-mint-small"><i class="fa fa-check-square"></i> Following</a></div>'
 					
-					if (post.comments != 0 && post.comments != false) {
-						comment_board = comment_board +'<ul class="img-comment-list">'
-						$.each(post.comments, function(index, comment) {
-							comment_board = comment_board + '<li><div class="comment-img"><img src="users/'+comment.user_id+'/profile/'+comment.avatar+'" class="img-responsive img-circle" alt="Image"/></div><div class="comment-text"><strong><a href="">'+comment.username+'</a></strong><p class="">'+comment.content+'</p> <span class="date sub-text">'+comment.comment_date+'</span></div></li>'
-						});
-							comment_board = comment_board +'</ul>'
-					}else{
-						if (post.allow_comments == false){
-							comment_board = comment_board + '<p>This post does not allow comments</p>'
-						}else{
-							comment_board = comment_board + '<p>This post has no comments</p>'
-						}
-					}
-					comment_board = comment_board +'<div class="modal-meta-bottom"><ul><li><span class="thumb-xs"><img class="img-responsive img-circle" src="users/'+my_id+'/profile/'+my_avatar+'" alt="..."></span><div style="display: flex;" class="comment-body"><input style="margin-right: 10px;" class="form-control input-sm post-comment-input" type="text" placeholder="Write your comment..."><a style="cursor: pointer;" onclick="commentPost(this, ' + "'" + post.post_id + "'" + ');" class="kafe kafe-btn-mint-small"><i class="fa"></i> Submit</a></div></li></ul></div></div></div></div></div></div></div></div>'
+					comment_board = comment_board + loadComments(post.comments, true, post.allow_comments);
+
+					comment_board = comment_board +'<div class="modal-meta-bottom"><ul><li><span class="thumb-xs"><img class="img-responsive img-circle" src="users/'+my_id+'/profile/'+my_avatar+'" alt="..."></span><div style="display: flex;" class="comment-body"><input style="margin-right: 10px;" class="form-control input-sm post-comment-input" type="text" placeholder="Write your comment..."><a style="cursor: pointer;" onclick="publishComments(this, ' + "'" + post.post_id + "'" + ', false, '+ post.allow_comments +' );" class="kafe kafe-btn-mint-small"><i class="fa"></i> Submit</a></div></li></ul></div></div></div></div></div></div></div></div>'
 				});
 				if (post_main == ""){
 					post_main = "<p align='center'>No posts to show</p>";
@@ -349,11 +338,11 @@
 			success: function(r){
 				$.each(r.images, function(index, image){
 					if ((index + 1)%2 == 1){
-						hottest_images_board = hottest_images_board + '<div class="row"><div class="col-lg-6"><a href="#"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></a></div>'
+						hottest_images_board = hottest_images_board + '<div class="row"><div class="col-lg-6"><a><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></a></div>'
 					}else if ((index + 1)%2 == 0 || index + 1 == posts_length){
-						hottest_images_board = hottest_images_board + '<div class="col-lg-6"><a href="#"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></a></div></div>'
+						hottest_images_board = hottest_images_board + '<div class="col-lg-6"><a><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></a></div></div>'
 					}else{
-						hottest_images_board = hottest_images_board + '<div class="col-lg-6"><a href="#"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></a></div>'
+						hottest_images_board = hottest_images_board + '<div class="col-lg-6"><a><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></a></div>'
 					}
 				});
 				$('#home_hottest_images').html($('#home_hottest_images').html() + hottest_images_board);

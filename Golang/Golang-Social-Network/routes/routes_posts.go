@@ -433,6 +433,15 @@ func DeleteComments(c *gin.Context){
 	})
 }
 
+func DisplayComments(c *gin.Context){
+	is_loggedin(c, "")
+	post_id := c.Param("postID")
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Retrieved Comments",
+		"comments": ShowComments(c, post_id),
+	})
+}
+
 func ShowComments(c *gin.Context, post_id interface{}) []interface{}{
 	var (
 		comment_id int

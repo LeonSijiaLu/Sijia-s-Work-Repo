@@ -310,20 +310,9 @@
 					comment_board = comment_board + '</ul>'
 					comment_board = comment_board + '</div><div style="border-left: solid 1px #f4f4f4;" class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href="/view_users?name='+post.user_name+'"><img class="img-responsive img-circle" src="users/'+post.user_id+'/profile/'+post.avatar+'" alt="Image"/></a><strong><a href="">'+post.user_name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all">'+post.title+'</p><div style="word-break: break-all">'+post.content+'</div><a href="" class="kafe kafe-btn-mint-small"><i class="fa fa-check-square"></i> Following</a></div>'
 				
-					if (post.comments != 0 && post.comments != false) { // it allows comments
-						comment_board = comment_board +'<ul class="img-comment-list">'
-						$.each(post.comments, function(index, comment) {
-							comment_board = comment_board + '<li><div class="comment-img"><a href="/view_users?name='+comment.username+'"><img src="users/'+comment.user_id+'/profile/'+comment.avatar+'" class="img-responsive img-circle" alt="Image"/></a></div><div class="comment-text"><strong><a href="/view_users?name='+comment.username+'">'+comment.username+'</a></strong><p class="">'+comment.content+'</p> <span class="date sub-text">'+comment.comment_date+'</span></div></li>'
-						});
-						comment_board = comment_board +'</ul>'
-					}else{
-						if (post.allow_comments == false){
-							comment_board = comment_board + '<p>This post does not allow comments</p>'
-						}else{
-							comment_board = comment_board + '<p>This post has no comments</p>'
-						}
-					}
-					comment_board = comment_board +'<div class="modal-meta-bottom"><ul><li><span class="thumb-xs"><img class="img-responsive img-circle" src="users/'+my_id+'/profile/'+my_avatar+'" alt="..."></span><div style="display: flex;"  class="comment-body"><input style="margin-right: 10px;" class="form-control input-sm post-comment-input" type="text" placeholder="Write your comment..."><a style="cursor: pointer;" onclick="commentPost(this, ' + "'" + post.post_id + "'" + ');" class="kafe kafe-btn-mint-small"><i class="fa"></i> Submit</a></div></li></ul></div></div></div></div></div></div></div></div>'
+					comment_board = comment_board + loadComments(post.comments, true, post.allow_comments);
+
+					comment_board = comment_board +'<div class="modal-meta-bottom"><ul><li><span class="thumb-xs"><img class="img-responsive img-circle" src="users/'+my_id+'/profile/'+my_avatar+'" alt="..."></span><div style="display: flex;"  class="comment-body"><input style="margin-right: 10px;" class="form-control input-sm post-comment-input" type="text" placeholder="Write your comment..."><a style="cursor: pointer;" onclick="publishComments(this, ' + "'" + post.post_id + "'" + ', false, '+ post.allow_comments +' );" class="kafe kafe-btn-mint-small"><i class="fa"></i> Submit</a></div></li></ul></div></div></div></div></div></div></div></div>'
 				});
 				$('#exploring_main').html(
 					$('#exploring_main').html() + post_board
