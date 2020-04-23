@@ -40,6 +40,15 @@
    Navbar Styles
    ========================================================================== */
 
+.follow-plus-effect {
+    transition: 0.5s all;
+}
+
+.follow-plus-effect:hover {
+    background: crimson;
+    border-radius: 15px 15px 15px 15px;
+}
+
 .not-following {
     background: cornflowerblue !important;
 }

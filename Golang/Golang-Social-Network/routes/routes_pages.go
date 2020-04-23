@@ -68,10 +68,24 @@ func Followers(c *gin.Context) {
 	})
 }
 
+func UserFollowers(c *gin.Context) {
+	is_loggedin(c, "")
+	c.HTML(http.StatusOK, "user_followers.html", gin.H{
+		"title": "User Followers",
+	})
+}
+
 func Followings(c *gin.Context) {
 	is_loggedin(c, "")
 	c.HTML(http.StatusOK, "followings.html", gin.H{
 		"title": "Followings",
+	})
+}
+
+func UserFollowings(c *gin.Context) {
+	is_loggedin(c, "")
+	c.HTML(http.StatusOK, "user_followings.html", gin.H{
+		"title": "User Followings",
 	})
 }
 

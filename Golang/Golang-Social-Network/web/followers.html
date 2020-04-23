@@ -250,9 +250,15 @@
 		success: function(r){data = r.followers;},
 		error: function(e){console.log(e);}
 	}).done(function(){
-		$.each(data, function(index, user){
-			loadFollowersRelations(user.id, user.name, user.follow_relations, true, false);
-		});
+		if (data.length > 0){
+			$.each(data, function(index, user){
+				loadFollowersRelations(user.id, user.name, user.follow_relations, true, false);
+			});
+		}else{
+			$('#profile_followers').html(
+				$('#profile_followers').html() + '<p style="text-align: center;">No followers</p>'
+			);
+		}
 	});
 	$('#followers-navigation-bar').html(
 		$('#followers-navigation-bar').html() + '<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'

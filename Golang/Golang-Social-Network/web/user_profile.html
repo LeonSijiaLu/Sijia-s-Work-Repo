@@ -336,10 +336,10 @@
 								$('#follow_relation').html($('#follow_relation').html() + '<a style="cursor: pointer;" class="kafe-btn kafe-btn-mint not-following" onclick="followUser(this, ' + "'" + id + "'" + ');"><i class="fa"></i> Follow</a>');
 							}
 							$('#profile_followers_num').html(
-								$('#profile_followers_num').html() + '<a href="/followers?name='+name+'">Followers <span >'+followers_num+'</span></a>'
+								$('#profile_followers_num').html() + '<a href="/user_followers?name='+name+'">Followers <span >'+followers_num+'</span></a>'
 							);
 							$('#profile_followings_num').html(
-								$('#profile_followings_num').html() + '<a href="/followings?name='+name+'">Following <span >'+followings_num+'</span></a>'
+								$('#profile_followings_num').html() + '<a href="/user_followings?name='+name+'">Following <span >'+followings_num+'</span></a>'
 							);
 							$('#profile_posts_num').html(
 								$('#profile_posts_num').html() + '<a href="">Posts <span id="profile_posts_num">'+posts_num+'</span></a>'

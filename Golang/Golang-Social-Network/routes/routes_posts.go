@@ -503,7 +503,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 	my_id, _ := UT.Get_Id_and_Username(c)
 	db := UT.Conn_DB()
 	defer db.Close()
-	stmt, err := db.Prepare("select post_id, likes, created_by, comments_num, title, content, allow_comments, DATE(created_date) from Posts where created_by in (select follow_to from Follow where follow_by = ? AND follow_to NOT IN (select black_by from Blacklist where black_to = ?)) ORDER BY created_date DESC LIMIT 10")
+	stmt, err := db.Prepare("select post_id, likes, created_by, comments_num, title, content, allow_comments, DATE(created_date) from Posts where created_by in (select follow_to from Follow where follow_by = ? AND follow_to NOT IN (select black_by from Blacklist where black_to = ?)) ORDER BY created_date DESC")
 	UT.Err(err)
 	rows, err := stmt.Query(my_id, my_id)
 	UT.Err(err)

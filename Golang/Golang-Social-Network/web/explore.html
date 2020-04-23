@@ -350,7 +350,7 @@
 				var hottest_images = "";
 				for (index = 0; index < r.users.length; index++) {
 					if (index >= 4) { break; }
-					hottest_images = hottest_images + '<div class="col-lg-3"><div class="tr-section"><div class="tr-post"><div class="entry-header"><div class="entry-thumbnail"><a href="#"><img style="width: auto;" class="img-fluid" src="users/'+r.users[index].id+'/posts/'+r.users[index].latest_post+'/'+r.users[index].latest_image+'" alt="Image"></a></div></div><div class="post-content"><div class="author-post text-center"><a href="/view_users?name='+r.users[index].name+'"><img class="img-fluid rounded-circle" src="users/'+r.users[index].id+'/profile/avatar.png" alt="Image"></a></div><div class="card-content"><h4>'+r.users[index].name+'</h4><span>@'+r.users[index].name+'</span></div><a onclick="reloadHottestImages(this, ' + "'" + r.users[index].id + "'" + ')" class="kafe-btn kafe-btn-mint-small full-width"> Follow</a></div></div></div></div>'
+					hottest_images = hottest_images + '<div class="col-lg-3"><div class="tr-section"><div class="tr-post"><div class="entry-header"><div class="entry-thumbnail"><a href="#"><img style="width: auto;" class="img-fluid" src="users/'+r.users[index].id+'/posts/'+r.users[index].latest_post+'/'+r.users[index].latest_image+'" alt="Image"></a></div></div><div class="post-content"><div class="author-post text-center"><a href="/view_users?name='+r.users[index].name+'"><img class="img-fluid rounded-circle" src="users/'+r.users[index].id+'/profile/avatar.png" alt="Image"></a></div><div class="card-content"><h4>'+r.users[index].name+'</h4><span>@'+r.users[index].name+'</span></div><a onclick="reloadHottestImages(this, ' + "'" + r.users[index].id + "'" + ')" class="kafe-btn kafe-btn-mint-small full-width not-following"> Follow</a></div></div></div></div>'
 				}
 				$('#exploring_top_row').html(
 					$('#exploring_top_row').html() + hottest_images
@@ -362,7 +362,7 @@
 
 	function reloadHottestImages(follow_button, user_id){
 		followUser(follow_button, user_id);
-		loadHottestImages();
+		setTimeout(function(){loadHottestImages()}, 1000);
 	}
 
 	$(document).ready(function(){

@@ -268,32 +268,42 @@
 		},
 		error: function(e){console.log(e);}
 	});
-	
-	$.ajax({
-		url: "/api/images",
-  		type: "GET",
-  		timeout: 0,
-		dataType: 'json',
-		success: function(r){
-			var latest_img_board = ""
-			var img_length = r.images.length;
-			$.each(r.images, function(index,image){
-				if ((index + 1)%3 == 1){
-					latest_img_board = latest_img_board + '<div class="row"><div class="col-lg-4 col-md-3 col-sm-6 col-xs-12"><div class="card"><div class="card-image"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></div></div></div>'
-				}else if ((index + 1)%3 == 0 || index + 1 == img_length){
-					latest_img_board = latest_img_board + '<div class="col-lg-4 col-md-3 col-sm-6 col-xs-12"><div class="card"><div class="card-image"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></div></div></div></div>'
-				}else{
-					latest_img_board = latest_img_board + '<div class="col-lg-4 col-md-3 col-sm-6 col-xs-12"><div class="card"><div class="card-image"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></div></div></div>'
-				}
-			});
-			$('#upload_latest_images').html($('#upload_latest_images').html() + latest_img_board);
-		},
-		error: function(e){console.log(e);}
-	});
+
+	loadYourImages();
 
 	$('#upload-navigation-bar').html(
 		$('#upload-navigation-bar').html()+'<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'
 	);
+
+	function loadYourImages(){
+		$('#upload_latest_images').html("");
+		$.ajax({
+			url: "/api/images",
+  			type: "GET",
+  			timeout: 0,
+			dataType: 'json',
+			success: function(r){
+				var latest_img_board = ""
+				var img_length = r.images.length;
+				$.each(r.images, function(index,image){
+					if ((index + 1)%3 == 1){
+						latest_img_board = latest_img_board + '<div class="row"><div class="col-lg-4 col-md-3 col-sm-6 col-xs-12"><div class="card"><div class="card-image"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></div></div></div>'
+					}else if ((index + 1)%3 == 0 || index + 1 == img_length){
+						latest_img_board = latest_img_board + '<div class="col-lg-4 col-md-3 col-sm-6 col-xs-12"><div class="card"><div class="card-image"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></div></div></div></div>'
+					}else{
+						latest_img_board = latest_img_board + '<div class="col-lg-4 col-md-3 col-sm-6 col-xs-12"><div class="card"><div class="card-image"><img src="users/'+image.user_id+'/posts/'+image.post_id+'/'+image.image_name+'" class="img-responsive" alt="Image"/></div></div></div>'
+					}
+				});
+				$('#upload_latest_images').html($('#upload_latest_images').html() + latest_img_board);
+			},
+			error: function(e){console.log(e);}
+		});
+	}
+
+	function reloadYourImages(){
+		setTimeout(function(){loadYourImages();}, 700);
+	}
+
 	$(document).ready(function(){
 		var images_num = 0;
 
@@ -351,6 +361,7 @@
 					success: function(r){
 						notifyUser('Congrats!', 'Your post is uploaded', 'success', 3000);
 						images_num = 0;
+						reloadYourImages();
 						$("#upload_post_title").val("");
 						$("#upload_post_content").val("");
 						$('#upload_images_button').val("");

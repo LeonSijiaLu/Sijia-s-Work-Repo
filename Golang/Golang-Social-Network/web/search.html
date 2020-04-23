@@ -255,12 +255,12 @@
 
 	function loadSearchMainResults(){
 		setSearchMainResults();
-		readSearchResults();
+		setTimeout(function(){readSearchResults();}, 600);
 	}
 
 	function loadSearchResults(){
 		setSearchResults();
-		readSearchResults();
+		setTimeout(function(){readSearchResults();}, 600);
 	}
 
 	function readSearchResults(){

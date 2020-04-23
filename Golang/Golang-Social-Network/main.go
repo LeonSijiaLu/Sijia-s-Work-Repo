@@ -28,10 +28,12 @@ func main(){
 	router.GET("/exploring", route.Exploring) // direct to page that shows the most popular posts and images of all users (not limited to your followings)
 	router.GET("/stories", route.Stories) // direct to page that 
 	router.GET("/view_post", route.ViewPost) // direct to page that display your profile info
-	router.GET("/view_users", route.ViewUserProfile) // direct to page that display your profile info
+	router.GET("/view_users", route.ViewUserProfile) // direct to page that display other user's profile info
 	router.GET("/view_profile", route.ViewProfile) // direct to page that display your profile info
 	router.GET("/followers", route.Followers)
 	router.GET("/followings", route.Followings)
+	router.GET("/user_followers", route.UserFollowers)
+	router.GET("/user_followings", route.UserFollowings)
 	router.GET("/search", route.Search)
 
 	api := router.Group("/api")

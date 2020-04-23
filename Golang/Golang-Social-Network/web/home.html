@@ -244,6 +244,7 @@
 	<script src="assets/js/like.js"></script>
 	<script src="assets/js/comment.js"></script>
 	<script src="assets/js/account.js"></script>
+	<script src="assets/js/follow.js"></script>
 	<script src="assets/plugins/slimscroll/jquery.slimscroll.js"></script>
 	<script type="text/javascript">
 	var my_id = "";
@@ -374,8 +375,8 @@
 		});
 	}
 
-
 	function loadHottestUser(){
+		$('#hottest_users').html("");
 		$.ajax({
 			url: "/api/user/popular",
 	  		type: "GET",
@@ -384,7 +385,7 @@
 			success: function(r){
 				$.each(r.users, function(index,user){
 					$('#hottest_users').html(
-						$('#hottest_users').html() + '<div class="suggestion-body"><a href="/view_users?name='+user.name+'"><img class="img-responsive img-circle" src="users/'+user.id+'/profile/avatar.png" alt="Image"></a><div class="name-box"><h4>'+user.name+'</h4><span>@'+user.name+'</span></div><span><i class="fa fa-plus"></i></span></div>'
+						$('#hottest_users').html() + '<div class="suggestion-body"><a href="/view_users?name='+user.name+'"><img class="img-responsive img-circle" src="users/'+user.id+'/profile/avatar.png" alt="Image"></a><div class="name-box"><h4>'+user.name+'</h4><span>@'+user.name+'</span></div><span style="border: none;" onclick="followPopularUser(' + "'" + user.id + "'" + ');"><i class="fa fa-plus follow-plus-effect"></i></span></div>'
 					);
 				});
 			},
@@ -395,6 +396,11 @@
 	$('#home-navigation-bar').html(
 		$('#home-navigation-bar').html()+'<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'
 	);
+
+	function followPopularUser(user_id){
+		onlyFollowUser(user_id);
+		setTimeout(function(){loadHottestUser();}, 600);
+	}
 
 	$(document).ready(function(){
 		$('#Slim,#Slim2').slimScroll({

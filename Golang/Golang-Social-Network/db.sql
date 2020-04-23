@@ -8,6 +8,7 @@ CREATE TABLE `Users` (
     `username` VARCHAR(32) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
+    `avatar` VARCHAR(255) NOT NULL DEFAULT 'avatar.png',
     PRIMARY KEY(user_id),
     UNIQUE(username),
     UNIQUE(password),
@@ -25,11 +26,9 @@ CREATE TABLE `Profile`(
     `following_num` INT UNSIGNED NOT NULL DEFAULT 0,
     `posts_num` INT UNSIGNED NOT NULL DEFAULT 0,
     `views` INT UNSIGNED NOT NULL DEFAULT 0,
-    `avatar` VARCHAR(255) NOT NULL,
     `created_date` DATETIME NOT NULL,
     PRIMARY KEY(profile_id),
     UNIQUE(user_id),
-    UNIQUE(avatar),
     FOREIGN KEY(user_id) REFERENCES Users(user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -191,7 +190,7 @@ DELIMITER $$
 DROP TRIGGER IF EXISTS `create_user_profile`;
 CREATE TRIGGER `create_user_profile` AFTER INSERT ON `Users` FOR EACH ROW
 BEGIN
-    INSERT INTO Profile (user_id, created_date, avatar) VALUES(NEW.user_id, NOW(), CONCAT('users/',NEW.user_id,'/profile/avatar.png'));
+    INSERT INTO Profile (user_id, created_date) VALUES(NEW.user_id, NOW());
 END$$
 
 DROP TRIGGER IF EXISTS `new_follows_time`;

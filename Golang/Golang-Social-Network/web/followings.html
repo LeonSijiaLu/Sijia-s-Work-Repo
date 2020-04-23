@@ -250,9 +250,15 @@
 		success: function(r){data = r.followings;},
 		error: function(e){console.log(e);}
 	}).done(function(){
-		$.each(data, function(index, user){
-			loadFollowingsRelations(user);
-		});
+		if (data.length > 0){
+			$.each(data, function(index, user){
+				loadFollowingsRelations(user);
+			});
+		}else{
+			$('#profile_followings').html(
+				$('#profile_followings').html() + '<p style="text-align: center;">No followings</p>'
+			);
+		}
 	});
 	$('#followings-navigation-bar').html(
 		$('#followings-navigation-bar').html() + '<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'
@@ -286,12 +292,17 @@
   					if (i >= 10) { break; }
 					follow_main = follow_main + '<a href="/view_users?name='+user_followings[i].name+'"><img src="users/'+user_followings[i].id+'/profile/avatar.png" alt="" class="img-circle max-w-40 "></a>'
 				}
-				follow_main = follow_main + '<button class="btn btn-add-gray"><i class="fa fa-plus"></i></button><span> '+user_followings.length+' Following </span></div></li></ul></div></div><span><a class="kafe-btn kafe-btn-mint-small" onclick="followUser(this, ' + "'" + user.id + "'" + ');"> <i class="fa fa-check"></i>Following</a></span></div>'
+				follow_main = follow_main + '<button class="btn btn-add-gray"><i class="fa fa-plus"></i></button><span> '+user_followings.length+' Following </span></div></li></ul></div></div><span><a class="kafe-btn kafe-btn-mint-small" onclick="cancelFollowing(this, ' + "'" + user.id + "'" + ');"> <i class="fa fa-check"></i>Following</a></span></div>'
 				$('#profile_followings').html(
 					$('#profile_followings').html() + follow_main
 				);
 			});
 		});
+	}
+
+	function cancelFollowing(follow_Button, user_id){
+		followUser(follow_Button, user_id);
+		$(follow_Button).closest('.followers-body').fadeOut();
 	}
 
 	$(document).ready(function(){
