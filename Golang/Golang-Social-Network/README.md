@@ -9,7 +9,7 @@ This is a social network API programed in Go.
 
 Below is the database design: 
 
-![Database Desgin for Social Network](readmeImgs/SocialNet_DB.png)
+![Database Desgin for Social Network](readmeImgs/SocialNet_DB.jpg)
 
 ## Tables
 
