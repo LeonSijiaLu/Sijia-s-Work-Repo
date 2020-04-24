@@ -128,7 +128,7 @@
             </div><!--/ dropdown-menu-->
 		   </li>
 
-		   <li class="dropdown notification-list">
+		   <li class="dropdown notification-list" style="display: none;">
 			<a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
 			 <i class="fa fa-envelope noti-icon"></i>
 			 <span class="badge badge-success badge-pill noti-icon-badge">6</span>
@@ -260,6 +260,7 @@
 			);
 		}
 	});
+	
 	$('#followers-navigation-bar').html(
 		$('#followers-navigation-bar').html() + '<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'
 	)

@@ -125,7 +125,7 @@
             </div><!--/ dropdown-menu-->
 		   </li>
 
-		   <li class="dropdown notification-list">
+		   <li class="dropdown notification-list" style="display: none;">
 			<a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
 			 <i class="fa fa-envelope noti-icon"></i>
 			 <span class="badge badge-success badge-pill noti-icon-badge">6</span>
@@ -273,6 +273,7 @@
 	<script src="assets/js/comment.js"></script>
 	<script src="assets/js/account.js"></script>
 	<script src="assets/js/follow.js"></script>
+	<script src="assets/js/post.js"></script>
 	<script src="assets/plugins/slimscroll/jquery.slimscroll.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 	<script type='text/javascript'>
@@ -441,7 +442,7 @@
 								comment_board = comment_board + '<li class="mySlides" style="width: 100%; background: rgba(0,0,0,0.8); border-radius: 0, 5px, 5px, 0;"><img style="height: auto !important; margin: auto;" class="img-responsive" src="users/'+id+'/posts/'+post.post_id+'/'+image.image_name+'" alt="Image"/></li>'
 							});
 							comment_board = comment_board + '</ul>'							
-							comment_board = comment_board + '</div><div style="border-left: solid 1px #f4f4f4;" class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href=""><img class="img-responsive img-circle" src="users/'+post.created_by+'/profile/'+post.avatar+'" alt="Image"/></a><strong><a href="">'+name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all">'+post.title+'</p><div style="word-break: break-all">'+post.content+'</div></div>'
+							comment_board = comment_board + '</div><div style="border-left: solid 1px #f4f4f4;" class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href=""><img class="img-responsive img-circle" src="users/'+post.created_by+'/profile/'+post.avatar+'" alt="Image"/></a><strong><a href="">'+name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all">'+post.title+'</p><div style="word-break: break-all">'+labelEssentials(post.content)+'</div></div>'
 							
 							comment_board = comment_board + loadComments(post.comments, true, post.allow_comments);
 

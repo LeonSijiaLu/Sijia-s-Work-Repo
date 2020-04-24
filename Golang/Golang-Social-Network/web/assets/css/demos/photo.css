@@ -40,6 +40,12 @@
    Navbar Styles
    ========================================================================== */
 
+.special_content {
+    font-size: larger !important;
+    color: #0fc19e !important;
+    text-decoration: underline !important;
+}
+
 .follow-plus-effect {
     transition: 0.5s all;
 }

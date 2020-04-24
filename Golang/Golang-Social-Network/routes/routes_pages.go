@@ -75,6 +75,13 @@ func UserFollowers(c *gin.Context) {
 	})
 }
 
+func HashtagFollowers(c *gin.Context) {
+	is_loggedin(c, "")
+	c.HTML(http.StatusOK, "hashtag_followers.html", gin.H{
+		"title": "Hashtag Followers",
+	})
+}
+
 func Followings(c *gin.Context) {
 	is_loggedin(c, "")
 	c.HTML(http.StatusOK, "followings.html", gin.H{

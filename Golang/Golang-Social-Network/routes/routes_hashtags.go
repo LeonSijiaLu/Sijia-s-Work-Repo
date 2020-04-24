@@ -319,6 +319,47 @@ func HashtagPostsComments(hashtag_name string, my_id interface{}, c *gin.Context
 		"following_hashtag": following_hashtag, 
 		"posts": posts,
 		"profile_bg_images": ShowHashtagImages(hashtag_id, 5),
-		"blocked": false,
 	}
+}
+
+func GetHashtagsFollowers(c *gin.Context){
+	is_loggedin(c, "")
+	var (
+		follower_id int
+		hashtag_id int
+		follower_name string
+		follower_avatar string
+		my_id interface{}
+		message string
+		following_bool bool
+	)
+	followers := []interface{}{}
+	my_id, _ = UT.Get_Id_and_Username(c)
+	db := UT.Conn_DB()
+	defer db.Close()
+	hashtag_name := c.Param("hashtagName")
+	message = "View " + hashtag_name + " followers"
+	db.QueryRow("SELECT hashtag_id FROM Hashtags WHERE hashtag_name = ?", hashtag_name).Scan(&hashtag_id)
+
+	stmt, err := db.Prepare("SELECT Users.user_id, Users.username, Users.avatar FROM Users_Hashtags INNER JOIN Users USING (user_id) WHERE hashtag_id = ? ORDER BY Users_Hashtags.created_date DESC")
+	if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "DB Error",})}
+	rows, err := stmt.Query(hashtag_id)
+	if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "DB Error",})}
+
+	for rows.Next(){
+		rows.Scan(&follower_id, &follower_name, &follower_avatar)
+		db.QueryRow("SELECT COUNT(*) FROM Follow WHERE follow_by = ? AND follow_to = ?", my_id, follower_id).Scan(&following_bool)
+		follower := map[string]interface{}{
+			"id": follower_id,
+			"name": follower_name,
+			"avatar": follower_avatar,
+			"follow_relations": following_bool,
+		}
+		followers = append(followers, follower)
+	}
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": message,
+		"success": true,
+		"followers": followers,
+	})
 }

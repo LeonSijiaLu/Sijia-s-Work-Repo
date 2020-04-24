@@ -128,7 +128,7 @@
             </div><!--/ dropdown-menu-->
 		   </li>
 
-		   <li class="dropdown notification-list">
+		   <li class="dropdown notification-list" style="display: none;">
 			<a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
 			 <i class="fa fa-envelope noti-icon"></i>
 			 <span class="badge badge-success badge-pill noti-icon-badge">6</span>
@@ -277,7 +277,7 @@
 			}
 			if(res.hashtags.length > 0){
 				$.each(res.hashtags, function(index, hashtag){
-					search_body = search_body + '<div class="followers-body"><a href="/view_hashtag?name=' + hashtag.hashtag_name + '"><div class="name-box"><h4 style="color: black;text-decoration: underline;">#' + hashtag.hashtag_name + '#</h4></div></a></div>'	
+					search_body = search_body + '<div class="followers-body"><a href="/view_hashtag?name=' + hashtag.hashtag_name + '"><div class="name-box"><h4 style="color: #0fc19e;text-decoration: underline;">#' + hashtag.hashtag_name + '#</h4></div></a></div>'	
 				});
 			}
 			$('#search-results').html(

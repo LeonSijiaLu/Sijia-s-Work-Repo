@@ -128,7 +128,7 @@
             </div><!--/ dropdown-menu-->
 		   </li>
 
-		   <li class="dropdown notification-list">
+		   <li class="dropdown notification-list" style="display: none;">
 			<a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
 			 <i class="fa fa-envelope noti-icon"></i>
 			 <span class="badge badge-success badge-pill noti-icon-badge">6</span>
@@ -245,6 +245,7 @@
 	<script src="assets/js/comment.js"></script>
 	<script src="assets/js/account.js"></script>
 	<script src="assets/js/follow.js"></script>
+	<script src="assets/js/post.js"></script>
 	<script src="assets/plugins/slimscroll/jquery.slimscroll.js"></script>
 	<script type="text/javascript">
 	var my_id = "";
@@ -309,7 +310,7 @@
 					});
 					comment_board = comment_board + '</ul>'
 					
-					comment_board = comment_board + '</div><div style="border-left: solid 1px #f4f4f4;" class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href="/view_users?name='+post.user_name+'"><img class="img-responsive img-circle" src="users/'+post.user_id+'/profile/'+post.avatar+'" alt="Image"/></a><strong><a href="">'+post.user_name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all">'+post.title+'</p><div style="word-break: break-all">'+post.content+'</div>'
+					comment_board = comment_board + '</div><div style="border-left: solid 1px #f4f4f4;" class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href="/view_users?name='+post.user_name+'"><img class="img-responsive img-circle" src="users/'+post.user_id+'/profile/'+post.avatar+'" alt="Image"/></a><strong><a href="">'+post.user_name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all">'+post.title+'</p><div style="word-break: break-all">'+labelEssentials(post.content)+'</div>'
 
 					if (my_id != post.user_id){
 						if (post.followed_by_you == true){

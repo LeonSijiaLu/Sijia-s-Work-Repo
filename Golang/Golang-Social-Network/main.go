@@ -33,6 +33,7 @@ func main(){
 	router.GET("/view_hashtag", route.ViewHashtag)
 	router.GET("/followers", route.Followers)
 	router.GET("/followings", route.Followings)
+	router.GET("/hashtag_followers", route.HashtagFollowers)
 	router.GET("/user_followers", route.UserFollowers)
 	router.GET("/user_followings", route.UserFollowings)
 	router.GET("/search", route.Search)
@@ -83,6 +84,7 @@ func main(){
 //		api.POST("/unfollow_topic", route.UnFollowTopic)
 		api.GET("/hashtag/display/:name", route.DisplayHashtagPosts) // including posts and comments in detail
 		api.GET("/hashtag/popular", route.ShowHottestHashtags)
+		api.GET("/hashtag/followers/:hashtagName", route.GetHashtagsFollowers)
 		api.GET("/hashtag/following", route.GetFollowingHashtags)
 		api.POST("/hashtag/posts", route.GetHashtagPosts) // only posts
 
