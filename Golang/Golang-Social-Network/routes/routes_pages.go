@@ -102,3 +102,10 @@ func Search(c *gin.Context) {
 		"title": "Search",
 	})
 }
+
+func ViewHashtag(c *gin.Context){
+	is_loggedin(c, "")
+	c.HTML(http.StatusOK, "hashtag.html", gin.H{
+		"title": "Hashtag Posts",
+	})
+}

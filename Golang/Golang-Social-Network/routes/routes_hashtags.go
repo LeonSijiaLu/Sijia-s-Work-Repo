@@ -46,48 +46,48 @@ func Create_Follow_HashTag(post_id interface{}, hashtag_name string) (int, bool)
 	}else{return 0, false}
 }
 
-func FollowHashTag(c *gin.Context) {
+func FollowOrUnfollowHashtag(c *gin.Context){
 	is_loggedin(c, "")
-	var (
-		hashtag_id int
-		hashtag_count int
-	)
 	db := UT.Conn_DB()
 	defer db.Close()
-	hashtag_name := c.Param("hashtagName")
-	db.QueryRow("SELECT COUNT(hashtag_id), hashtag_id FROM Hashtags WHERE hashtag_name = ?", hashtag_name).Scan(&hashtag_count, &hashtag_id)
-	if hashtag_count != 1 || hashtag_id == 0 {panic("Invalid hashtag name")}
+	var (
+		follow_relations bool
+		res bool
+	)
 	my_id, _ := UT.Get_Id_and_Username(c)
-	if my_id == 0 {panic("Invalid user id")}
+	hashtag_id := c.Param("hashtagID")
+
+	db.QueryRow("SELECT COUNT(*) FROM Users_Hashtags WHERE user_id = ? AND hashtag_id = ?", my_id, hashtag_id).Scan(&follow_relations)
+	if follow_relations == true {
+		res = UnFollowHashTag(my_id, hashtag_id)
+	}else{
+		res = FollowHashTag(my_id, hashtag_id)
+	}
+	if res == true{
+		c.JSON(http.StatusOK, map[string]interface{}{
+			"message": "Success",
+			"success": true,
+		});
+	}else{
+		c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "DB Error",})
+	}
 	
-	_, err := db.Exec("INSERT INTO Users_Hashtags (user_id, hashtag_id) VALUES(?, ?)", my_id, hashtag_id)
-	UT.Err(err)
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "Followed hashtag "+ hashtag_name +" successfully",
-		"success": true,
-	})
 }
 
-func UnFollowHashTag(c *gin.Context){
-	is_loggedin(c, "")
-	var (
-		hashtag_id int
-		hashtag_count int
-	)
+func FollowHashTag(my_id interface{}, hashtag_id interface{}) bool{
 	db := UT.Conn_DB()
 	defer db.Close()
-	hashtag_name := c.Param("hashtagName")
-	db.QueryRow("SELECT COUNT(hashtag_id), hashtag_id FROM Hashtags WHERE hashtag_name = ?", hashtag_name).Scan(&hashtag_count, &hashtag_id)
-	if hashtag_count != 1 || hashtag_id == 0 {panic("Invalid hashtag name")}
-	my_id, _ := UT.Get_Id_and_Username(c)
-	if my_id == 0 {panic("Invalid user id")}
-	_, err := db.Exec("DELETE FROM Users_Hashtags WHERE user_id = ? AND hashtag_id = ?", my_id, hashtag_id)
-	UT.Err(err)
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "Unfollowed hashtag "+ hashtag_name +" successfully",
-		"success": true,
-	})
+	_, err := db.Exec("INSERT INTO Users_Hashtags (user_id, hashtag_id) VALUES(?, ?)", my_id, hashtag_id)
+	if err != nil {return false}
+	return true
+}
 
+func UnFollowHashTag(my_id interface{}, hashtag_id interface{}) bool{
+	db := UT.Conn_DB()
+	defer db.Close()
+	_, err := db.Exec("DELETE FROM Users_Hashtags WHERE user_id = ? AND hashtag_id = ?", my_id, hashtag_id)
+	if err != nil {return false}
+	return true
 }
 
 func ShowHottestHashtags(c *gin.Context){
@@ -215,7 +215,6 @@ func GetHashtagPosts(c *gin.Context){
 			}
 			posts = append(posts, post)
 		}
-	
 	}
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "Retrieved posts of hashtag "+hashtag_name,
@@ -224,4 +223,102 @@ func GetHashtagPosts(c *gin.Context){
 		"hashtag_id": hashtag_id,
 		"posts": posts,
 	})
+}
+
+func DisplayHashtagPosts(c *gin.Context){
+	is_loggedin(c, "")
+	hashtag_name := c.Param("name") // id is part of url
+	if hashtag_name != ""{
+		my_id, _ := UT.Get_Id_and_Username(c)
+		c.JSON(http.StatusOK, HashtagPostsComments(hashtag_name, my_id, c))
+	}else{
+		c.JSON(http.StatusOK, map[string]interface{}{"success": true,})
+	}
+}
+
+func HashtagPostsComments(hashtag_name string, my_id interface{}, c *gin.Context) map[string]interface{}{
+	db := UT.Conn_DB()
+	defer db.Close()
+	posts := []interface{}{}
+
+	var (
+		hashtag_id int
+		hashtag_followers int
+		hashtag_posts_num int
+		post_id int
+		user_id int
+		user_name string
+		avatar string
+		title string
+		content string
+		likes int
+		allow_comments bool
+		comments_number int
+		created_date string
+		following_hashtag bool
+		liked_by_you bool
+		followed_by_you bool
+		blocked bool
+	)
+
+	db.QueryRow("SELECT hashtag_id, followers_num, posts_num FROM Hashtags WHERE hashtag_name = ?", hashtag_name).Scan(&hashtag_id, &hashtag_followers, &hashtag_posts_num)
+	db.QueryRow("SELECT COUNT(*) FROM Users_Hashtags WHERE user_id = ? AND hashtag_id = ?", my_id, hashtag_id).Scan(&following_hashtag)
+	stmt, _ := db.Prepare("SELECT Users.username, Users.avatar, Posts.created_by, Posts.post_id, Posts.title, Posts.content, Posts.likes, Posts.allow_comments, Posts.comments_num, DATE(Posts.created_date) FROM Posts_Hashtags INNER JOIN Posts USING (post_id) INNER JOIN Users ON Posts.created_by = Users.user_id WHERE Posts_Hashtags.hashtag_id = ?")
+	rows, _ := stmt.Query(hashtag_id)
+	for rows.Next(){
+		rows.Scan(&user_name, &avatar, &user_id, &post_id, &title, &content, &likes, &allow_comments, &comments_number, &created_date)
+		db.QueryRow("SELECT COUNT(*) FROM Blacklist WHERE black_by = ? AND black_to = ?", user_id, my_id).Scan(&blocked)
+		db.QueryRow("SELECT COUNT(*) FROM Follow WHERE follow_by = ? AND follow_to = ?", my_id, user_id).Scan(&followed_by_you)
+		db.QueryRow("SELECT COUNT(*) FROM Likes WHERE post_id = ? AND like_by = ?", post_id, my_id).Scan(&liked_by_you)
+		if (blocked == false){
+			if allow_comments == true{
+				post := map[string]interface{}{
+					"post_id": post_id,
+					"user_id": user_id,
+					"user_name": user_name,
+					"avatar": avatar,
+					"title": title, 
+					"content": content,
+					"likes": likes,
+					"allow_comments": allow_comments,
+					"comments": ShowComments(c, post_id),
+					"comments_num": comments_number,
+					"images": ShowPostImages(c, post_id, user_id),
+					"created_date": created_date,
+					"followed_by_you": followed_by_you,
+					"liked_by_you": liked_by_you,
+				}
+				posts = append(posts, post)
+			}else{
+				post := map[string]interface{}{
+					"post_id": post_id,
+					"user_id": user_id,
+					"user_name": user_name,
+					"avatar": avatar,
+					"title": title, 
+					"content": content,
+					"likes": likes,
+					"allow_comments": allow_comments,
+					"comments": allow_comments,
+					"comments_num": 0,
+					"images": ShowPostImages(c, post_id, user_id),
+					"created_date": created_date,
+					"followed_by_you": followed_by_you,
+					"liked_by_you": liked_by_you,
+				}
+				posts = append(posts, post)
+			}
+		}
+	}
+	return map[string]interface{}{
+		"message": "Found posts of hashtag" + hashtag_name,
+		"success": true,
+		"hashtag_id": hashtag_id,
+		"hashtag_followers": hashtag_followers, 
+		"hashtag_posts_num": hashtag_posts_num,
+		"following_hashtag": following_hashtag, 
+		"posts": posts,
+		"profile_bg_images": ShowHashtagImages(hashtag_id, 5),
+		"blocked": false,
+	}
 }

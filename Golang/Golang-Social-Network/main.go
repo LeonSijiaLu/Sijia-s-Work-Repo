@@ -30,6 +30,7 @@ func main(){
 	router.GET("/view_post", route.ViewPost) // direct to page that display your profile info
 	router.GET("/view_users", route.ViewUserProfile) // direct to page that display other user's profile info
 	router.GET("/view_profile", route.ViewProfile) // direct to page that display your profile info
+	router.GET("/view_hashtag", route.ViewHashtag)
 	router.GET("/followers", route.Followers)
 	router.GET("/followings", route.Followings)
 	router.GET("/user_followers", route.UserFollowers)
@@ -80,11 +81,12 @@ func main(){
 
 //		api.POST("/follow_topic", route.FollowTopic)
 //		api.POST("/unfollow_topic", route.UnFollowTopic)
+		api.GET("/hashtag/display/:name", route.DisplayHashtagPosts) // including posts and comments in detail
 		api.GET("/hashtag/popular", route.ShowHottestHashtags)
 		api.GET("/hashtag/following", route.GetFollowingHashtags)
-		api.POST("/hashtag/posts", route.GetHashtagPosts)
-		api.POST("/hashtag/follow/:hashtagName", route.FollowHashTag)
-		api.POST("/hashtag/unfollow/:hashtagName", route.UnFollowHashTag)
+		api.POST("/hashtag/posts", route.GetHashtagPosts) // only posts
+
+		api.POST("/hashtag/followPressed/:hashtagID", route.FollowOrUnfollowHashtag)
 	}
 	server := negroni.Classic()
 	server.UseHandler(router)

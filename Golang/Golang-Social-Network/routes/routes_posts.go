@@ -517,6 +517,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 		allow_comments bool
 		created_date string
 		liked_by_you bool
+		followed_by_you bool
 	)
 	my_id, _ := UT.Get_Id_and_Username(c)
 	db := UT.Conn_DB()
@@ -530,6 +531,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 		rows.Scan(&post_id, &likes, &created_by, &comments_num, &title, &content, &allow_comments, &created_date)
 		db.QueryRow("SELECT username, avatar FROM Users WHERE user_id = ?", created_by).Scan(&name, &avatar)
 		db.QueryRow("SELECT COUNT(*) FROM Likes WHERE post_id = ? AND like_by = ?", post_id, my_id).Scan(&liked_by_you)
+		db.QueryRow("SELECT COUNT(*) FROM Follow WHERE follow_by = ? AND follow_to = ?", my_id, created_by).Scan(&followed_by_you)
 		if allow_comments == true{
 			post := map[string]interface{}{
 				"post_id": post_id,
@@ -546,6 +548,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 				"images": ShowPostImages(c, post_id, created_by),
 				"allow_comments": allow_comments,
 				"liked_by_you": liked_by_you,
+				"followed_by_you": followed_by_you,
 			}
 			posts = append(posts, post)
 		}else{
@@ -564,6 +567,7 @@ func Explore(c *gin.Context){  // only show posts of people who you follow
 				"images": ShowPostImages(c, post_id, created_by),
 				"allow_comments": allow_comments,
 				"liked_by_you": liked_by_you,
+				"followed_by_you": followed_by_you,
 			}
 			posts = append(posts, post)
 		}
@@ -705,6 +709,7 @@ func ShowHottestPosts(c *gin.Context){
 		title string
 		content string
 		liked_by_you bool
+		followed_by_you bool
 	)
 	hottest_posts := []interface{}{}
 	my_id, _ := UT.Get_Id_and_Username(c)
@@ -717,6 +722,7 @@ func ShowHottestPosts(c *gin.Context){
 	for rows.Next(){
 		rows.Scan(&username, &avatar, &post_id, &post_likes, &created_by, &created_date, &allow_comments, &comments_num, &title, &content)
 		db.QueryRow("SELECT COUNT(*) FROM Likes WHERE post_id = ? AND like_by = ?", post_id, my_id).Scan(&liked_by_you)
+		db.QueryRow("SELECT COUNT(*) FROM Follow WHERE follow_by = ? AND follow_to = ?", my_id, created_by).Scan(&followed_by_you)
 		if allow_comments == true{
 			post := map[string]interface{}{
 				"post_id": post_id,
@@ -732,6 +738,7 @@ func ShowHottestPosts(c *gin.Context){
 				"title": title,
 				"content": content,
 				"liked_by_you": liked_by_you,
+				"followed_by_you": followed_by_you,
 			}
 			hottest_posts = append(hottest_posts, post)
 		}else{
@@ -749,6 +756,7 @@ func ShowHottestPosts(c *gin.Context){
 				"title": title,
 				"content": content,
 				"liked_by_you": liked_by_you,
+				"followed_by_you": followed_by_you,
 			}
 			hottest_posts = append(hottest_posts, post)
 		}

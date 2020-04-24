@@ -277,7 +277,7 @@
 			}
 			if(res.hashtags.length > 0){
 				$.each(res.hashtags, function(index, hashtag){
-					search_body = search_body + '<div class="followers-body"><a href="/view_users?name=' + hashtag.hashtag_name + '"></a><div class="name-box"><h4>#' + hashtag.hashtag_name + '#</h4></div></div>'	
+					search_body = search_body + '<div class="followers-body"><a href="/view_hashtag?name=' + hashtag.hashtag_name + '"><div class="name-box"><h4 style="color: black;text-decoration: underline;">#' + hashtag.hashtag_name + '#</h4></div></a></div>'	
 				});
 			}
 			$('#search-results').html(

@@ -279,7 +279,7 @@
 				var post_main = "";
 				var comment_board = "";
 				$.each(r.posts, function(index, post){
-					post_main = post_main + '<div class="cardbox"><div class="cardbox-heading"><div class="dropdown pull-right"><button class="btn btn-secondary btn-flat btn-flat-icon" type="button" data-toggle="dropdown" aria-expanded="false"><em class="fa fa-ellipsis-h"></em></button><div class="dropdown-menu dropdown-scale dropdown-menu-right" role="menu" style="position: absolute; transform: translate3d(-136px, 28px, 0px); top: 0px; left: 0px; will-change: transform;"><a class="dropdown-item" href="#">Hide post</a><a class="dropdown-item" href="#">Stop following</a><a class="dropdown-item" href="#">Report</a></div></div><div class="media m-0"><div class="d-flex mr-3"><a href="/view_users?name='+post.user_name+'"><img class="img-responsive img-circle" src="users/'+post.user_id+'/profile/'+post.avatar+'" alt="User"></a></div><div class="media-body"><p class="m-0">'+post.user_name+'</p><small><span>'+post.created_date+'</span></small></div></div></div><div class="cardbox-item"><a href="#home_comments_'+post.post_id+'" data-toggle="modal"><img style="margin: auto;" class="img-responsive" src="users/'+post.user_id+'/posts/'+post.post_id+'/'+post.images[0].image_name+'" alt="MaterialImg"></a></div><div class="cardbox-base"><ul>'
+					post_main = post_main + '<div class="cardbox"><div class="cardbox-heading"><div class="dropdown pull-right"><button class="btn btn-secondary btn-flat btn-flat-icon" type="button" data-toggle="dropdown" aria-expanded="false"><em class="fa fa-ellipsis-h"></em></button><div class="dropdown-menu dropdown-scale dropdown-menu-right" role="menu" style="position: absolute; transform: translate3d(-136px, 28px, 0px); top: 0px; left: 0px; will-change: transform;"><a style="display: none;" class="dropdown-item" href="#">Hide post</a><a style="cursor: pointer;" class="dropdown-item" onclick="onlyFollowUser(' + "'" + post.post_id + "'" + ');">Stop following</a><a style="display: none;" class="dropdown-item" href="#">Report</a></div></div><div class="media m-0"><div class="d-flex mr-3"><a href="/view_users?name='+post.user_name+'"><img class="img-responsive img-circle" src="users/'+post.user_id+'/profile/'+post.avatar+'" alt="User"></a></div><div class="media-body"><p class="m-0">'+post.user_name+'</p><small><span>'+post.created_date+'</span></small></div></div></div><div class="cardbox-item"><a href="#home_comments_'+post.post_id+'" data-toggle="modal"><img style="margin: auto;" class="img-responsive" src="users/'+post.user_id+'/posts/'+post.post_id+'/'+post.images[0].image_name+'" alt="MaterialImg"></a></div><div class="cardbox-base"><ul>'
 					if (post.likes != 0){
 						for (i = 0; i < post.liked_users.length; i++) {
 	  						if (i >= 10) { break; }
@@ -295,7 +295,7 @@
 						post_main = post_main + '<a><i class="fa fa-heart" style="color: grey;" onclick="likeHomePost(this, ' + "'" + post.post_id + "'" + ');"></i></a><span style="color: grey;" class="likes_num"> '+post.likes+'</span>'
 					}
 
-					post_main = post_main + '</li><li><a href="#home_comments_'+post.post_id+'" data-toggle="modal" title="" class="com"><i class="fa fa-comments"></i></a> <span class="span-last"> '+post.comments_num+'</span></li></ul></div></div>'
+					post_main = post_main + '</li><li><a href="#home_comments_'+post.post_id+'" data-toggle="modal" title="" class="com"><i class="fa fa-comments"></i></a> <span id="home_post_'+post.post_id+'_comments_num" class="span-last"> '+post.comments_num+'</span></li></ul></div></div>'
 					comment_board = comment_board + '<div id="home_comments_'+post.post_id+'" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-body"><div class="row"><div style="overflow: hidden; padding: 0" class="col-md-8 modal-image">'
 					
 					if (post.images.length > 1){
@@ -309,11 +309,21 @@
 					});
 					comment_board = comment_board + '</ul>'
 					
-					comment_board = comment_board + '</div><div style="border-left: solid 1px #f4f4f4;" class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href=""><img class="img-responsive img-circle" src="users/'+post.user_id+'/profile/'+post.avatar+'" alt="Image"/></a><strong><a href="">'+post.user_name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all">'+post.title+'</p><div style="word-break: break-all">'+post.content+'</div><a href="" class="kafe kafe-btn-mint-small"><i class="fa fa-check-square"></i> Following</a></div>'
+					comment_board = comment_board + '</div><div style="border-left: solid 1px #f4f4f4;" class="col-md-4 modal-meta"><div class="modal-meta-top"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><div class="img-poster clearfix"><a href="/view_users?name='+post.user_name+'"><img class="img-responsive img-circle" src="users/'+post.user_id+'/profile/'+post.avatar+'" alt="Image"/></a><strong><a href="">'+post.user_name+'</a></strong><span>'+post.created_date+'</span><br/><p style="word-break: break-all">'+post.title+'</p><div style="word-break: break-all">'+post.content+'</div>'
+
+					if (my_id != post.user_id){
+						if (post.followed_by_you == true){
+							comment_board = comment_board + '<a style="float: right; cursor: pointer;" class="kafe kafe-btn-mint-small" onclick="followUser(this, ' + "'" + post.user_id + "'" + ');"><i class="fa fa-check-square"></i> Following</a>'
+						}else{
+							comment_board = comment_board + '<a style="float: right; cursor: pointer;" class="kafe kafe-btn-mint-small not-following" onclick="followUser(this, ' + "'" + post.user_id + "'" + ');"><i class="fa"></i> Follow</a>'
+						}
+					}					
+					
+					comment_board = comment_board + '</div>'
 					
 					comment_board = comment_board + loadComments(post.comments, true, post.allow_comments);
 
-					comment_board = comment_board +'<div class="modal-meta-bottom"><ul><li><span class="thumb-xs"><img class="img-responsive img-circle" src="users/'+my_id+'/profile/'+my_avatar+'" alt="..."></span><div style="display: flex;" class="comment-body"><input style="margin-right: 10px;" class="form-control input-sm post-comment-input" type="text" placeholder="Write your comment..."><a style="cursor: pointer;" onclick="publishComments(this, ' + "'" + post.post_id + "'" + ', false, '+ post.allow_comments +' );" class="kafe kafe-btn-mint-small"><i class="fa"></i> Submit</a></div></li></ul></div></div></div></div></div></div></div></div>'
+					comment_board = comment_board +'<div class="modal-meta-bottom"><ul><li><span class="thumb-xs"><img class="img-responsive img-circle" src="users/'+my_id+'/profile/'+my_avatar+'" alt="..."></span><div style="display: flex;" class="comment-body"><input style="margin-right: 10px;" class="form-control input-sm post-comment-input" type="text" placeholder="Write your comment..."><a style="cursor: pointer;" onclick="publishComments(this, ' + "'" + post.post_id + "'" + ', false, '+ post.allow_comments +' ); incrementCommentsNum(' + "'" + post.post_id + "'" + ');" class="kafe kafe-btn-mint-small"><i class="fa"></i> Submit</a></div></li></ul></div></div></div></div></div></div></div></div>'
 				});
 				if (post_main == ""){
 					post_main = "<p align='center'>No posts to show</p>";
@@ -391,6 +401,12 @@
 	function followPopularUser(user_id){
 		onlyFollowUser(user_id);
 		setTimeout(function(){loadHottestUser();}, 600);
+	}
+
+	function incrementCommentsNum(post_id){
+		$("#home_post_" + post_id + "_comments_num").text(
+   	 		parseInt($("#home_post_" + post_id + "_comments_num").text()) + 1
+		);
 	}
 
 	$(document).ready(function(){

@@ -121,6 +121,31 @@ func ShowProfileImages(target_id interface{}, images_num int) interface{}{
 	return images
 }
 
+func ShowHashtagImages(hashtag_id interface{}, images_num int) interface{}{
+	db := UT.Conn_DB()
+	defer db.Close()
+	var (
+		image_name string
+		user_id int
+		post_id int
+	)
+	images := []interface{}{}
+	stmt, err := db.Prepare("SELECT image_name, user_id, Posts_Hashtags.post_id FROM Images INNER JOIN Posts_Hashtags USING (post_id) WHERE Posts_Hashtags.hashtag_id = ? ORDER BY Posts_Hashtags.created_date DESC LIMIT ?")
+	if err != nil{return false}
+	rows, err := stmt.Query(hashtag_id, images_num)
+	if err != nil{return false}
+	for rows.Next(){
+		rows.Scan(&image_name, &user_id, &post_id)
+		image := map[string]interface{}{
+			"image_name": image_name,
+			"post_id": post_id,
+			"user_id": user_id,
+		}
+		images = append(images, image)
+	}
+	return images
+}
+
 func ShowPostImages(c *gin.Context, post_id interface{}, user_id interface{}) []interface{}{
 	var image_name string
 	images := []interface{}{}
