@@ -2,6 +2,14 @@
 
 Github URL: https://github.com/LeonSijiaLu/Sijia-s-Work-Repo/tree/master/Golang/Golang-Social-Network
 
+```
+Install Go on Red Hat Linux
+
+rpm --import https://mirror.go-repo.io/centos-unstable/RPM-GPG-KEY-GO-REPO
+curl -s https://mirror.go-repo.io/centos-unstable/go-repo-unstable.repo | tee /etc/yum.repos.d/go-repo-unstable.repo
+yum install golang
+```
+
 ## Intro
 
 This is the code my social network "TypInBlog", the backend API is made in Golang, and frontend is made in Jquery
