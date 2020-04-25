@@ -43,154 +43,127 @@
 
 <body>
 
-     <header class="tr-header">
-      <nav class="navbar navbar-default">
-       <div class="container-fluid">
-	    <div class="navbar-header">
-		 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
-		  <span class="sr-only">Toggle navigation</span>
-		  <span class="icon-bar"></span>
-		  <span class="icon-bar"></span>
-		  <span class="icon-bar"></span>
-		 </button>
-		 <a class="navbar-brand" href=""><i class="fab"></i> TypInBlog</a>
-		</div><!-- /.navbar-header -->
-		<div class="navbar-left">
-		 <div class="collapse navbar-collapse" id="navbar-collapse">
-		  <ul class="nav navbar-nav">
-		  </ul>
-		 </div>
-		</div><!-- /.navbar-left -->
+    <header class="tr-header">
+      	<nav class="navbar navbar-default">
+       		<div class="container-fluid">
+	    		<div class="navbar-header">
+		 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+		  				<span class="sr-only">Toggle navigation</span>
+		  				<span class="icon-bar"></span>
+		  				<span class="icon-bar"></span>
+		  				<span class="icon-bar"></span>
+		 			</button>
+		 			<a class="navbar-brand" href=""><i class="fab"></i> TypInBlog</a>
+				</div><!-- /.navbar-header -->
+				<div class="navbar-left">
+		 			<div class="collapse navbar-collapse" id="navbar-collapse">
+		 	 			<ul class="nav navbar-nav"></ul>
+		 		</div>
+			</div><!-- /.navbar-left -->
 		<div class="navbar-right">                          
-		 <ul class="nav navbar-nav">
-		   <li>
-		   <div class="search-dashboard">
-               <form>
-                    <input id="search_content" placeholder="Search here" type="text">
-                    <button type="button" id="search_button" onclick="setSearchResults();"><i class="fa fa-search"></i></button>
-               </form>
-          </div>							
-		   </li>
+		 	<ul class="nav navbar-nav">
+		   		<li>
+		   			<div class="search-dashboard">
+            		   <form>
+            		        <input id="search_content" placeholder="Search here" type="text">
+            		        <button type="button" id="search_button" onclick="setSearchResults();"><i class="fa fa-search"></i></button>
+            		   </form>
+          			</div>							
+		   		</li>
 
 		   <li class="dropdown notification-list">
-		    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-			 <i class="fa fa-bell noti-icon"></i>
-			 <span class="badge badge-danger badge-pill noti-icon-badge">4</span>
-			</a>
-			<div class="dropdown-menu dropdown-menu-right dropdown-lg">
-             
-			 <div class="dropdown-item noti-title">
-			  <h6 class="m-0">
-			   <span class="pull-right">
-			    <a href="" class="text-dark"><small>Clear All</small></a> 
-			   </span>Notification
-			  </h6>
-			 </div>
+		    	<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+			 		<i class="fa fa-bell noti-icon"></i>
+			 		<span id="notifications_num" class="badge badge-danger badge-pill noti-icon-badge"></span>
+				</a>
+				<div class="dropdown-menu dropdown-menu-right dropdown-lg">
+			 		<div class="dropdown-item noti-title">
+			  			<h6 class="m-0">
+			   			<span class="pull-right">
+			    			<a href="" class="text-dark"><small>Clear All</small></a> 
+			   			</span>Notification
+			  			</h6>
+			 		</div>
 
-			 <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 416.983px;">
-			  <div class="slimscroll" style="max-height: 230px; overflow: hidden; width: auto; height: 416.983px;">
-			   <div id="Slim">
-			    <a href="javascript:void(0);" class="dropdown-item notify-item">
-				 <div class="notify-icon bg-success"><i class="fa fa-comment"></i></div>
-				 <p class="notify-details">Caleb Flakelar commented on Admin<small class="text-muted">1 min ago</small></p>
-				</a><!--/ dropdown-item-->
-				<a href="javascript:void(0);" class="dropdown-item notify-item">
-				 <div class="notify-icon bg-success"><i class="fa fa-user-plus"></i></div>
-				 <p class="notify-details">Grace Flake followed you.<small class="text-muted">5 hours ago</small></p>
-				</a><!--/ dropdown-item-->
-				<a href="javascript:void(0);" class="dropdown-item notify-item">
-				 <div class="notify-icon bg-success"><i class="fa fa-heart"></i></div>
-				 <p class="notify-details">Carlos Crouch liked your photo.<small class="text-muted">3 days ago</small></p>
-				</a><!--/ dropdown-item-->
-				<a href="javascript:void(0);" class="dropdown-item notify-item">
-				 <div class="notify-icon bg-success"><i class="fa fa-comment"></i></div>
-				 <p class="notify-details">Caleb Flakelar commented on Admin<small class="text-muted">4 days ago</small></p>
-				</a><!--/ dropdown-item-->
-				<a href="javascript:void(0);" class="dropdown-item notify-item">
-				 <div class="notify-icon bg-success"><i class="fa fa-user-plus"></i></div>
-				 <p class="notify-details">Maureen Hilda followed you.<small class="text-muted">7 days ago</small></p>
-				</a><!--/ dropdown-item-->
-				<a href="javascript:void(0);" class="dropdown-item notify-item">
-				 <div class="notify-icon bg-success"><i class="fa fa-heart"></i></div>
-				 <p class="notify-details">Carlos Crouch liked your photo.<small class="text-muted">13 days ago</small></p>
-				</a><!--/ dropdown-item-->
-			   </div><!--/ .Slim-->
-			   <div class="slimScrollBar" style="background: rgb(158, 165, 171) none repeat scroll 0% 0%; width: 8px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px;"></div>
-			   <div class="slimScrollRail" style="width: 8px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51) none repeat scroll 0% 0%; opacity: 0.2; z-index: 90; right: 1px;"></div>
-			  </div><!--/ .slimscroll-->
-			 </div><!--/ .slimScrollDiv-->
-			 <a href="photo_notifications.html" class="dropdown-item text-center notify-all">
-			  View all <i class="fa fa-arrow-right"></i>
-			 </a><!-- All-->
+			 	<div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 416.983px;">
+			  		<div class="slimscroll" style="max-height: 230px; overflow: hidden; width: auto; height: 416.983px;">
+			   			<div id="Slim"></div><!--/ .Slim-->
+			   		<div class="slimScrollBar" style="background: rgb(158, 165, 171) none repeat scroll 0% 0%; width: 8px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px;"></div>
+			   		<div class="slimScrollRail" style="width: 8px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51) none repeat scroll 0% 0%; opacity: 0.2; z-index: 90; right: 1px;"></div>
+			  	</div><!--/ .slimscroll-->
+			</div><!--/ .slimScrollDiv-->
+			<a href="photo_notifications.html" class="dropdown-item text-center notify-all">
+			  	View all <i class="fa fa-arrow-right"></i>
+			</a><!-- All-->
             </div><!--/ dropdown-menu-->
-		   </li>
+			</li>
 
-		   <li class="dropdown notification-list" style="display: none;">
-			<a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-			 <i class="fa fa-envelope noti-icon"></i>
-			 <span class="badge badge-success badge-pill noti-icon-badge">6</span>
-			</a>
-			<div class="dropdown-menu dropdown-menu-right dropdown-lg dropdown-new">
-             <div class="dropdown-item noti-title">
-			  <h6 class="m-0">
-			   <span class="float-right">
-			    <a href="" class="text-dark"><small>Clear All</small></a> 
-			   </span>Chat
-			  </h6>
-			 </div>
+		   	<li class="dropdown notification-list" style="display: none;">
+				<a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+			 	<i class="fa fa-envelope noti-icon"></i>
+			 	<span class="badge badge-success badge-pill noti-icon-badge">6</span>
+				</a>
+				<div class="dropdown-menu dropdown-menu-right dropdown-lg dropdown-new">
+             		<div class="dropdown-item noti-title">
+			  			<h6 class="m-0">
+			   			<span class="float-right">
+			    			<a href="" class="text-dark"><small>Clear All</small></a> 
+			   			</span>Chat
+			  			</h6>
+			 		</div>
 
-			 <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 416.983px;">
-			  <div class="slimscroll" style="max-height: 230px; overflow: hidden; width: auto; height: 416.983px;">
-			   <div id="Slim2">
-				<a href="javascript:void(0);" class="dropdown-item notify-item nav-user">
-				 <div class="notify-icon"><img src="assets/img/users/1.jpg" class="img-responsive img-circle" alt=""> </div>
-				 <p class="notify-details">Cristina Pride</p>
-				 <p class="text-muted font-13 mb-0 user-msg">Hi, How are you? What about our next meeting</p>
-				</a><!--/ dropdown-item-->
-				<a href="javascript:void(0);" class="dropdown-item notify-item nav-user">
-				 <div class="notify-icon"><img src="assets/img/users/2.jpg" class="img-responsive img-circle" alt=""> </div>
-				 <p class="notify-details">Sam Garret</p>
-				 <p class="text-muted font-13 mb-0 user-msg">Yeah everything is fine</p>
-				</a><!--/ dropdown-item-->
-				<a href="javascript:void(0);" class="dropdown-item notify-item nav-user">
-				 <div class="notify-icon"><img src="assets/img/users/3.jpg" class="img-responsive img-circle" alt=""> </div>
-				 <p class="notify-details">Karen Robinson</p>
-				 <p class="text-muted font-13 mb-0 user-msg">Wow that's great</p>
-				</a><!--/ dropdown-item-->
-				<a href="javascript:void(0);" class="dropdown-item notify-item nav-user">
-				 <div class="notify-icon"><img src="assets/img/users/4.jpg" class="img-responsive img-circle" alt=""> </div>
-				 <p class="notify-details">Sherry Marshall</p>
-				 <p class="text-muted font-13 mb-0 user-msg">Hi, How are you? What about our next meeting</p>
-				</a><!--/ dropdown-item-->
-				<a href="javascript:void(0);" class="dropdown-item notify-item nav-user">
-				 <div class="notify-icon"><img src="assets/img/users/5.jpg" class="img-responsive img-circle" alt=""> </div>
-				 <p class="notify-details">Shawn Millard</p>
-				 <p class="text-muted font-13 mb-0 user-msg">Yeah everything is fine</p>
-				</a><!--/ dropdown-item-->
-			   </div><!--/ .Slim-->
-			   <div class="slimScrollBar" style="background: rgb(158, 165, 171) none repeat scroll 0% 0%; width: 8px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px;"></div>
-			   <div class="slimScrollRail" style="width: 8px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51) none repeat scroll 0% 0%; opacity: 0.2; z-index: 90; right: 1px;"></div>
-			  </div><!--/ slimscroll-->
-			 </div> <!--/ slimScrollDiv-->
-			 <a href="photo_chat.html" class="dropdown-item text-center notify-all">
-			  View all <i class="fa fa-arrow-right"></i>
-			 </a>
-            </div><!--/ dropdown-menu-->
+			 		<div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 416.983px;">
+			  			<div class="slimscroll" style="max-height: 230px; overflow: hidden; width: auto; height: 416.983px;">
+			   				<div id="Slim2">
+								<a href="javascript:void(0);" class="dropdown-item notify-item nav-user">
+				 					<div class="notify-icon"><img src="assets/img/users/1.jpg" class="img-responsive img-circle" alt=""> </div>
+				 					<p class="notify-details">Cristina Pride</p>
+				 					<p class="text-muted font-13 mb-0 user-msg">Hi, How are you? What about our next meeting</p>
+								</a><!--/ dropdown-item-->
+								<a href="javascript:void(0);" class="dropdown-item notify-item nav-user">
+				 					<div class="notify-icon"><img src="assets/img/users/2.jpg" class="img-responsive img-circle" alt=""> </div>
+				 					<p class="notify-details">Sam Garret</p>
+				 					<p class="text-muted font-13 mb-0 user-msg">Yeah everything is fine</p>
+								</a><!--/ dropdown-item-->
+								<a href="javascript:void(0);" class="dropdown-item notify-item nav-user">
+				 					<div class="notify-icon"><img src="assets/img/users/3.jpg" class="img-responsive img-circle" alt=""> </div>
+				 					<p class="notify-details">Karen Robinson</p>
+				 					<p class="text-muted font-13 mb-0 user-msg">Wow that's great</p>
+								</a><!--/ dropdown-item-->
+								<a href="javascript:void(0);" class="dropdown-item notify-item nav-user">
+				 					<div class="notify-icon"><img src="assets/img/users/4.jpg" class="img-responsive img-circle" alt=""> </div>
+				 					<p class="notify-details">Sherry Marshall</p>
+				 					<p class="text-muted font-13 mb-0 user-msg">Hi, How are you? What about our next meeting</p>
+								</a><!--/ dropdown-item-->
+								<a href="javascript:void(0);" class="dropdown-item notify-item nav-user">
+				 					<div class="notify-icon"><img src="assets/img/users/5.jpg" class="img-responsive img-circle" alt=""> </div>
+				 					<p class="notify-details">Shawn Millard</p>
+				 					<p class="text-muted font-13 mb-0 user-msg">Yeah everything is fine</p>
+								</a><!--/ dropdown-item-->
+			   				</div><!--/ .Slim-->
+			   			<div class="slimScrollBar" style="background: rgb(158, 165, 171) none repeat scroll 0% 0%; width: 8px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px;"></div>
+			   			<div class="slimScrollRail" style="width: 8px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51) none repeat scroll 0% 0%; opacity: 0.2; z-index: 90; right: 1px;"></div>
+			  		</div><!--/ slimscroll-->
+			 	</div> <!--/ slimScrollDiv-->
+			 	<a href="photo_chat.html" class="dropdown-item text-center notify-all">
+			  		View all <i class="fa fa-arrow-right"></i>
+			 	</a>
+            	</div><!--/ dropdown-menu-->
 		   </li>
 		  
-		 <li class="dropdown mega-avatar">
-		  <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" id="header_user_info"></a>
-		  <div class="dropdown-menu w dropdown-menu-scale pull-right">
-		   <a class="dropdown-item" href="/home" style="cursor: pointer;"><span>Home</span></a> 
-		   <a class="dropdown-item" href="/exploring" style="cursor: pointer;"><span>Explore</span></a> 
-		   <div class="dropdown-divider"></div>
-		   <a class="dropdown-item" href="/upload" style="cursor: pointer;"><span>Upload</span></a> 
-		   <a class="dropdown-item" href="/stories" style="cursor: pointer;"><span>Stories</span></a> 
-		   <a class="dropdown-item" href="/view_profile" style="cursor: pointer;">Profile</a> 
-		   <div class="dropdown-divider"></div>
-		   <a class="dropdown-item" onclick="logout();" style="cursor: pointer;">Sign out</a>
-		  </div>
-		 </li><!-- /navbar-item -->	
+				<li class="dropdown mega-avatar">
+				  	<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" id="header_user_info"></a>
+				  	<div class="dropdown-menu w dropdown-menu-scale pull-right">
+				   		<a class="dropdown-item" href="/home" style="cursor: pointer;"><span>Home</span></a> 
+				   		<a class="dropdown-item" href="/exploring" style="cursor: pointer;"><span>Explore</span></a> 
+				   		<div class="dropdown-divider"></div>
+				   		<a class="dropdown-item" href="/upload" style="cursor: pointer;"><span>Upload</span></a> 
+				   		<a class="dropdown-item" href="/stories" style="cursor: pointer;"><span>Stories</span></a> 
+				   		<a class="dropdown-item" href="/view_profile" style="cursor: pointer;">Profile</a> 
+				   		<div class="dropdown-divider"></div>
+				   		<a class="dropdown-item" onclick="logout();" style="cursor: pointer;">Sign out</a>
+				  	</div>
+				</li><!-- /navbar-item -->	
 		 
 		 </ul><!-- /.sign-in -->   
 		</div><!-- /.nav-right -->
@@ -203,74 +176,80 @@
 	 <!-- ==============================================
 	 News Feed Section
 	 =============================================== --> 
-	 <section class="profile">
-	  <div class="container-fluid">
-	   <div id="profile_bg" class="row"></div><!--/ row-->	
-	  </div><!--/ container -->
-	 </section><!--/ profile -->
+	<section class="profile">
+	  	<div class="container-fluid">
+	  		<div id="profile_bg" class="row"></div><!--/ row-->	
+	  	</div><!--/ container -->
+	</section><!--/ profile -->
   
-	 <section id="profile_user" class="user-profile"></section>
-  
+	<section id="profile_user" class="user-profile"></section>
 	 <!-- ==============================================
 	 User Profile Section
 	 =============================================== --> 
-	 <section class="details">
-	  <div class="container">
-	   <div class="row">
-	    <div class="col-lg-12">
-
-          <div class="details-box row">
-		   <div class="col-lg-9">
-           <div class="content-box">
-		     <h4 id="profile_user_name"><i class="fa fa-check"></i></h4>
-             <p id="profile_quote"><span class="hashtag">#pixels</span></p>
-			 <small><span id="profile_email"></span></small>
-           </div><!--/ media -->
-		   </div> 
-		   </div>
-          </div><!--/ details-box -->
-		  
-		</div>
-	   </div>
+	<section class="details">
+	  	<div class="container">
+	   		<div class="row">
+	    		<div class="col-lg-12">
+          			<div class="details-box row">
+		   				<div class="col-lg-9">
+           					<div class="content-box">
+		     					<h4 id="profile_user_name"><i class="fa fa-check"></i></h4>
+             					<p id="profile_quote"></p>
+			 					<small><span id="profile_email"></span></small>
+           					</div><!--/ media -->
+		   				</div> 
+		   				<div class="col-lg-3">
+           					<div class="follow-box" id="edit_profile_box" data-toggle="modal" data-target="#edit_profile_modal"></div>
+		   				</div>
+		   			</div>
+          		</div><!--/ details-box -->
+			</div>
+	   	</div>
 	  </div><!--/ container -->
-	 </section><!--/ profile -->
+	</section><!--/ profile -->
 
 	 <!-- ==============================================
 	 Home Menu Section
 	 =============================================== -->	
-     <section class="home-menu">
-      <div class="container">
-       <div class="row">
-        <div class="menu-category">
-         <ul class="menu">
-          <li class="current-menu-item"><a href="">Posts <span id="profile_posts_num"></span></a></li>
-          <li><a href="/followers">Followers <span id="profile_followers_num" ></span></a></li>
-          <li><a href="/followings">Following <span id="profile_followings_num" ></span></a></li>
-         </ul>
-		</div>
-	   </div>
-      </div>
-     </section>
+    <section class="home-menu">
+      	<div class="container">
+       		<div class="row">
+        		<div class="menu-category">
+        	 		<ul class="menu">
+          				<li class="current-menu-item"><a href="">Posts <span id="profile_posts_num"></span></a></li>
+          				<li><a href="/followers">Followers <span id="profile_followers_num" ></span></a></li>
+          				<li><a href="/followings">Following <span id="profile_followings_num" ></span></a></li>
+         			</ul>
+				</div>
+	   		</div>
+      	</div>
+    </section>
+
+
+	<div id="edit_profile_modal" class="modal fade"></div>
+
 
 	 <!-- ==============================================
 	 News Feed Section
 	 =============================================== --> 
-	 <section class="newsfeed">
-	  <div class="container" id="profile_main">
-	  </div><!--/ container -->
-	 </section><!--/ newsfeed -->
+	<section class="newsfeed">
+	  	<div class="container" id="profile_main">
+	  	</div><!--/ container -->
+	</section><!--/ newsfeed -->
   
 	<section id="profile_comments_section"></section>
 	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/notify.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>
 	<script src="assets/js/base.js"></script>
 	<script src="assets/js/slider.js"></script>
-	<script src="assets/js/notify.js"></script>
 	<script src="assets/js/search.js"></script>
 	<script src="assets/js/like.js"></script>
 	<script src="assets/js/comment.js"></script>
 	<script src="assets/js/account.js"></script>
 	<script src="assets/js/post.js"></script>
+	<script src="assets/js/profile.js"></script>
+	<script src="assets/js/notifications.js"></script>
 	<script src="assets/plugins/slimscroll/jquery.slimscroll.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 	<script type='text/javascript'>
@@ -318,7 +297,13 @@
 					$('#profile_email').html(email);
 					$('#profile_quote').html(quote);
 					$('#profile_user').html(
-						$('#profile_user').html() + '<div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="post-content"><div class="author-post text-center"><a href="#"><img class="img-fluid img-circle" src="users/'+id+'/profile/'+p_avatar+'" alt="Image"></a></div></div></div></div></div>'
+						$('#profile_user').html() + '<div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="post-content"><div class="author-post text-center"><a style="cursor: pointer;"><img class="img-fluid img-circle" src="users/'+id+'/profile/'+p_avatar+'" alt="Image"></a></div></div></div></div></div>'
+					);
+					$('#edit_profile_box').html(
+						$('#edit_profile_box').html() + '<a style="cursor: pointer;" class="kafe-btn kafe-btn-mint" "><i class="fa fa-edit"></i> Edit Profile</a>'
+					);
+					$('#edit_profile_modal').html(
+						$('#edit_profile_modal').html() + '<div class="modal-dialog" style="width: 60%;"><div class="modal-content"><div class="modal-body"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 style="text-align: center;">Edit Profile Information</h4><form class="form-signin" style="margin: auto;"><div class="form-group"><p>Edit Username: </p><input style="margin-bottom: 30px;" id="edit_name" name="username" type="text" class="form-control" placeholder="Username" value=' + "'" + name + "'" + '><p>Edit Quote: </p><input style="margin-bottom: 30px;" id="edit_quote" name="quote" type="text" class="form-control" placeholder="Quote" value=' + "'" + quote + "'" + '><p>Edit Email: </p><input style="margin-bottom: 30px;" id="edit_email" name="email" type="text" class="form-control" placeholder="Email" value=' + "'" + email + "'" + '><p>Edit Avatar: </p><input style="margin-bottom: 30px;" id="edit_avatar" onchange="show_new_avatar(this.files[0]);" type="file" accept="image/*"/><div id="view_new_avatar"></div></div></form><p id="edit_profile_err_message" style="text-align: center; color: red;"></p><div style="text-align: center;"><button id="edit_profile_button" onclick="edit_profile_info();" class="kafe-btn kafe-btn-mint">Finish Editing</button></div></div></div></div>'
 					);
 					if (r.profile_bg_images.length < 5){
 						if (r.profile_bg_images.length == 0){
@@ -423,6 +408,43 @@
 			$('#profile-navigation-bar').html()+'<div class="d-flex justify-content-between"><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/home"><em class="fa fa-home"></em><span>Home</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/exploring"><em class="fa fa-crosshairs"></em><span>Explore</span></a></div><div class="p-2 nav-icon-lg dark-black"><a class="nav-icon" href="/upload"><em class="fab fa-instagram"></em><span>Upload</span></a></div><div class="p-2 nav-icon-lg clean-black"><a class="nav-icon" href="/stories"><em class="fa fa-align-left"></em><span>Stories</span></a></div><div class="p-2 nav-icon-lg mint-green"><a class="nav-icon" href="/view_profile"><em class="fa fa-user"></em><span>Profile</span></a></div></div>'
 		);
 
+		function show_new_avatar(file_0){
+			var new_avatar = file_0;
+			var oFReader = new FileReader();
+			oFReader.readAsDataURL(new_avatar);
+			oFReader.onload = function(oFREvent) {
+				$('#view_new_avatar').html(
+					$('#view_new_avatar').html() + '<img style="width: 100%; border-radius: 50% 50% 50% 50%;" src='+oFREvent.target.result+'><p>'+new_avatar.name+'</p>'
+				);
+    		};
+		}
+
+		function edit_profile_info(){
+			var new_name = $("#edit_name").val();
+			var new_email = $("#edit_email").val();
+			var new_quote = $("#edit_quote").val();
+			var new_avatar = $("#edit_avatar")[0].files[0];
+			if (new_name == ""){
+				$("#edit_name").addClass('error_input_box');
+				$('#edit_profile_err_message').html($('#edit_profile_err_message').html() + 'Username cannot be empty </br>');
+				setTimeout(function(){$('#edit_profile_err_message').html(""); $("#edit_name").removeClass('error_input_box');}, 2000);
+			}else if(new_email == ""){
+				$("#edit_email").addClass('error_input_box');
+				$('#edit_profile_err_message').html($('#edit_profile_err_message').html() + 'Email cannot be empty </br>');
+				setTimeout(function(){$('#edit_profile_err_message').html(""); $("#edit_email").removeClass('error_input_box');}, 2000);
+			}else if(new_quote == ""){
+				$("#edit_quote").addClass('error_input_box');
+				$('#edit_profile_err_message').html($('#edit_profile_err_message').html() + 'Quote cannot be empty </br>');
+				setTimeout(function(){$('#edit_profile_err_message').html(""); $("#edit_quote").removeClass('error_input_box');}, 2000);
+			}else{
+				if(new_avatar == undefined || new_avatar == ""){
+					edit_profile_data(new_name, new_email, new_quote);
+				}else{
+					edit_profile_data_and_avatar(new_name, new_email, new_quote, new_avatar);
+				}
+			}
+		}
+
 		$(document).ready(function(){
 			$('#Slim,#Slim2').slimScroll({
 	        	height:"auto",
@@ -431,6 +453,8 @@
 				alwaysVisible: true,
 				size:"8px",
 			});	
+
+			loadNotifications();
 		});		
 	</script>
 

@@ -40,6 +40,10 @@
    Navbar Styles
    ========================================================================== */
 
+.error_input_box {
+    border: 1px solid red;
+}
+
 .special_content {
     font-size: larger !important;
     color: #0fc19e !important;

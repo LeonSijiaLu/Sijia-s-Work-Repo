@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"io/ioutil"
 )
 
 func CreatePost(c *gin.Context) {
@@ -286,20 +287,51 @@ func DisplayProfile(target_id interface{}, my_id interface{}, c *gin.Context) ma
 func EditProfile(c *gin.Context){
 	is_loggedin(c, "")
 	my_id, _ := UT.Get_Id_and_Username(c)
-	job := strings.TrimSpace(c.PostForm("job"))
-	quote := strings.TrimSpace(c.PostForm("quote"))
-	allow_unfollowed_views := c.PostForm("allow_unfollowed_views")
+	quote := c.PostForm("quote")
+	username := c.PostForm("username")
+	email := c.PostForm("email")
+
 	db := UT.Conn_DB()
 	defer db.Close()
-	if allow_unfollowed_views == ""{
-		_, err := db.Exec("UPDATE Profile SET job = ?, quote = ? WHERE user_id = ?", job, quote, my_id)
-		UT.Err(err)
-	}else{
-		_, err := db.Exec("UPDATE Profile SET job = ?, quote = ?, allow_unfollowed_views = ? WHERE user_id = ?", job, quote, allow_unfollowed_views, my_id)
-		UT.Err(err)
-	}
+
+	_, err := db.Exec("UPDATE Profile SET quote = ? WHERE user_id = ?", quote, my_id)
+	if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "DB Error","success": false,});}
+
+	_, err = db.Exec("UPDATE Users SET username = ?, email = ? WHERE user_id = ?", username, email, my_id)
+	if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "DB Error","success": false,});}
+
+	session := UT.GetSession(c)
+	session.Values["username"] = username
+	session.Save(c.Request, c.Writer) 
+
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "Edited your profile successfully",
+		"message": "Updated Profile Data successfully",
+		"success": true,
+	})
+}
+
+func EditProfileAvatar(c *gin.Context){
+	my_id, _ := UT.Get_Id_and_Username(c)
+	file, header, err := c.Request.FormFile("avatar")
+	if err != nil {c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "File Server Error",})}
+
+	avatar_content, err := ioutil.ReadAll(file)
+	if err != nil {c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "File Server Error",})}
+
+	err = ioutil.WriteFile("./web/users/" + my_id.(string) + "/profile/" + header.Filename, avatar_content, 0655)
+	if err != nil {c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "File Server Error",})}
+
+	db := UT.Conn_DB()
+	defer db.Close()
+	_, err = db.Exec("UPDATE Users SET avatar = ? WHERE user_id = ?", header.Filename, my_id)
+	if err != nil{c.JSON(http.StatusBadRequest, map[string]interface{}{"success": false, "message": "DB Error",})}
+	
+	session := UT.GetSession(c)
+	session.Values["avatar"] = header.Filename
+	session.Save(c.Request, c.Writer) 
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Updated Profile Avatar successfully",
 		"success": true,
 	})
 }

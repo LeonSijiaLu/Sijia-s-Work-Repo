@@ -21,7 +21,7 @@ CREATE TABLE `Profile`(
     `user_id` INT UNSIGNED NOT NULL,
     `allow_unfollowed_views` BOOLEAN DEFAULT true,
     `job` VARCHAR(32) NOT NULL,
-    `quote` VARCHAR(255) NOT NULL,
+    `quote` VARCHAR(255) NOT NULL DEFAULT 'Nice to meet you',
     `followers_num` INT UNSIGNED NOT NULL DEFAULT 0,
     `following_num` INT UNSIGNED NOT NULL DEFAULT 0,
     `posts_num` INT UNSIGNED NOT NULL DEFAULT 0,
@@ -180,8 +180,10 @@ DROP TABLE IF EXISTS `Mentions`;
 CREATE TABLE `Mentions`(
     `user_id` INT UNSIGNED NOT NULL,
     `post_id` INT UNSIGNED NOT NULL,
+    `viewed` BOOLEAN DEFAULT false,
+    `type` INT NOT NULL DEFAULT 0,
     `created_date` DATETIME NOT NULL,
-    PRIMARY KEY(post_id, user_id),
+    PRIMARY KEY(post_id, user_id, type),
     FOREIGN KEY(user_id) REFERENCES Users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(post_id) REFERENCES Posts(post_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -320,6 +322,14 @@ DROP TRIGGER IF EXISTS `remove_posts_hashtags`;
 CREATE TRIGGER `remove_posts_hashtags` AFTER DELETE ON `Posts_Hashtags` FOR EACH ROW
 BEGIN
     UPDATE Hashtags SET posts_num = posts_num - 1 WHERE hashtag_id = OLD.hashtag_id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS `new_mentions`;
+CREATE TRIGGER `new_mentions` BEFORE INSERT ON `Mentions` FOR EACH ROW
+BEGIN
+    SET NEW.created_date = NOW();
 END$$
 DELIMITER ;
 
@@ -482,7 +492,7 @@ INSERT INTO `Posts` (`title`, `content`, `created_by`, `images_num`) VALUES
 ('Good day', 'Good day', 6, 1),
 ('Bad day', 'Bad day', 10, 1),
 ('Soso day', '#FirstPost# Soso day', 11, 1),
-('Resident Evil 3 Released', '#RE3# #RE2# As an RE fan, I pre-purchased it. Gonna love it', 1, 9);
+('Resident Evil 3 Released', '#RE3# #RE2# As an RE fan, @takkar I pre-purchased it. Gonna love it', 1, 9);
 
 
 INSERT INTO `Hashtags` (`hashtag_name`) VALUES
@@ -647,4 +657,85 @@ INSERT INTO `Comments` (`post_id`, `user_id`, `content`) VALUES
 (16, 8, "Love it, too"),
 (17, 7, "Playing it now"),
 (18, 4, "Good game, bro");
+
+INSERT INTO `Mentions` (`post_id`, `user_id`, `type`) VALUES
+(22, 1, 0),
+(1, 1, 1),
+(1, 2, 1),
+(1, 3, 1),
+(2, 4, 1),
+(2, 5, 1),
+(2, 6, 1),
+(3, 7, 1),
+(3, 8, 1),
+(3, 9, 1),
+(4, 10, 1),
+(4, 1, 1),
+(4, 2, 1),
+(5, 3, 1),
+(5, 4, 1),
+(5, 5, 1),
+(6, 6, 1),
+(6, 7, 1),
+(6, 8, 1),
+(7, 9, 1),
+(7, 10, 1),
+(7, 1, 1),
+(8, 1, 1),
+(9, 1, 1),
+(3, 1, 1),
+(9, 2, 1),
+(10, 3, 1),
+(11, 4, 1),
+(12, 5, 1),
+(13, 6, 1),
+(14, 7, 1),
+(15, 8, 1),
+(15, 9, 1),
+(15, 10, 1),
+(16, 1, 1),
+(16, 2, 1),
+(16, 3, 1),
+(17, 4, 1),
+(18, 5, 1),
+(19, 6, 1),
+(20, 7, 1),
+(20, 8, 1),
+(20, 9, 1),
+(21, 10, 1),
+(22, 1, 1),
+(22, 2, 1),
+(22, 3, 1),
+(22, 4, 1),
+(22, 5, 1),
+(22, 6, 1),
+(22, 7, 1),
+(22, 8, 1),
+(22, 9, 1),
+(22, 10, 1),
+(22, 1, 2),
+(22, 2, 2),
+(22, 3, 2),
+(22, 4, 2),
+(22, 5, 2),
+(1, 3, 2),
+(2, 4, 2),
+(3, 5, 2),
+(4, 6, 2),
+(5, 7, 2),
+(6, 1, 2),
+(7, 8, 2),
+(8, 9, 2),
+(1, 1, 2),
+(9, 3, 2),
+(1, 6, 2),
+(10, 8, 2),
+(11, 9, 2),
+(12, 3, 2),
+(13, 5, 2),
+(14, 10, 2),
+(15, 9, 2),
+(16, 8, 2),
+(17, 7, 2),
+(18, 4, 2);
 

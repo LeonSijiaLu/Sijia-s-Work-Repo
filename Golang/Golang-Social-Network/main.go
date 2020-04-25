@@ -79,6 +79,7 @@ func main(){
 
 		api.GET("/profile/:id", route.Profile)
 		api.POST("/profile", route.EditProfile)
+		api.POST("/profile_avatar", route.EditProfileAvatar)
 
 //		api.POST("/follow_topic", route.FollowTopic)
 //		api.POST("/unfollow_topic", route.UnFollowTopic)
@@ -87,8 +88,10 @@ func main(){
 		api.GET("/hashtag/followers/:hashtagName", route.GetHashtagsFollowers)
 		api.GET("/hashtag/following", route.GetFollowingHashtags)
 		api.POST("/hashtag/posts", route.GetHashtagPosts) // only posts
-
 		api.POST("/hashtag/followPressed/:hashtagID", route.FollowOrUnfollowHashtag)
+
+		api.GET("/notifications/", route.GetNotifications)
+		api.POST("/notifications/clear", route.ClearNotifications)
 	}
 	server := negroni.Classic()
 	server.UseHandler(router)

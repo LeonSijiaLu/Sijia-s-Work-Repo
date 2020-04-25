@@ -13,7 +13,7 @@ function labelEssentials(content) {
             res = res + ' ';
         } else if (word_arr[i].startsWith('@')) { // @
             user_name = word_arr[i].slice(1);
-            res = res + '<a href="/view_users?name=' + user_name + '><span class="special_content">@' + user_name + '</span></a>';
+            res = res + '<a href="/view_users?name=' + user_name + '"><span class="special_content">@' + user_name + '</span></a>';
             res = res + ' ';
         } else {
             res = res + word_arr[i];
