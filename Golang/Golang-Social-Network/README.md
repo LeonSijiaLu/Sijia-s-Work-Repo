@@ -1,11 +1,10 @@
 # Golang Social Network API
 
+Github URL: https://github.com/LeonSijiaLu/Sijia-s-Work-Repo/tree/master/Golang/Golang-Social-Network
+
 ## Intro
 
-This is a social network API programed in Go. 
-
-* It has no frontend components yet, only backend part is available
-* You NEED TO download postman or other softwares to check out the functionality
+This is the code my social network "TypInBlog", the backend API is made in Golang, and frontend is made in Jquery
 
 Below is the database design: 
 
@@ -23,9 +22,11 @@ Below is the database design:
 
 `Comments`: Comments information, which posts it belongs to and who wrote it
 
+`Images`: Real images are uploaded to the file server constructed in Go, images metadata is stored in this table
+
 `Blacklist`: Who blocked whom
 
-`Follows`: Who follows whom
+`Follow`: Who follows whom
 
 `Mentions`: Who mentions whom, it is done using `@` like `@Leon`
 
@@ -45,25 +46,25 @@ go get golang.org/x/crypto/bcrypt
 go get github.com/go-sql-driver/mysql
 go get github.com/gorilla/sessions
 go get github.com/urfave/negroni
-go get github.com/pilu/fresh
 
-npm install 
-npm start
+Then put all files under: src folder of GOPATH (/root/go/src on Red Hat Linux)
 
-Then put all files under: src folder of GOPATH
+The DB name is `socialnet`, username is `netadmin_s96lu` and password is `netadmin_s96lu`. If you want to change DB name or username or password, please change them at the beginning of `db.sql` and `./utils/db.go` which is the go code to connect to mysql
 
-Before importing db.sql into your database, you can make changes to the db user in db.sql, the current user is: netadmin_s96lu, its password is netadmin_s96lu.
+`mysql socialnet < db.sql` to import database into mysql
 
-Then in utils/db.go, you can manage database name, database IP, username and password. 
+Then in `./utils/db.go`, you can manage database name, database IP, username and password. 
 ```
 
 ## Something to say before
 
-I used only `GET` and `POST` because `gin` in go cannot pass body in a delete request. 
+I used only `GET` and `POST` request. 
 
 ## What it allows you to do
 
 In order to navigate what is available for you, you need to first: 
+
+I created a lot of APIs, please see `main.go` for all of them
 
 1. `http://localhost:8882/user/signup`: `POST Request`, enter `username`, `password`, `password_repeated`, `email` to signup
 
