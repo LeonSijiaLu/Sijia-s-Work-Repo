@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 func InsertionSort(array []int) []int {
 	if len(array) == 1 {
 		return array
@@ -21,9 +19,9 @@ func InsertionSort(array []int) []int {
 	return array
 }
 
-func main() {
-	array := []int{123, 534, 213, 8768, 42, 213, 8560, 324, 756, 123, 987}
-	fmt.Println(InsertionSort(array))
+//func main() {
+//	array := []int{123, 534, 213, 8768, 42, 213, 8560, 324, 756, 123, 987}
+//	fmt.Println(InsertionSort(array))
 	// Round 1
 	// 534 compares with 123, good
 	//
@@ -31,4 +29,4 @@ func main() {
 	// 213 compares with 534, swap
 	// 213 compares with 123, good
 	//
-}
+//}

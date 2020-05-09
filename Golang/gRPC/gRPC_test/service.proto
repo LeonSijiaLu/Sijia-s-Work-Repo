@@ -1,0 +1,27 @@
+// This file defines the kind of encoding and decoding
+
+syntax = "proto3"; 
+
+package grpc_test;
+
+// When we send a request from our client
+// This is the format we want to serialize
+// In this case, we send two numbers in Request, a and b
+// 
+message Request {
+    int64 a = 1; // 1 is NOT VALUE but parameter IDENTITY
+    int64 b = 2;
+}
+
+message Response {
+    int64 result = 1; // 1 is NOT VALUE but parameter IDENTITY
+}
+
+service AddService {
+    // Define a RPC called Add
+    // Add takes in Request object
+    // Then returns Response object
+    rpc Add(Request) returns (Response);
+    rpc Multiple(Request) returns (Response);
+}
+

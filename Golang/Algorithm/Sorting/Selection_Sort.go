@@ -1,9 +1,5 @@
 package main
 
-import (
-	"fmt"
-)
-
 func Selection_Sort(array []int) []int {
 	counter := 0
 	for counter != len(array)-1 {
@@ -21,9 +17,6 @@ func Selection_Sort(array []int) []int {
 	return array
 }
 
-func main() {
-	array := []int{123, 534, 213, 8768, 42, 25, 213, 8560, 324, 756, 123, 987, 345, 867, 3423, 987, 978, 908, 32432, 1234, 9870}
-	fmt.Println(Selection_Sort(array))
-	// Put the smallest number on the left
-	// Put the second smallest number on the second left
-}
+// Put the smallest number on the left
+// Put the second smallest number on the second left
+
