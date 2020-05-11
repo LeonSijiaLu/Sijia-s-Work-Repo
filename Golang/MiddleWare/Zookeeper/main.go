@@ -103,8 +103,39 @@ func (s *SdClient) GetNodes(name string) ([]*ServiceNode, error){
 	return nodes, nil
 }
 
+func zkOperationTest(servers []string) error{
+	fmt.Println("ZooKeeper Operation Test")
+	conn, _, err := zk.Connect(servers, time.Second * 5)
+	if err != nil{return err}
+	defer conn.Close()
+	path := "/zk_test"
+	data := []byte("Testing_Data")
+	_, err = conn.Create(path, data, 0, zk.WorldACL(zk.PermAll))
+	if err != nil{return err}
+
+	exists, _, err := conn.Exists(path)
+	if err != nil{return err}
+	if exists{
+		fmt.Println("Path " + path + " created successfully")
+	}
+
+	data, str, err := conn.Get(path)
+	if err != nil{return err}
+	fmt.Printf("Path[%s]=[%s].\n", path, data)
+	fmt.Printf("state:\n")
+
+	err = conn.Delete(path, str.Version)
+	if err != nil{return err}
+
+	fmt.Println("Node has been deleted")
+	return nil
+}
+
 func main(){
 	servers := []string{"192.168.157.20:2181", "192.168.157.20:2182", "192.168.157.20:2183"}
+	err := zkOperationTest(servers)
+	if err != nil{return}
+
 	client, err := NewClient(servers, "/api", 10) // for example, this is an API client
 	if err != nil{
 		client.conn.Close()
