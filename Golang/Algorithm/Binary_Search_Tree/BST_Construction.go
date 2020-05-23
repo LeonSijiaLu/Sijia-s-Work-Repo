@@ -36,16 +36,16 @@ func (tree *BST) Remove(value int) *BST {
 
 func (tree *BST) remove(value int, parent *BST) {
 	current_node := tree
-	parent_node := parent
+	//parent_node := parent
 	isDone := false
 	for !isDone {
 		isDone = true
 		if value > current_node.value {
-			parent_node = current_node
+			//parent_node = current_node
 			current_node = current_node.right
 			isDone = false
 		} else if value < current_node.value {
-			parent_node = current_node
+			//parent_node = current_node
 			current_node = current_node.left
 			isDone = false
 		} else { // value == current_node.value

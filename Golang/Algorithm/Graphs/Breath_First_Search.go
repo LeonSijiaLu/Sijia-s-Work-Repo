@@ -1,22 +1,28 @@
-package Graphs
+package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Node struct {
 	Name     string
 	Children []*Node
 }
 
-func (n *Node) DepthFirstSearch(array []string) []string {
-	array = append(array, n.Name)
-	fmt.Println(array)
-	for _, element := range n.Children {
-		array = element.DepthFirstSearch(array)
+func (n *Node) BreadthFirstSearch(array []string) []string{
+	queue := []*Node{n}
+	for len(queue) > 0{
+		current := queue[0]
+		queue = queue[1:]
+		array = append(array, current.Name)
+		for _, child := range current.Children{
+			queue = append(queue, child)
+		}
 	}
 	return array
 }
 
-func main() {
+func main(){
 	K := &Node{Name: "K"}
 	J := &Node{Name: "J"}
 	I := &Node{Name: "I"}
@@ -38,5 +44,6 @@ func main() {
 	A.Children = append(A.Children, B)
 	A.Children = append(A.Children, C)
 	A.Children = append(A.Children, D)
-	fmt.Println(A.DepthFirstSearch([]string{}))
+
+	fmt.Println(A.BreadthFirstSearch([]string{}))
 }

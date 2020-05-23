@@ -1,4 +1,4 @@
-package main
+package Graphs
 
 // How do we know if this array can form a cycle
 // 在一次loop中
