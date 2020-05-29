@@ -1,8 +1,5 @@
 package main
 
-import (
-	"fmt"
-)
 
 // string = "aefoaefcdaefcdaed"
 // substring = "aefcdaed"
@@ -26,99 +23,64 @@ import (
 // -1	0	0	0	0	0	0	2 对应数字
 
 // 3. 把 substring 和 string 对齐，一点点向后移动
-// 如果匹配失败, 比如在 c 匹配失败的话
-// c 对应数字是0
-// 那么就把 序号 = 0 的和 o 比较
+// next array 其实就是一个 matching pattern
 
-func constructNext(str string) int{
-	counter := 0
-	finished := false
-	half_index := len(str) / 2
-	left_arr := str[:half_index]
-	right_arr := str[half_index:]
-	if len(str) % 2 != 0{
-		left_arr = str[:half_index]
-		right_arr = str[half_index + 1:]
+
+func constructNext(substr string) []int{
+	if len(substr) == 1{
+		return []int{-1}
 	}
-	for {
-		if finished == true{
-			break
-		}
-		if len(left_arr) == 1 && len(right_arr) == 1{
-			finished = true
-		}
-		for index, _ := range left_arr{
-			if left_arr[index] == right_arr[index]{
-				counter ++
-			}else{
-				left_arr = left_arr[:len(left_arr) - 1]
-				right_arr = right_arr[1:]
-				break
-			}
-			finished = true
+	if len(substr) == 2{
+		if substr[0] == substr[1]{
+			return []int{-1, 0}
+		}else{
+			return []int{-1, -1}
 		}
 	}
-	return counter
+
+	next := make([]int, len(substr))
+	for i := range next{
+		next[i] = -1
+	}
+
+	i, j := 1, 0
+	for i < len(substr){
+		if substr[i] == substr[j]{
+			next[i] = j
+			i, j = i + 1, j + 1
+		}else if j > 0{
+			j = next[j-1] + 1
+		}else{
+			i ++
+		}
+	}
+	return next
 }
 
-func compareStr(str string, substr string, next []int) int{
-	starting := 0
-	num := 0
-	finished := false
-	for {
-		if finished == true{
-			break
-		}
-		for i:=0; i<len(substr); i++{
-			if substr[i] != str[starting]{
-				if next[i] == -1{
-					starting ++
-					i = -1
-				}else{
-					i = next[i] - 1
-				}
-			}else{
-				starting ++
+func findDuplicates(str string, substr string, next []int) bool{
+	i, j := 0, 0
+	for i + len(substr) - j <= len(str) {
+		if str[i] == substr[j]{
+			if j == len(substr) - 1{
+				return true
 			}
-			if starting == len(str){
-				finished = true
-				break
-			}
-		}
-		if finished == false{
-			num ++
+			i, j = i + 1, j + 1
+		}else if j > 0{
+			j = next[j - 1] + 1
+		}else{
+			i ++
 		}
 	}
-	return num
-}
+	return false
+} 
 
 func KnuthMorrisPrattAlgorithm(str, substr string) bool {
-	var next []int
-	for index, _ := range substr{
-		if index == 0{
-			next = append(next, -1)
-		}else if index == 1{
-			if substr[1] == substr[0]{
-				next = append(next, 1)
-			}else{
-				next = append(next, 0)
-			}
-		}else{
-			next = append(next, constructNext(substr[:index]))
-		}
-	}
-	fmt.Println(next)
-	num := compareStr(str, substr, next)
-	if num == 0{
-		return false
-	}else{
-		return true
-	}
+	next := constructNext(substr)
+	return findDuplicates(str, substr, next)
 }
 
 func main(){
 	str := "aefoaefcdaefcdaed"
-	substr := "aefcdaed"
-	res := KnuthMorrisPrattAlgorithm(str, substr)
-	fmt.Println(res)
+	substr := "aefaedaefaefa"
+	KnuthMorrisPrattAlgorithm(str, substr)
 }
