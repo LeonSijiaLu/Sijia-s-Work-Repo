@@ -38,7 +38,7 @@ func checkExistence(new_node string, visited []string) bool{
 func sort(queue []*queue_node) []*queue_node{
 	for i := range queue{
 		for j := range queue{
-			if queue[j].value > queue[i].value{
+			if (queue[j].value > queue[i].value) || (queue[j].value == queue[i].value && queue[j].name > queue[i].name){
 				queue[j], queue[i] = queue[i], queue[j]
 			}
 		}
@@ -46,15 +46,45 @@ func sort(queue []*queue_node) []*queue_node{
 	return queue
 }
 
-func uniform_cost_search(edges []*Node) ([]string, int){
+func removeDuplicates(queue []*queue_node) []*queue_node{
+	counter := 0 
+	for counter < len(queue) - 1{
+		for i := counter + 1; i < len(queue); i ++{
+			if queue[counter].name == queue[i].name{
+				temp := queue[i + 1:]
+				queue = queue[:i]
+				queue = append(queue, temp...)
+				break
+			}
+		}
+		counter ++
+	}
+	return queue
+}
+
+func showQueue(queue []*queue_node){
+	var arr []string
+	for i := range queue{
+		arr = append(arr, queue[i].name)
+	}
+	fmt.Println("Open Queue is :")
+	fmt.Println(arr)
+}
+
+func uniform_cost_search(edges []*Node, starting string, ending string) ([]string, int){
 	var queue []*queue_node
-	queue = append(queue, &queue_node{name: "S", value: 0})
+	queue = append(queue, &queue_node{name: starting, value: 0})
 
 	var visited []string
 
 	finished := false
 	steps := 0
 	for !finished{
+		showQueue(queue)
+		fmt.Println("Closed Queue is :")
+		fmt.Println(visited)
+		fmt.Println("=========================================")
+		fmt.Println()
 		pop := queue[0]
 		queue = queue[1:]
 		if !checkExistence(pop.name, visited){ // if this node not visited
@@ -66,33 +96,49 @@ func uniform_cost_search(edges []*Node) ([]string, int){
 			visited = append(visited, pop.name)
 		}
 		queue = sort(queue)
-		if pop.name == "G"{
+		queue = removeDuplicates(queue)
+		if pop.name == ending{
 			finished = true
 			steps = pop.value
 		}
 	}
+	fmt.Println(visited, steps)
 	return visited, steps
 }
 
 func main(){
 	var edges []*Node
-	edges = append(edges, &Node{name: "S", neighbour: "A", distance: 5})
-	edges = append(edges, &Node{name: "S", neighbour: "B", distance: 9})
-	edges = append(edges, &Node{name: "S", neighbour: "D", distance: 6})
-	edges = append(edges, &Node{name: "A", neighbour: "G", distance: 9})
-	edges = append(edges, &Node{name: "A", neighbour: "B", distance: 3})
-	edges = append(edges, &Node{name: "B", neighbour: "C", distance: 1})
-	edges = append(edges, &Node{name: "B", neighbour: "A", distance: 2})
-	edges = append(edges, &Node{name: "C", neighbour: "S", distance: 6})
-	edges = append(edges, &Node{name: "C", neighbour: "G", distance: 5})
-	edges = append(edges, &Node{name: "C", neighbour: "F", distance: 7})
-	edges = append(edges, &Node{name: "D", neighbour: "C", distance: 2})
-	edges = append(edges, &Node{name: "D", neighbour: "E", distance: 2})
-	edges = append(edges, &Node{name: "D", neighbour: "S", distance: 1})
-	edges = append(edges, &Node{name: "E", neighbour: "G", distance: 7})
-	edges = append(edges, &Node{name: "F", neighbour: "D", distance: 2})
-	edges = append(edges, &Node{name: "F", neighbour: "G", distance: 8})
+	edges = append(edges, &Node{name: "6", neighbour: "2", distance: 38})
+	edges = append(edges, &Node{name: "6", neighbour: "5", distance: 35})
+	edges = append(edges, &Node{name: "6", neighbour: "10", distance: 30})
+	edges = append(edges, &Node{name: "6", neighbour: "9", distance: 26})
+	edges = append(edges, &Node{name: "5", neighbour: "1", distance: 5})
+	edges = append(edges, &Node{name: "2", neighbour: "9", distance: 26})
+	edges = append(edges, &Node{name: "9", neighbour: "10", distance: 26})
+	edges = append(edges, &Node{name: "9", neighbour: "4", distance: 18})
+	edges = append(edges, &Node{name: "9", neighbour: "7", distance: 35})
+	edges = append(edges, &Node{name: "2", neighbour: "7", distance: 32})
+	edges = append(edges, &Node{name: "1", neighbour: "8", distance: 24})
+	edges = append(edges, &Node{name: "10", neighbour: "8", distance: 15})
+	edges = append(edges, &Node{name: "10", neighbour: "3", distance: 24})
+	edges = append(edges, &Node{name: "8", neighbour: "3", distance: 23})
+	edges = append(edges, &Node{name: "4", neighbour: "3", distance: 7})
 
+	edges = append(edges, &Node{name: "2", neighbour: "6", distance: 38})
+	edges = append(edges, &Node{name: "5", neighbour: "6", distance: 35})
+	edges = append(edges, &Node{name: "10", neighbour: "6", distance: 30})
+	edges = append(edges, &Node{name: "9", neighbour: "6", distance: 26})
+	edges = append(edges, &Node{name: "1", neighbour: "5", distance: 5})
+	edges = append(edges, &Node{name: "9", neighbour: "2", distance: 26})
+	edges = append(edges, &Node{name: "10", neighbour: "9", distance: 26})
+	edges = append(edges, &Node{name: "4", neighbour: "9", distance: 18})
+	edges = append(edges, &Node{name: "7", neighbour: "9", distance: 35})
+	edges = append(edges, &Node{name: "7", neighbour: "2", distance: 32})
+	edges = append(edges, &Node{name: "8", neighbour: "1", distance: 24})
+	edges = append(edges, &Node{name: "8", neighbour: "10", distance: 15})
+	edges = append(edges, &Node{name: "3", neighbour: "10", distance: 24})
+	edges = append(edges, &Node{name: "3", neighbour: "8", distance: 23})
+	edges = append(edges, &Node{name: "3", neighbour: "4", distance: 7})
 
-	fmt.Println(uniform_cost_search(edges))
+	uniform_cost_search(edges, "1", "7")
 }
