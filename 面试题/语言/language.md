@@ -8,9 +8,17 @@
 
 3. 虽然 Python 使用简单，但是依赖很多第三方库，部署麻烦。但是 Go 可以编译成二进制，跨服务器迁移方便
 
-4. Go 可以使用 channel, sync包搭配 goroutine 进行并行。但是Python比较困难
+4. Go 可以使用 channel, sync 包搭配 goroutine 进行并行。但是Python比较困难
 
 ## Go Channel
 
 1. chan := make(chan int)
+
+2. 可以无限扩展，最大长度为 1G
+
+## Slice
+
+## Context
+
+## 闭包
 
